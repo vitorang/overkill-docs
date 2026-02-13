@@ -1,0 +1,69 @@
+services:
+  proxy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    networks:
+      - overkill-network
+
+  api:
+    image: ${DOCKER_REGISTRY-}overkilldocsapi
+    build:
+      context: .
+      dockerfile: OverkillDocs.Api/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
+    ports:
+      - "8080:8080"
+    networks:
+      - overkill-network
+    depends_on:
+      db-migrator:
+        condition: service_completed_successfully
+
+  web:
+    build: ./OverkillDocs.Web
+    networks:
+      - overkill-network
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${SQL_PASSWORD}
+    ports:
+      - "1433:1433"
+    networks:
+      - overkill-network
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-C", "-U", "${SQL_USER}", "-P", "${SQL_PASSWORD}", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+
+  db-migrator:
+    build: 
+      context: .
+      dockerfile: OverkillDocs.Api/Dockerfile
+      target: build
+    working_dir: /src/OverkillDocs.Api
+    networks:
+      - overkill-network
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint: ["dotnet", "ef", "database", "update", "--connection", "Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;"]
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
+
+networks:
+  overkill-network:
+    driver: bridge
+
+volumes:
+  caddy_data:
