@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OverkillDocs.Core.Interfaces;
 using OverkillDocs.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,22 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection"),
         x => x.MigrationsAssembly("OverkillDocs.Infrastructure")
     ));
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.Scan(scan => scan
+    .FromAssemblies(
+        typeof(Program).Assembly,
+        typeof(IUnitOfWork).Assembly,
+        typeof(UnitOfWork).Assembly
+        )
+    .AddClasses(classes => classes.Where(
+        type => type.Name.EndsWith("Service")
+            || type.Name.EndsWith("Repository")))
+    .AsImplementedInterfaces()
+    .WithScopedLifetime());
+
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 

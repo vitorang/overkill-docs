@@ -13,9 +13,9 @@ namespace OverkillDocs.Core.Entities
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public int DocumentId { get; set; }
-        public Document Document { get; set; } = null!;
+        public required Document Document { get; set; }
 
         public int EditedById { get; set; }
-        public User EditedBy { get; set; } = null!;
+        public required User EditedBy { get; set; }
     }
 }

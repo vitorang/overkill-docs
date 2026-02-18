@@ -9,7 +9,7 @@
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public int CreatedById { get; set; }
-        public User CreatedBy { get; set; } = null!;
+        public required User CreatedBy { get; set; }
 
         public ICollection<DocumentFragment> Fragments { get; set; } = [];
     }

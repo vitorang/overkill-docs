@@ -9,9 +9,9 @@ namespace OverkillDocs.Api.Controllers;
 [Route("[controller]")]
 public class DbTesteController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly Infrastructure.Data.AppDbContext _context;
 
-    public DbTesteController(AppDbContext context)
+    public DbTesteController(Infrastructure.Data.AppDbContext context)
     {
         _context = context;
     }
