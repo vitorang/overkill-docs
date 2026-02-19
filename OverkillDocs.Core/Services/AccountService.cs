@@ -5,6 +5,7 @@ using OverkillDocs.Core.Extensions;
 using OverkillDocs.Core.Interfaces;
 using OverkillDocs.Core.Interfaces.Repositories;
 using OverkillDocs.Core.Interfaces.Services;
+using OverkillDocs.Core.Security;
 
 namespace OverkillDocs.Core.Services
 {
@@ -12,13 +13,14 @@ namespace OverkillDocs.Core.Services
         IUserRepository userRepository,
         IUserSessionRepository userSessionRepository,
         IPasswordService passwordService,
-        IUnitOfWork unitOfWork) : IAccountService
+        IUnitOfWork unitOfWork,
+        UserContext userContext) : IAccountService
     {
-        public async Task<AuthResponseDto> LoginAsync(AuthRequestDto request)
+        public async Task<AuthResponseDto> LoginAsync(AuthRequestDto request, CancellationToken ct)
         {
             var notFound = new NotFoundException("Usuário não encontrado ou senha incorreta.");
 
-            var user = await userRepository.FindByUsernameAsync(request.Username) ?? throw notFound;
+            var user = await userRepository.FindByUsernameAsync(request.Username, ct: ct) ?? throw notFound;
             if (!passwordService.VerifyPassword(request.Password, user.PasswordHash))
                 throw notFound;
 
@@ -27,20 +29,21 @@ namespace OverkillDocs.Core.Services
                 UserAgent = request.UserAgent
             };
 
-            await userSessionRepository.AddAsync(session);
-            await unitOfWork.CommitAsync();
+            await userSessionRepository.AddAsync(session, ct: ct);
+            await unitOfWork.CommitAsync(ct);
 
             return session.ToAuthResponse();
         }
 
-        public Task LogoutAsync()
+        public async Task LogoutAsync(CancellationToken ct)
         {
-            throw new NotImplementedException();
+            await userSessionRepository.DeleteAsync(userContext.Token, ct);
+            await unitOfWork.CommitAsync(ct);
         }
 
-        public async Task<AuthResponseDto> RegisterAsync(AuthRequestDto request)
+        public async Task<AuthResponseDto> RegisterAsync(AuthRequestDto request, CancellationToken ct)
         {
-            var userExists = await userRepository.FindByUsernameAsync(request.Username) != null;
+            var userExists = await userRepository.FindByUsernameAsync(request.Username, ct: ct) != null;
             if (userExists)
                 throw new ConflictException("Nome de usuário está em uso");
 
@@ -51,7 +54,7 @@ namespace OverkillDocs.Core.Services
                 PasswordHash = passwordService.CalculeHash(request.Password)
             };
 
-            await userRepository.AddAsync(user);
+            await userRepository.AddAsync(user, ct: ct);
 
             var session = new UserSession
             {
@@ -59,8 +62,8 @@ namespace OverkillDocs.Core.Services
                 UserAgent = request.UserAgent
             };
 
-            await userSessionRepository.AddAsync(session);
-            await unitOfWork.CommitAsync();
+            await userSessionRepository.AddAsync(session, ct: ct);
+            await unitOfWork.CommitAsync(ct);
 
             return session.ToAuthResponse();
         }

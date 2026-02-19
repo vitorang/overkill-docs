@@ -46,7 +46,9 @@ namespace OverkillDocs.Infrastructure.Data
                     .HasMaxLength(15)
                     .IsUnicode(false);
 
-                entity.HasIndex(e => e.Username).IsUnique();
+                entity.HasIndex(e => e.Username)
+                    .IsUnique()
+                    .HasDatabaseName("IX_User_Username"); ;
             });
 
             modelBuilder.Entity<UserSession>(entity =>

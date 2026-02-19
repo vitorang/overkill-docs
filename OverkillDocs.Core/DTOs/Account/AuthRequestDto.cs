@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations;
 namespace OverkillDocs.Core.DTOs.Account
 {
     public record AuthRequestDto(
-        [Required(ErrorMessage = "O nome de usuário é obrigatório")]
+        [Required(ErrorMessage = "Usuário obrigatório")]
         [Username]
         string Username,
 
-        [Required(ErrorMessage = "A senha é obrigatória")]
-        [MinLength(3, ErrorMessage = "A senha deve no mínimo 3 caracteres.")]
+        [Required(ErrorMessage = "Senha obrigatória")]
+        [MinLength(3, ErrorMessage = "Mínimo de 3 caracteres")]
         string Password,
         
-        [Required(ErrorMessage = "O agente é obrigatório")]
+        [Required(ErrorMessage = "User-Agent é obrigatório")]
         string UserAgent
     );
 }

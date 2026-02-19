@@ -5,37 +5,33 @@ using OverkillDocs.Core.Interfaces.Services;
 
 namespace OverkillDocs.Api.Controllers
 {
-    [Route("[controller]")]
     [ApiController]
+    [Route("[controller]")]
+    [ProducesErrorResponseType(typeof(ProblemDetails))]
     public class AccountController(IAccountService accountService) : ControllerBase
     {
-        [HttpGet("Current")]
-        public Task<IActionResult> Current(AuthRequestDto authDto)
-        {
-            throw new NotImplementedException();
-        }
-
         [AllowAnonymous]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [HttpPost("Login")]
-        public async Task<ActionResult<AuthResponseDto>> Login([FromBody] AuthRequestDto authDto)
+        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<AuthResponseDto>> Login([FromBody] AuthRequestDto authDto, CancellationToken ct)
         {
-            var result = await accountService.LoginAsync(authDto);
+            var result = await accountService.LoginAsync(authDto, ct);
             return Ok(result);
         }
 
-        [HttpGet("Logout")]
-        public Task<IActionResult> Logout(AuthRequestDto authDto)
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout(CancellationToken ct)
         {
-            throw new NotImplementedException();
+            await accountService.LogoutAsync(ct);
+            return NoContent();
         }
 
         [AllowAnonymous]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [HttpPost("Register")]
-        public async Task<ActionResult<AuthResponseDto>> Register([FromBody] AuthRequestDto authDto)
+        [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<AuthResponseDto>> Register([FromBody] AuthRequestDto authDto, CancellationToken ct)
         {
-            var result = await accountService.RegisterAsync(authDto);
+            var result = await accountService.RegisterAsync(authDto, ct);
             return Ok(result);
         }
     }

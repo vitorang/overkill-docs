@@ -1,18 +1,20 @@
-﻿using OverkillDocs.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using OverkillDocs.Core.Entities;
 using OverkillDocs.Core.Interfaces.Repositories;
+using OverkillDocs.Infrastructure.Data;
 
 namespace OverkillDocs.Infrastructure.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(AppDbContext context) : IUserRepository
     {
-        public Task AddAsync(User user)
+        public async Task AddAsync(User user, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            await context.Users.AddAsync(user, ct);
         }
 
-        public Task<User?> FindByUsernameAsync(string username)
+        public async Task<User?> FindByUsernameAsync(string username, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            return await context.Users.FirstOrDefaultAsync(e => e.Username == username, ct);
         }
     }
 }

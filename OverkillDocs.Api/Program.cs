@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using OverkillDocs.Api.Filters;
+using OverkillDocs.Api.Handlers;
+using OverkillDocs.Api.Middlewares;
 using OverkillDocs.Core.Interfaces;
+using OverkillDocs.Core.Security;
 using OverkillDocs.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +22,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     ));
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<UserContext>();
+builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 builder.Services.Scan(scan => scan
     .FromAssemblies(
@@ -32,13 +38,19 @@ builder.Services.Scan(scan => scan
     .WithScopedLifetime());
 
 builder.Services.AddProblemDetails();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<AuthorizationFilter>();
+});
+
 
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseAuthorization();
+app.UseExceptionHandler();
+app.UseMiddleware<SessionMiddleware>();
 
 app.MapControllers();
 

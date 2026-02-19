@@ -9,11 +9,11 @@ namespace OverkillDocs.Core.Attributes
         {
             if (value is string username)
             {
-                if (username.Length < 3 || username.Length > 15)
-                    return new ValidationResult("O nome de usuário deve ter entre 3 e 15 caracteres.");
+                if (username.Length is < 3 or > 15)
+                    return new ValidationResult("Deve ter de 3 a 15 caracteres.");
 
                 if (!UsernameRegex().IsMatch(username))
-                    return new ValidationResult("O nome de usuário deve conter apenas letras minúsculas e números.");
+                    return new ValidationResult("Deve ter apenas letras minúsculas e números.");
             }
 
             return ValidationResult.Success;

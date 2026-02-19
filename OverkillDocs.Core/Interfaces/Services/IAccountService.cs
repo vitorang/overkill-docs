@@ -4,8 +4,8 @@ namespace OverkillDocs.Core.Interfaces.Services
 {
     public interface IAccountService
     {
-        Task<AuthResponseDto> LoginAsync(AuthRequestDto request);
-        Task LogoutAsync();
-        Task<AuthResponseDto> RegisterAsync(AuthRequestDto request);
+        Task<AuthResponseDto> LoginAsync(AuthRequestDto request, CancellationToken ct);
+        Task LogoutAsync(CancellationToken ct);
+        Task<AuthResponseDto> RegisterAsync(AuthRequestDto request, CancellationToken ct);
     }
 }

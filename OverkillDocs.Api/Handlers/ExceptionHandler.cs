@@ -5,7 +5,7 @@ using System.Net;
 
 namespace OverkillDocs.Api.Handlers
 {
-    public class GlobalExceptionHandler : IExceptionHandler
+    public class ExceptionHandler : IExceptionHandler
     {
         public async ValueTask<bool> TryHandleAsync(
             HttpContext httpContext,
@@ -16,7 +16,8 @@ namespace OverkillDocs.Api.Handlers
             var statusCode = exception switch
             {
                 CoreException e => e.StatusCode,
-                _ => (int)HttpStatusCode.InternalServerError
+                NotImplementedException => (int)HttpStatusCode.NotImplemented,
+                Exception => (int)HttpStatusCode.InternalServerError
             };
 
             var problemDetails = new ProblemDetails
@@ -36,11 +37,13 @@ namespace OverkillDocs.Api.Handlers
 
         private static string GetTitle(int statusCode) => statusCode switch
         {
-            400 => "Requisição Inválida",
-            401 => "Não Autorizado",
-            404 => "Recurso não Encontrado",
-            409 => "Conflito de Negócio",
-            _ => "Erro Interno do Servidor"
+            400 => "Requisição inválida",
+            401 => "Não autorizado",
+            404 => "Recurso não encontrado",
+            409 => "Conflito",
+            500 => "Erro interno",
+            501 => "Não implementado",
+            _ => "Erro interno do servidor"
         };
     }
 }

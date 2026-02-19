@@ -1,18 +1,29 @@
-﻿using OverkillDocs.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using OverkillDocs.Core.Entities;
 using OverkillDocs.Core.Interfaces.Repositories;
+using OverkillDocs.Infrastructure.Data;
 
 namespace OverkillDocs.Infrastructure.Repositories
 {
-    public class UserSessionRepository : IUserSessionRepository
+    public class UserSessionRepository(AppDbContext context) : IUserSessionRepository
     {
-        public Task AddAsync(UserSession userSession)
+        public async Task AddAsync(UserSession userSession, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            await context.UserSessions.AddAsync(userSession, ct);
         }
 
-        public Task<UserSession?> FindByTokenAsync(string token, CancellationToken ct = default)
+        public async Task DeleteAsync(string sessionToken, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            var session = await context.UserSessions.FirstOrDefaultAsync(e => e.Token == sessionToken, ct);
+            if (session != null)
+                context.UserSessions.Remove(session);   
+        }
+
+        public async Task<UserSession?> FindByTokenAsync(string token, CancellationToken ct)
+        {
+            return await context.UserSessions
+                .Include(e => e.User)
+                .FirstOrDefaultAsync(e => e.Token == token, ct);
         }
     }
 }
