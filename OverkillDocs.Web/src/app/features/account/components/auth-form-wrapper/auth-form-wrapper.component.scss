@@ -1,0 +1,22 @@
+@use 'index' as *;
+
+:host {
+    display: block;
+    width: 100%;
+
+    .wrapper {
+        padding: 2rem;
+    }
+
+    @include breakpoint('small-medium') {
+        .wrapper {
+            background-color: var(--mat-sys-surface);
+            color: var(--mat-sys-on-surface);
+            margin: 0 2em;
+
+            border-radius: 24px;
+            box-shadow: var(--mat-sys-level2-shadow);
+            border: 1px solid var(--mat-sys-outline-variant);
+        }
+    }
+}

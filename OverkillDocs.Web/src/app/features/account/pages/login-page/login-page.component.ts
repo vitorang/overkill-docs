@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
+import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
+import { AuthFormComponent } from '../../components/auth-form/auth-form.component';
+import { AuthFormWrapperComponent } from '../../components/auth-form-wrapper/auth-form-wrapper.component';
 
 @Component({
-  selector: 'okd-login-page',
-  imports: [],
-  templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.scss',
+    selector: 'okd-login-page',
+    imports: [SHARED_NATIVE, SHARED_CUSTOM, AuthFormComponent, AuthFormWrapperComponent],
+    templateUrl: './login-page.component.html',
+    styleUrl: './login-page.component.scss',
 })
 export class LoginPageComponent {
 

@@ -1,17 +1,14 @@
-export interface AuthRequest
-{
+export interface AuthRequest {
     username: string
     password: string
     userAgent: string
 }
 
-export interface AuthResponse
-{
+export interface AuthResponse {
     readonly token: string
 }
 
-export enum AuthStorageMode
-{
+export enum AuthStorageMode {
     LocalStorage = 'LOCAL_STORAGE',
-    QueryString = 'QUERY_STRING'
+    SessionStorage = 'SESSION_STORAGE'
 }

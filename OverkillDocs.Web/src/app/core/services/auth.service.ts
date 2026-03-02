@@ -3,21 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { AuthRequest, AuthResponse, AuthStorageMode } from '../models/auth.model';
 import { RequestState } from '../models/common.model';
 import { finalize, Observable, tap } from 'rxjs';
-import { NavigationService } from './navigation.service';
 import { AUTH } from '../constants/auth.constant';
 import { API } from '../constants/api.constants';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     private http = inject(HttpClient);
-    private navigationService = inject(NavigationService);
-    
+
     token = signal<string | null>(this.getToken());
     loginState = signal<RequestState>(RequestState.IDLE);
-    
+
     login(credentials: AuthRequest, storage: AuthStorageMode): Observable<AuthResponse> {
         this.loginState.set(RequestState.LOADING);
-        
+
         return this.http.post<AuthResponse>(API.ACCOUNT.LOGIN, credentials).pipe(
             tap({
                 next: (response) => {
@@ -35,7 +33,7 @@ export class AuthService {
             })
         );
     }
-    
+
     /*logout(): Observable<void>{
         return this.http.post(this.url('logout'), {});
     }
@@ -48,19 +46,17 @@ export class AuthService {
         this.token.set(token);
         if (storage === AuthStorageMode.LocalStorage)
             localStorage.setItem(AUTH.TOKEN, token);
-        else if (storage === AuthStorageMode.QueryString)
-            this.navigationService.authToken = token;
+        else if (storage === AuthStorageMode.SessionStorage)
+            sessionStorage.setItem(AUTH.TOKEN, token);
     }
 
-    private getToken()
-    {
-        return this.navigationService.authToken || localStorage.getItem(AUTH.TOKEN);
+    private getToken() {
+        return sessionStorage.getItem(AUTH.TOKEN) || localStorage.getItem(AUTH.TOKEN);
     }
 
-    deleteToken(): void
-    {
+    deleteToken(): void {
         this.token.set(null);
+        sessionStorage.removeItem(AUTH.TOKEN);
         localStorage.removeItem(AUTH.TOKEN);
-        this.navigationService.authToken = null;
     }
 }
