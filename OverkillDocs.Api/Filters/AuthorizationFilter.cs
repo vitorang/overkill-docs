@@ -18,7 +18,7 @@ namespace OverkillDocs.Api.Filters
             var userContext = context.HttpContext.RequestServices.GetRequiredService<UserContext>();
 
             if (!userContext.IsAuthorized)
-                throw new UnauthorizedException("Sessão inválida ou expirada.");
+                throw new UnauthorizedException("Sessão inválida ou expirada");
         }
     }
 }

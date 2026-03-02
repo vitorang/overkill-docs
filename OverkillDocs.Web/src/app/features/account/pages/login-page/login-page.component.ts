@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
 import { AuthFormComponent } from '../../components/auth-form/auth-form.component';
 import { AuthFormWrapperComponent } from '../../components/auth-form-wrapper/auth-form-wrapper.component';
+import { Router } from '@angular/router';
+import { PATHS } from '../../../../core/constants/routes.constant';
 
 @Component({
     selector: 'okd-login-page',
@@ -10,5 +12,9 @@ import { AuthFormWrapperComponent } from '../../components/auth-form-wrapper/aut
     styleUrl: './login-page.component.scss',
 })
 export class LoginPageComponent {
+    private router = inject(Router);
 
+    onAuthSuccess(): void {
+        this.router.navigate([PATHS.ROOT]);
+    }
 }

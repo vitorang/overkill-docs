@@ -18,7 +18,7 @@ namespace OverkillDocs.Core.Services
     {
         public async Task<AuthResponseDto> LoginAsync(AuthRequestDto request, CancellationToken ct)
         {
-            var notFound = new NotFoundException("Usuário não encontrado ou senha incorreta.");
+            var notFound = new NotFoundException("Usuário ou senha incorretos");
 
             var user = await userRepository.FindByUsernameAsync(request.Username, ct: ct) ?? throw notFound;
             if (!passwordService.VerifyPassword(request.Password, user.PasswordHash))

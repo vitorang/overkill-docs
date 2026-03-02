@@ -13,34 +13,33 @@ export class AuthService {
     token = signal<string | null>(this.getToken());
     loginState = signal<RequestState>(RequestState.IDLE);
 
-    login(credentials: AuthRequest, storage: AuthStorageMode): Observable<AuthResponse> {
+    private authRequest<T>(observable: Observable<T>, onSuccess: (result: T) => void): Observable<T> {
         this.loginState.set(RequestState.LOADING);
-
-        return this.http.post<AuthResponse>(API.ACCOUNT.LOGIN, credentials).pipe(
+        return observable.pipe(
             tap({
                 next: (response) => {
-                    this.saveToken(response.token, storage);
+                    onSuccess(response);
                     this.loginState.set(RequestState.SUCCESS);
-                },
-                error: () => {
-                    this.loginState.set(RequestState.ERROR);
                 }
             }),
             finalize(() => {
-                if (this.loginState() === RequestState.LOADING) {
+                if (this.loginState() !== RequestState.SUCCESS)
                     this.loginState.set(RequestState.IDLE);
-                }
             })
         );
     }
 
-    /*logout(): Observable<void>{
-        return this.http.post(this.url('logout'), {});
+    login(credentials: AuthRequest, storage: AuthStorageMode): Observable<AuthResponse> {
+        return this.authRequest(this.http.post<AuthResponse>(API.ACCOUNT.LOGIN, credentials), result => this.saveToken(result.token, storage));
     }
-    
+
+    logout(): Observable<void> {
+        return this.authRequest(this.http.post<void>(API.ACCOUNT.LOGOUT, {}), () => this.deleteToken());
+    }
+
     register(credentials: AuthRequest, storage: AuthStorageMode): Observable<AuthResponse> {
-       
-    }*/
+        return this.authRequest(this.http.post<AuthResponse>(API.ACCOUNT.REGISTER, credentials), result => this.saveToken(result.token, storage));
+    }
 
     private saveToken(token: string, storage: AuthStorageMode) {
         this.token.set(token);

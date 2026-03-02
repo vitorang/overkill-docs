@@ -8,7 +8,7 @@ export const SEGMENTS = {
 
 const S = SEGMENTS;
 export const PATHS = {
-    HOME: '/',
+    ROOT: '/',
     ACCOUNT: {
         LOGIN: `/${S.ACCOUNT.ROOT}/${S.ACCOUNT.LOGIN}`,
         SETTINGS: `/${S.ACCOUNT.ROOT}/${S.ACCOUNT.SETTINGS}`

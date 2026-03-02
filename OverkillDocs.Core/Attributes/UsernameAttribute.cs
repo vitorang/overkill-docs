@@ -10,10 +10,10 @@ namespace OverkillDocs.Core.Attributes
             if (value is string username)
             {
                 if (username.Length is < 3 or > 15)
-                    return new ValidationResult("Deve ter de 3 a 15 caracteres.");
+                    return new ValidationResult("Deve ter de 3 a 15 caracteres");
 
                 if (!UsernameRegex().IsMatch(username))
-                    return new ValidationResult("Deve ter apenas letras minúsculas e números.");
+                    return new ValidationResult("Use apenas letras minúsculas e números");
             }
 
             return ValidationResult.Success;

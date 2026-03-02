@@ -25,6 +25,17 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<UserContext>();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("LocalhostPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+
 builder.Services.Scan(scan => scan
     .FromAssemblies(
         typeof(Program).Assembly,
@@ -48,6 +59,8 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseCors("LocalhostPolicy");
 
 app.UseExceptionHandler();
 app.UseMiddleware<SessionMiddleware>();
