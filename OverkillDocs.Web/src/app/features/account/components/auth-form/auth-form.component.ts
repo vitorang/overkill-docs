@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, inject, Output } from '@angular/core';
+import { Component, computed, inject, output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { AuthRequest, AuthStorageMode } from '../../../../core/models/auth.model';
 import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
@@ -20,7 +20,7 @@ interface AuthFormData extends AuthRequest {
     styleUrl: './auth-form.component.scss',
 })
 export class AuthFormComponent {
-    @Output() authSuccess = new EventEmitter<void>();
+    authSuccess = output<void>();
 
     private formBuilder = inject(NonNullableFormBuilder);
     private authService = inject(AuthService);
@@ -32,7 +32,7 @@ export class AuthFormComponent {
     protected readonly AuthStorage = AuthStorageMode;
     protected isLogin = true;
 
-    readonly isLoading = computed(() => this.authService.loginState() === RequestState.LOADING);
+    protected readonly isLoading = computed(() => this.authService.loginState() === RequestState.LOADING);
 
     constructor() {
         this.loginForm = this.formBuilder.group({
@@ -43,7 +43,7 @@ export class AuthFormComponent {
         });
     }
 
-    onSubmit(): void {
+    protected onSubmit(): void {
         if (!this.loginForm.valid)
             return;
 
@@ -73,11 +73,11 @@ export class AuthFormComponent {
         });
     }
 
-    get usernameError(): string {
+    protected get usernameError(): string {
         return FormUtils.getFieldError(this.loginForm.controls.username);
     }
 
-    get passwordError(): string {
+    protected get passwordError(): string {
         return FormUtils.getFieldError(this.loginForm.controls.password);
     }
 }

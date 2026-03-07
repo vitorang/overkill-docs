@@ -14,7 +14,7 @@ import { PATHS } from '../../../../core/constants/routes.constant';
 export class LoginPageComponent {
     private router = inject(Router);
 
-    onAuthSuccess(): void {
+    protected onAuthSuccess(): void {
         this.router.navigate([PATHS.ROOT]);
     }
 }
