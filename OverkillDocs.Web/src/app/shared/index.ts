@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { BrandComponent } from './components/brand/brand.component';
+import { NavigationRailComponent } from './components/navigation-rail/navigation-rail.component';
 
 export const SHARED_NATIVE = [
     CommonModule,
@@ -28,4 +29,5 @@ export const SHARED_NATIVE = [
 export const SHARED_CUSTOM = [
     BackgroundImageComponent,
     BrandComponent,
+    NavigationRailComponent,
 ] as const;

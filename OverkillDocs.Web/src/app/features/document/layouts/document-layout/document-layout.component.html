@@ -1,0 +1,13 @@
+<div class="main-content">
+    <section class="editor" [class.hidden-mobile]="isMobile() && activeTab() !== 'editor'">
+        <router-outlet />
+    </section>
+    
+    <section class="chat" [class.hidden-mobile]="isMobile() && activeTab() !== 'chat'">
+        <okd-chat />
+    </section>
+</div>
+
+@if (isMobile()){
+    <okd-navigation-rail [orientation]="orientation()" [(value)]="activeTab" [items]="tabs" />
+}

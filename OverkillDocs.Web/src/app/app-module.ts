@@ -1,4 +1,4 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { NgModule, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing-module';
@@ -16,6 +16,7 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
         AppRoutingModule
     ],
     providers: [
+        provideZonelessChangeDetection(),
         provideBrowserGlobalErrorListeners(),
         provideHttpClient(
             withInterceptors([authInterceptor])

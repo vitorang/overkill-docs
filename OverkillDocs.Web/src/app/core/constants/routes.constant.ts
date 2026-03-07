@@ -3,6 +3,10 @@ export const SEGMENTS = {
         ROOT: 'account',
         LOGIN: 'login',
         SETTINGS: 'settings'
+    },
+    DOCUMENT: {
+        ROOT: 'documents',
+        EDITOR: ':id'
     }
 } as const;
 
@@ -12,6 +16,9 @@ export const PATHS = {
     ACCOUNT: {
         LOGIN: `/${S.ACCOUNT.ROOT}/${S.ACCOUNT.LOGIN}`,
         SETTINGS: `/${S.ACCOUNT.ROOT}/${S.ACCOUNT.SETTINGS}`
+    },
+    DOCUMENT: {
+        INDEX: `${S.DOCUMENT.ROOT}`,
+        EDITOR: `${S.DOCUMENT.ROOT}/${S.DOCUMENT.EDITOR}`
     }
-
 } as const;

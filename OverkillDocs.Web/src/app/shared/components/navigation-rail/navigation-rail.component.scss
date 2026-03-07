@@ -1,0 +1,55 @@
+:host {
+    nav {
+        $itemCrossSize: 48px;
+
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+
+        .option-content {
+            display: flex;
+            gap: 0.5em;
+            align-items: center;
+            justify-content: center;
+
+            .icon {
+                $iconSize: 28px;
+
+                width: $iconSize;
+                height: $iconSize;
+                font-size: $iconSize;
+            }
+        }
+
+        &.horizontal {
+            flex-direction: row;
+
+            .option {
+                height: $itemCrossSize;
+
+                .option-content {
+                    flex-direction: row;
+                }
+            }
+        }
+
+        &.vertical {
+            flex-direction: column;
+
+            .option {
+                width: $itemCrossSize;
+                height: $itemCrossSize;
+
+                .option-content {
+                    flex-direction: column;
+
+                    .label {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}

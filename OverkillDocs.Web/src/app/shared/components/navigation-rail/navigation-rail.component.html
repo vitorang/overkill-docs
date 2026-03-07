@@ -1,0 +1,23 @@
+<nav [class]="orientation()">
+    @for (item of items(); track item.value) {
+        @if (value() === item.value)
+        {
+            <button mat-flat-button class="option">
+                <div class="option-content">
+                    <mat-icon class="icon">{{item.icon}}</mat-icon>
+                    <span class="label">{{item.label}}</span>
+                </div>
+            </button>
+        }
+        @else
+        {
+            <button mat-button class="option" (click)="value.set(item.value)">
+                <div class="option-content">
+                    <mat-icon class="icon">{{item.icon}}</mat-icon>
+                    <span class="label">{{item.label}}</span>
+                </div>
+            </button>
+        }
+    }
+</nav>
+
