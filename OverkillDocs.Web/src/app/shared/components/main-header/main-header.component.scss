@@ -1,0 +1,28 @@
+:host {
+    okd-brand {
+        padding-right: 8px;
+    }
+
+    .header-spacer {
+        flex: 1 1 auto;
+    }
+
+    ::ng-deep button[mat-icon-button] {
+        $buttonSize: 48px;
+        width: $buttonSize;
+        height: $buttonSize;
+        line-height: $buttonSize;
+
+        .mat-icon {
+            $iconSize: 32px;
+            font-size: $iconSize;
+            width: $iconSize;
+            height: $iconSize;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 2px;
+        }
+    }
+}

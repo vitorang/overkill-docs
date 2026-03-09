@@ -13,14 +13,6 @@
     }
 
     @include breakpoint('small-medium') {
-        @media (orientation: landscape) {
-            flex-direction: row-reverse;
-        }
-
-        @media (orientation: portrait) {
-            flex-direction: column;
-        }
-
         .main-content {
             section {
                 &.hidden-mobile {
@@ -41,7 +33,7 @@
             }
 
             section.chat {
-                width: 300px;
+                width: 400px;
             }
         }
     }

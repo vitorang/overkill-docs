@@ -1,10 +1,20 @@
 :host {
-    font-size: 36px;
     font-weight: 700;
-    font-style: italic;
     font-family: 'Inter', sans-serif;
+    user-select: none;
+    cursor: default;
 
     .name1 {
         color: firebrick;
+    }
+
+    &:not(.compact) {
+        font-size: 36px;
+        font-style: italic;
+    }
+
+    &.compact {
+        font-size: 24px;
+
     }
 }
