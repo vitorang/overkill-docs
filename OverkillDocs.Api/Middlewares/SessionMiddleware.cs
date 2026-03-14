@@ -1,5 +1,6 @@
 ﻿using OverkillDocs.Core.Interfaces.Repositories;
 using OverkillDocs.Core.Security;
+using System.Security.Claims;
 
 namespace OverkillDocs.Api.Middlewares
 {
@@ -7,11 +8,12 @@ namespace OverkillDocs.Api.Middlewares
     {
         public async Task InvokeAsync(HttpContext context, IUserSessionRepository sessionRepository, UserContext userContext)
         {
-            var authSplit = (context.Request.Headers.Authorization.FirstOrDefault() ?? "").Split(" ");
+            string token = context.Request.Path.StartsWithSegments("/hubs")
+                ? GetTokenFromQuery(context)
+                : GetTokenFromHeader(context);
 
-            if (authSplit.Length == 2 && authSplit[0] == "Bearer")
+            if (!string.IsNullOrWhiteSpace(token))
             {
-                var token = authSplit[1];
                 var session = await sessionRepository.FindByTokenAsync(token, context.RequestAborted);
 
                 if (session != null)
@@ -19,10 +21,32 @@ namespace OverkillDocs.Api.Middlewares
                     userContext.UserId = session.UserId;
                     userContext.Username = session.User.Username;
                     userContext.Token = token;
+
+                    var claims = new[] {
+                        new Claim(ClaimTypes.NameIdentifier, session.UserId.ToString()),
+                        new Claim(ClaimTypes.Name, session.User.Username)
+                    };
+
+                    var identity = new ClaimsIdentity(claims, "ManualAuth");
+                    context.User = new ClaimsPrincipal(identity);
                 }
             }
 
             await next(context);
+        }
+
+        private static string GetTokenFromHeader(HttpContext context)
+        {
+            var authSplit = (context.Request.Headers.Authorization.FirstOrDefault() ?? "").Split(" ");
+            if (authSplit.Length == 2 && authSplit[0] == "Bearer")
+                return authSplit[1];
+
+            return "";
+        }
+
+        private static string GetTokenFromQuery(HttpContext context)
+        {
+            return context.Request.Query["access_token"].FirstOrDefault() ?? "";
         }
     }
 }

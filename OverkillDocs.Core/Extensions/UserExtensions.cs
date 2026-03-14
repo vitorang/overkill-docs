@@ -1,0 +1,18 @@
+﻿using HashidsNet;
+using OverkillDocs.Core.DTOs.Users;
+using OverkillDocs.Core.Entities;
+
+namespace OverkillDocs.Core.Extensions
+{
+    public static class UserExtensions
+    {
+        public static SimpleUserDto ToSimpleDto(this User user, IHashids hashids)
+        {
+            return new SimpleUserDto
+            (
+                HashId: hashids.Encode(user.Id),
+                Name: user.Name
+            );
+        }
+    }
+}

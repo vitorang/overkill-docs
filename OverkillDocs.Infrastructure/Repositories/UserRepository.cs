@@ -12,6 +12,11 @@ namespace OverkillDocs.Infrastructure.Repositories
             await context.Users.AddAsync(user, ct);
         }
 
+        public async Task<User?> FindByIdAsync(int id, CancellationToken ct)
+        {
+            return await context.Users.FirstOrDefaultAsync(e => e.Id == id, ct);
+        }
+
         public async Task<User?> FindByUsernameAsync(string username, CancellationToken ct)
         {
             return await context.Users.FirstOrDefaultAsync(e => e.Username == username, ct);

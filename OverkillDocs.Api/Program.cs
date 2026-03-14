@@ -1,6 +1,8 @@
+using HashidsNet;
 using Microsoft.EntityFrameworkCore;
 using OverkillDocs.Api.Filters;
 using OverkillDocs.Api.Handlers;
+using OverkillDocs.Api.Hubs;
 using OverkillDocs.Api.Middlewares;
 using OverkillDocs.Core.Interfaces;
 using OverkillDocs.Core.Security;
@@ -35,6 +37,13 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddSingleton<IHashids>(_ =>
+{
+    var salt = builder.Configuration["Hashids:Salt"];
+    var minLength = builder.Configuration.GetValue<int>("Hashids:MinHashLength");
+    return new Hashids(salt, minLength);
+});
+
 
 builder.Services.Scan(scan => scan
     .FromAssemblies(
@@ -54,6 +63,7 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<AuthorizationFilter>();
 });
 
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -64,6 +74,8 @@ app.UseCors("LocalhostPolicy");
 
 app.UseExceptionHandler();
 app.UseMiddleware<SessionMiddleware>();
+
+app.MapHub<MainHub>("/hubs/main");
 
 app.MapControllers();
 
