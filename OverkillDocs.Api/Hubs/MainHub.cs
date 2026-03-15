@@ -2,14 +2,15 @@
 using Microsoft.AspNetCore.SignalR;
 using OverkillDocs.Core.Interfaces;
 using OverkillDocs.Core.Security;
+using OverkillDocs.Core.States;
 
 namespace OverkillDocs.Api.Hubs
 {
     public partial class MainHub(
         UserContext userContext,
         Hashids hashids,
-        IDocumentStateCache documentStateCache,
-        IEditorStateCache editorStateCache
+        IAppCache<DocumentState> documentStateCache,
+        IAppCache<EditorState> editorStateCache
     ) : Hub
     {
         public override async Task OnConnectedAsync()

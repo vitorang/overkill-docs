@@ -1,18 +1,11 @@
-﻿using OverkillDocs.Core.DTOs.Users;
-using OverkillDocs.Core.States;
-using static OverkillDocs.Core.Security.UserContext;
-
-namespace OverkillDocs.Core.Interfaces
+﻿namespace OverkillDocs.Core.Interfaces
 {
     public interface IAppCache<T>
     {
-        public Task<T?> Get(string key);
-        public Task Set(T value);
-        public Task Remove(T value);
+        public Task<T?> Get(int id, CancellationToken ct, Func<Task<T?>>? onCacheMiss = null);
+        public Task<T?> Get(string id, CancellationToken ct, Func<Task<T?>>? onCacheMiss = null);
+        public Task Set(T value, CancellationToken ct);
+        public Task Remove(T value, CancellationToken ct);
+        public Task RemoveById(string id, CancellationToken ct);
     }
-
-    public interface IDocumentStateCache : IAppCache<DocumentState>;
-    public interface IEditorStateCache : IAppCache<EditorState>;
-    public interface ISimpleUserCache : IAppCache<SimpleUserDto>;
-    public interface IUserIdentityCache : IAppCache<UserIdentity>;
 }

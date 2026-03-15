@@ -27,6 +27,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<UserContext>();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
+builder.Services.AddSingleton(typeof(IAppCache<>), typeof(AppCache<>));
 
 builder.Services.AddCors(options =>
 {
@@ -57,12 +58,7 @@ builder.Services.Scan(scan => scan
         type => type.Name.EndsWith("Service")
             || type.Name.EndsWith("Repository")))
     .AsImplementedInterfaces()
-    .WithScopedLifetime()
-
-    .AddClasses(classes => classes.AssignableTo<AppCache>())
-    .AsSelfWithInterfaces()
-    .WithSingletonLifetime()
-);
+    .WithScopedLifetime());
 
 
 

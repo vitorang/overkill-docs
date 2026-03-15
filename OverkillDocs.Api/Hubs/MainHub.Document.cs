@@ -16,7 +16,7 @@ namespace OverkillDocs.Api.Hubs
             editor.DocumentHashId = documentHashId;
             editor.FragmentHashId = null;
 
-            await editorStateCache.Set(editor);
+            await editorStateCache.Set(editor, default);
 
             var group = $"{documentPrefix}{documentHashId}";
             await Groups.AddToGroupAsync(Context.ConnectionId, group);
@@ -55,8 +55,8 @@ namespace OverkillDocs.Api.Hubs
             action(editor, document);
 
             await Task.WhenAll(
-                editorStateCache.Set(editor),
-                documentStateCache.Set(document)
+                editorStateCache.Set(editor, default),
+                documentStateCache.Set(document, default)
             );
 
             var documentGroup = $"{documentPrefix}{document.DocumentHashId}";
@@ -66,7 +66,7 @@ namespace OverkillDocs.Api.Hubs
         private async Task<EditorState> GetCurrentEditor()
         {
             var editorId = Context.ConnectionId;
-            var state = await editorStateCache.Get(editorId) ?? new EditorState
+            var state = await editorStateCache.Get(editorId, default) ?? new EditorState
                 {
                     ConnectionId = editorId,
                     UserHashId = hashids.Encode(userContext.UserId),
@@ -77,7 +77,7 @@ namespace OverkillDocs.Api.Hubs
 
         private async Task<DocumentState> GetDocument(string documentHashId)
         {
-            var state = await documentStateCache.Get(documentHashId) ?? new DocumentState
+            var state = await documentStateCache.Get(documentHashId, default) ?? new DocumentState
             {
                 DocumentHashId = documentHashId
             };
@@ -92,7 +92,7 @@ namespace OverkillDocs.Api.Hubs
             if (editor.DocumentHashId != null && editor.FragmentHashId != null)
                 await UnlockFragment(editor.DocumentHashId, editor.FragmentHashId);
 
-            await editorStateCache.Remove(editor);
+            await editorStateCache.Remove(editor, default);
         }
     }
 }

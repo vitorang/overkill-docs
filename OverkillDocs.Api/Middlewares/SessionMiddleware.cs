@@ -14,19 +14,19 @@ namespace OverkillDocs.Api.Middlewares
 
             if (!string.IsNullOrWhiteSpace(token))
             {
-                var session = await sessionRepository.FindByTokenAsync(token, context.RequestAborted);
+                var session = await sessionRepository.FindIdentityByTokenAsync(token, context.RequestAborted);
 
                 if (session != null)
                 {
                     userContext.Identity = new(
                         UserId: session.UserId,
-                        Username: session.User.Username,
+                        Username: session.Username,
                         Token: userContext.Token
                     );
 
                     var claims = new[] {
                         new Claim(ClaimTypes.NameIdentifier, session.UserId.ToString()),
-                        new Claim(ClaimTypes.Name, session.User.Username)
+                        new Claim(ClaimTypes.Name, session.Username)
                     };
 
                     var identity = new ClaimsIdentity(claims, "ManualAuth");
