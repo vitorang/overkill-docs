@@ -1,21 +1,27 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using HashidsNet;
+using Microsoft.AspNetCore.SignalR;
+using OverkillDocs.Core.Interfaces;
+using OverkillDocs.Core.Security;
 
 namespace OverkillDocs.Api.Hubs
 {
-    public abstract partial class MainHub : Hub
+    public partial class MainHub(
+        UserContext userContext,
+        Hashids hashids,
+        IDocumentStateCache documentStateCache,
+        IEditorStateCache editorStateCache
+    ) : Hub
     {
-        private const string chatGroup = "chat";
-
-        public async Task JoinChat()
+        public override async Task OnConnectedAsync()
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, chatGroup);
+            await JoinChat();
+            await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await RemoveCurrentEditor();
+            await base.OnDisconnectedAsync(exception);
         }
-
-        protected abstract Task RemoveCurrentEditor();
     }
 }

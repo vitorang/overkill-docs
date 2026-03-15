@@ -6,6 +6,7 @@ using OverkillDocs.Api.Hubs;
 using OverkillDocs.Api.Middlewares;
 using OverkillDocs.Core.Interfaces;
 using OverkillDocs.Core.Security;
+using OverkillDocs.Infrastructure.Cache;
 using OverkillDocs.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,11 +52,19 @@ builder.Services.Scan(scan => scan
         typeof(IUnitOfWork).Assembly,
         typeof(UnitOfWork).Assembly
         )
+
     .AddClasses(classes => classes.Where(
         type => type.Name.EndsWith("Service")
             || type.Name.EndsWith("Repository")))
     .AsImplementedInterfaces()
-    .WithScopedLifetime());
+    .WithScopedLifetime()
+
+    .AddClasses(classes => classes.AssignableTo<AppCache>())
+    .AsSelfWithInterfaces()
+    .WithSingletonLifetime()
+);
+
+
 
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers(options =>
@@ -64,6 +73,7 @@ builder.Services.AddControllers(options =>
 });
 
 builder.Services.AddSignalR();
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

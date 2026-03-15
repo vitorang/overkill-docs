@@ -18,9 +18,11 @@ namespace OverkillDocs.Api.Middlewares
 
                 if (session != null)
                 {
-                    userContext.UserId = session.UserId;
-                    userContext.Username = session.User.Username;
-                    userContext.Token = token;
+                    userContext.Identity = new(
+                        UserId: session.UserId,
+                        Username: session.User.Username,
+                        Token: userContext.Token
+                    );
 
                     var claims = new[] {
                         new Claim(ClaimTypes.NameIdentifier, session.UserId.ToString()),
