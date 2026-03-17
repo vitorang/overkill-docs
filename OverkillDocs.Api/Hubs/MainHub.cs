@@ -13,12 +13,6 @@ namespace OverkillDocs.Api.Hubs
         IAppCache<EditorState> editorStateCache
     ) : Hub
     {
-        public override async Task OnConnectedAsync()
-        {
-            await JoinChat();
-            await base.OnConnectedAsync();
-        }
-
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await RemoveCurrentEditor();

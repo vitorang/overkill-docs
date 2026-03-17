@@ -14,14 +14,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MainHeaderComponent } from './components/main-header/main-header.component';
 import { HubMonitorComponent } from './components/hub-monitor/hub-monitor.component';
-import { MatChipsModule } from '@angular/material/chips';
 
 export const SHARED_NATIVE = [
     CommonModule,
     FormsModule,
     MatButtonModule,
     MatCardModule,
-    MatChipsModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,

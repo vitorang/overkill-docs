@@ -9,7 +9,8 @@
 
 <div class="main-content">
     <section class="editor" [class.hidden-mobile]="isMobile() && activeSection() !== 'editor'">
-        <router-outlet />
+        <okd-hub-monitor />
+        <!-- <router-outlet /> -->
     </section>
     
     <section class="chat" [class.hidden-mobile]="isMobile() && activeSection() !== 'chat'">

@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { HubService, IRawMessage } from '../../../core/services/hub.service';
+import { Component, inject, signal } from '@angular/core';
+import { HubService, IRawMessage } from '../../../core/services/hub/hub.service';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { HubState } from '../../../core/models/common.model';
 import { SHARED_NATIVE } from '../..';
@@ -22,10 +22,10 @@ interface ILog {
     styleUrl: './hub-monitor.component.scss',
 })
 export class HubMonitorComponent {
-    protected hubService = inject(HubService);
+    protected debugHub = inject(HubService).debugHub;
     protected logs = signal<ILog[]>([]);
     private static lastId = 0;
-    private connectionState = toObservable(this.hubService.connectionState);
+    private connectionState = toObservable(this.debugHub.connectionState);
 
     protected stateColors: Record<HubState, string> = {
         [HubState.CONNECTED]: 'green',
@@ -34,10 +34,10 @@ export class HubMonitorComponent {
     }
 
     constructor() {
-        this.hubService.onReceived.pipe(takeUntilDestroyed()).subscribe(this.onReceived);
-        this.hubService.onSended.pipe(takeUntilDestroyed()).subscribe(this.onSended);
+        this.debugHub.onReceived.pipe(takeUntilDestroyed()).subscribe(this.onReceived);
+        this.debugHub.onSended.pipe(takeUntilDestroyed()).subscribe(this.onSended);
         this.connectionState.pipe(takeUntilDestroyed()).subscribe(this.onStatusChanged)
-        this.hubService.connection.pipe(takeUntilDestroyed()).subscribe();
+        this.debugHub.connection.pipe(takeUntilDestroyed()).subscribe();
     }
 
     protected formatTime(date: Date): string {
@@ -47,6 +47,13 @@ export class HubMonitorComponent {
             second: '2-digit',
             fractionalSecondDigits: 3
         })
+    }
+
+    protected toggleConnection(): void {
+        if (this.debugHub.connectionState() === HubState.CONNECTED)
+            this.debugHub.forceDisconnect();
+        else if (this.debugHub.connectionState() === HubState.DISCONNECTED)
+            this.debugHub.forceConnect();
     }
 
     private onReceived = (message: IRawMessage) => {

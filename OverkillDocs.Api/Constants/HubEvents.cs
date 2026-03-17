@@ -4,7 +4,7 @@
     {
         public static class Chat
         {
-            public const string MessageReceived = "OnMessageReceived";
+            public const string MessageReceived = "Chat:OnMessageReceived";
         }
 
         public static class Document

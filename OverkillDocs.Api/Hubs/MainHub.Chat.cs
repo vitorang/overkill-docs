@@ -8,11 +8,13 @@ namespace OverkillDocs.Api.Hubs
     {
         private const string chatGroup = "chat";
 
-        private async Task JoinChat()
+        [HubMethodName("Chat:Join")]
+        public async Task JoinChat()
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, chatGroup);
         }
 
+        [HubMethodName("Chat:SendMessage")]
         public async Task SendMessage(string content)
         {
             var message = new ChatMessageDto(

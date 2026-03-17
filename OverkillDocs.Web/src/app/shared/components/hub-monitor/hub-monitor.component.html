@@ -28,7 +28,7 @@
     }
 </div>
 <div class="state">
-    <mat-chip [style.background-color]="stateColors[hubService.connectionState()]">
-        <div class="chip-text">{{hubService.connectionState()}}</div>
-    </mat-chip>
+    <button (click)="toggleConnection()" mat-flat-button [style.background-color]="stateColors[debugHub.connectionState()]">
+        <span class="state-text">{{debugHub.connectionState()}}</span>
+    </button>
 </div>
