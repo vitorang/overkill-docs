@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using OverkillDocs.Core.DTOs.Account;
+﻿using Microsoft.AspNetCore.Mvc;
 using OverkillDocs.Core.DTOs.Users;
 using OverkillDocs.Core.Interfaces.Services;
 

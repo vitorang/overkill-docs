@@ -13,7 +13,7 @@ namespace OverkillDocs.Api.Hubs
         IAppCache<EditorState> editorStateCache
     ) : Hub
     {
-        public override async Task OnDisconnectedAsync(Exception? exception)
+         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await RemoveCurrentEditor();
             await base.OnDisconnectedAsync(exception);

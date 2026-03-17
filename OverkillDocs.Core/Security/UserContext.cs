@@ -1,15 +1,51 @@
-﻿namespace OverkillDocs.Core.Security
+﻿using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+
+namespace OverkillDocs.Core.Security;
+
+public class UserContext(IHttpContextAccessor accessor)
 {
-    public class UserContext
+    private static readonly UserIdentity Anonymous = new(0, "Anonymous", string.Empty);
+
+    public UserIdentity Identity => GetIdentity();
+
+    public int UserId => Identity.UserId;
+    public string Username => Identity.Username;
+    public string Token => Identity.Token;
+    public bool IsAuthorized => Identity != Anonymous;
+
+    private UserIdentity GetIdentity()
     {
-        public int UserId { get => Identity.UserId; }
-        public string Username { get => Identity.Username; }
-        public string Token { get => Identity.Token; }
-        public bool IsAuthorized => Identity != Anonymous;
+        var user = accessor.HttpContext?.User;
 
-        private static readonly UserIdentity Anonymous = new(0, "Anonymous", string.Empty);
-        public UserIdentity Identity { get; set; } = Anonymous;
+        if (user?.Identity?.IsAuthenticated != true)
+            return Anonymous;
 
-        public record UserIdentity(int UserId, string Username, string Token);
+        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var usernameClaim = user.FindFirst(ClaimTypes.Name)?.Value;
+
+        if (!int.TryParse(userIdClaim, out var userId) || string.IsNullOrWhiteSpace(usernameClaim))
+            return Anonymous;
+
+        return new UserIdentity(
+            UserId: userId,
+            Username: usernameClaim,
+            Token: ExtractToken()
+        );
     }
+
+    private string ExtractToken()
+    {
+        var context = accessor.HttpContext;
+        if (context == null) return string.Empty;
+
+        var authHeader = context.Request.Headers["Authorization"].ToString();
+
+        if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            return authHeader["Bearer ".Length..].Trim();
+
+        return context.Request.Query["auth_token"].FirstOrDefault() ?? string.Empty;
+    }
+
+    public record UserIdentity(int UserId, string Username, string Token);
 }
