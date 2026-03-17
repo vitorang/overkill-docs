@@ -5,6 +5,13 @@ export const API = {
     ACCOUNT: {
         LOGIN: `${url}/account/login`,
         LOGOUT: `${url}/account/logout`,
-        REGISTER: `${url}/account/register`
-    }
+        REGISTER: `${url}/account/register`,
+    },
+    USER: {
+        CURRENT: `${url}/me`,
+        BY_ID: (id: string) => `${url}/${id}`,
+    },
+    HUB: {
+        MAIN: (authToken: string) => `${url}/hubs/main?auth_token=${authToken}`
+    },
 } as const;

@@ -1,6 +1,6 @@
 import { Component, computed, inject, output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { AuthRequest, AuthStorageMode } from '../../../../core/models/auth.model';
+import { AuthRequest, AuthStorageMode } from '../../models/auth.model';
 import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
 import { AuthService } from '../../../../core/services/auth.service';
 import { FormUtils } from '../../../../core/utils/form.utils';
@@ -12,6 +12,10 @@ import { RequestState } from '../../../../core/models/common.model';
 interface AuthFormData extends AuthRequest {
     storage: AuthStorageMode;
 }
+
+type LoginForm = FormGroup<{
+    [K in keyof AuthFormData]: FormControl<AuthFormData[K]>
+}>;
 
 @Component({
     selector: 'okd-auth-form',
@@ -26,22 +30,17 @@ export class AuthFormComponent {
     private authService = inject(AuthService);
     private alertService = inject(AlertService);
 
-    protected loginForm: FormGroup<{
-        [K in keyof AuthFormData]: FormControl<AuthFormData[K]>;
-    }>;
     protected readonly AuthStorage = AuthStorageMode;
     protected isLogin = true;
 
-    protected readonly isLoading = computed(() => this.authService.loginState() === RequestState.LOADING);
+    protected loginForm: LoginForm = this.formBuilder.group({
+        username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
+        password: ['', [Validators.required, Validators.minLength(3)]],
+        userAgent: [navigator.userAgent],
+        storage: [AuthStorageMode.LocalStorage]
+    });
 
-    constructor() {
-        this.loginForm = this.formBuilder.group({
-            username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
-            password: ['', [Validators.required, Validators.minLength(3)]],
-            userAgent: [navigator.userAgent],
-            storage: [AuthStorageMode.LocalStorage]
-        });
-    }
+    protected readonly isLoading = computed(() => this.authService.loginState() === RequestState.LOADING);
 
     protected onSubmit(): void {
         if (!this.loginForm.valid)

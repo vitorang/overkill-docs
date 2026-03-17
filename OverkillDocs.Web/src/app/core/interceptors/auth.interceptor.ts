@@ -22,7 +22,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
         catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
                 authService.deleteToken();
-                router.navigate([PATHS.ACCOUNT.LOGIN]);
+                router.navigateByUrl(PATHS.ACCOUNT.LOGIN);
             }
             return throwError(() => error);
         })

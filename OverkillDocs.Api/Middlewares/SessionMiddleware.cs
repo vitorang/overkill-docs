@@ -48,7 +48,7 @@ namespace OverkillDocs.Api.Middlewares
 
         private static string GetTokenFromQuery(HttpContext context)
         {
-            return context.Request.Query["access_token"].FirstOrDefault() ?? "";
+            return context.Request.Query["auth_token"].FirstOrDefault() ?? "";
         }
     }
 }

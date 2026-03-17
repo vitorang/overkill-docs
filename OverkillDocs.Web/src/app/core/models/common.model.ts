@@ -1,7 +1,12 @@
-export enum RequestState
-{
+export enum RequestState {
     IDLE = 'IDLE',
     LOADING = 'LOADING',
     SUCCESS = 'SUCCESS',
     ERROR = 'ERROR'
+}
+
+export enum HubState {
+    DISCONNECTED = 'DISCONNECTED',
+    CONNECTED = 'CONNECTED',
+    CONNECTING = 'CONNECTING'
 }

@@ -8,7 +8,7 @@ namespace OverkillDocs.Api.Hubs
 {
     public partial class MainHub(
         UserContext userContext,
-        Hashids hashids,
+        IHashids hashids,
         IAppCache<DocumentState> documentStateCache,
         IAppCache<EditorState> editorStateCache
     ) : Hub

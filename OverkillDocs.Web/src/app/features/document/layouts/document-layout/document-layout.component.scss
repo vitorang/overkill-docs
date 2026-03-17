@@ -10,6 +10,8 @@
         display: flex;
         flex-direction: row;
         flex: 1;
+        min-height: 0;
+        max-height: 100%;
     }
 
     @include breakpoint('small-medium') {

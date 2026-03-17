@@ -1,14 +1,16 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AuthRequest, AuthResponse, AuthStorageMode } from '../models/auth.model';
+import { AuthRequest, AuthResponse, AuthStorageMode } from '../../features/account/models/auth.model';
 import { RequestState } from '../models/common.model';
 import { finalize, Observable, tap } from 'rxjs';
 import { AUTH } from '../constants/auth.constant';
 import { API } from '../constants/api.constants';
+import { UserService } from './user.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     private http = inject(HttpClient);
+    private userService = inject(UserService);
 
     token = signal<string | null>(this.getToken());
     loginState = signal<RequestState>(RequestState.IDLE);
@@ -57,5 +59,6 @@ export class AuthService {
         this.token.set(null);
         sessionStorage.removeItem(AUTH.TOKEN);
         localStorage.removeItem(AUTH.TOKEN);
+        this.userService.currentUser.set(null);
     }
 }

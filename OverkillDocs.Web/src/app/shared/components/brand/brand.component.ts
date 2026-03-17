@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 
 @Component({
     selector: 'okd-brand',
@@ -12,11 +12,6 @@ import { Component, input } from '@angular/core';
 export class BrandComponent {
     compact = input(false);
 
-    protected get name1(): string {
-        return this.compact() ? 'OK' : 'OverKill'
-    }
-
-    protected get name2(): string {
-        return this.compact() ? 'D' : 'Docs'
-    }
+    protected name1 = computed(() => this.compact() ? 'OK' : 'OverKill');
+    protected name2 = computed(() => this.compact() ? 'D' : 'Docs');
 }

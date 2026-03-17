@@ -1,5 +1,6 @@
 <section class="talk">
-    <okd-fragment-collection type="chat"/>
+    <!-- <okd-fragment-collection type="chat"/> -->
+     <okd-hub-monitor/>
 </section>
 <section class="message-area">
     <mat-form-field appearance="outline" class="message-field" subscriptSizing="dynamic" >
@@ -9,7 +10,7 @@
         (keydown.enter)="onPressEnter($event)"
         ></textarea>
     </mat-form-field>
-    <button mat-icon-button class="send-button" [disabled]="!canSend()" (click)="sendMessage()">
+    <button mat-icon-button class="send-button" (click)="sendMessage()">
         <mat-icon class="icon">send</mat-icon>
     </button>
 </section>

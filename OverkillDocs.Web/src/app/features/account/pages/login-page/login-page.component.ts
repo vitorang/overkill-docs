@@ -15,6 +15,6 @@ export class LoginPageComponent {
     private router = inject(Router);
 
     protected onAuthSuccess(): void {
-        this.router.navigate([PATHS.ROOT]);
+        this.router.navigateByUrl(PATHS.ROOT);
     }
 }
