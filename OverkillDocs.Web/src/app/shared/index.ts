@@ -15,10 +15,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MainHeaderComponent } from './components/main-header/main-header.component';
 import { HubMonitorComponent } from './components/hub-monitor/hub-monitor.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
+import { MatBadgeModule } from '@angular/material/badge';
 
 export const SHARED_NATIVE = [
     CommonModule,
     FormsModule,
+    MatBadgeModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,

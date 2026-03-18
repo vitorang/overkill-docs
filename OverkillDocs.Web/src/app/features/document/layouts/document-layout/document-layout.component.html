@@ -1,6 +1,9 @@
 <okd-main-header>
     @if (isMobile()){
-        <button mat-icon-button (click)="toggleSection()">
+        <button mat-icon-button
+            (click)="toggleSection()"
+            matBadge="&ZeroWidthSpace;"
+            [matBadgeHidden]="!hasUnreadMessage()">
             <mat-icon>{{activeSection() === 'editor' ? 'chat_bubble_outline' : 'edit_note'}}</mat-icon>            
         </button>
     }
