@@ -5,6 +5,7 @@
         public static class Chat
         {
             public const string MessageReceived = "Chat:OnMessageReceived";
+            public const string RecentMessagesReceived = "Chat:OnRecentMessagesReceived";
         }
 
         public static class Document

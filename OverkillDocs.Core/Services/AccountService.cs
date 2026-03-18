@@ -1,5 +1,7 @@
 ﻿using OverkillDocs.Core.DTOs.Account;
 using OverkillDocs.Core.Entities;
+using OverkillDocs.Core.Entities.Identity;
+using OverkillDocs.Core.Entities.Security;
 using OverkillDocs.Core.Exceptions;
 using OverkillDocs.Core.Extensions;
 using OverkillDocs.Core.Interfaces;

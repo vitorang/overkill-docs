@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using OverkillDocs.Core.Entities;
+using OverkillDocs.Core.Constants;
+using OverkillDocs.Core.Entities.Chat;
+using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Core.Interfaces;
-using OverkillDocs.Core.States;
 using static OverkillDocs.Core.Security.UserContext;
 
 namespace OverkillDocs.Infrastructure.Cache
@@ -9,7 +10,11 @@ namespace OverkillDocs.Infrastructure.Cache
     public partial class AppCache<T>(IMemoryCache cache) : IAppCache<T>
     {
         private static readonly MemoryCacheEntryOptions options = new MemoryCacheEntryOptions()
-                      .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+            .SetSlidingExpiration(typeof(T) switch
+            {
+                Type t when t == typeof(ChatHistory) => CacheConstants.ChatExpiration,
+                _ => CacheConstants.DefaultExpiration,
+            });
 
         private static string KeyFrom(string id)
         {
@@ -21,8 +26,7 @@ namespace OverkillDocs.Infrastructure.Cache
 
         private static string KeyOf(T value) => value switch
         {
-            DocumentState v => KeyFrom(v.DocumentHashId),
-            EditorState v => KeyFrom(v.EditorId),
+            ChatHistory v => KeyFrom(v.Id),
             UserIdentity v => KeyFrom(v.Token),
             User v => KeyFrom(v.Id),
             _ => throw new InvalidOperationException("Tipo não mapeado para criação de chave")

@@ -1,4 +1,4 @@
-﻿using OverkillDocs.Core.Entities;
+﻿using OverkillDocs.Core.Entities.Security;
 using OverkillDocs.Core.Security;
 
 namespace OverkillDocs.Core.Interfaces.Repositories

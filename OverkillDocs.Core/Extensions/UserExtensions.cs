@@ -1,6 +1,6 @@
 ﻿using HashidsNet;
 using OverkillDocs.Core.DTOs.Users;
-using OverkillDocs.Core.Entities;
+using OverkillDocs.Core.Entities.Identity;
 
 namespace OverkillDocs.Core.Extensions
 {

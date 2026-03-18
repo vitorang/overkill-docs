@@ -1,9 +1,9 @@
 ﻿using OverkillDocs.Core.DTOs.Account;
-using OverkillDocs.Core.Entities;
+using OverkillDocs.Core.Entities.Security;
 
 namespace OverkillDocs.Core.Extensions
 {
-    public static class UserSessionExtensions
+    public static class IdentityExtensions
     {
         public static AuthResponseDto ToAuthResponse(this UserSession session)
         {

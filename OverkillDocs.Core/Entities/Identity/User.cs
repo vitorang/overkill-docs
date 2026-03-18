@@ -1,4 +1,4 @@
-﻿namespace OverkillDocs.Core.Entities
+﻿namespace OverkillDocs.Core.Entities.Identity
 {
     public class User
     {

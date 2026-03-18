@@ -1,21 +1,25 @@
 ﻿using HashidsNet;
 using Microsoft.AspNetCore.SignalR;
-using OverkillDocs.Core.Interfaces;
+using OverkillDocs.Core.Interfaces.Services;
 using OverkillDocs.Core.Security;
-using OverkillDocs.Core.States;
 
 namespace OverkillDocs.Api.Hubs
 {
     public partial class MainHub(
         UserContext userContext,
         IHashids hashids,
-        IAppCache<DocumentState> documentStateCache,
-        IAppCache<EditorState> editorStateCache
+        IChatService chatService
     ) : Hub
     {
-         public override async Task OnDisconnectedAsync(Exception? exception)
+
+        public override async Task OnConnectedAsync()
         {
-            await RemoveCurrentEditor();
+            await base.OnConnectedAsync();
+            await ChatSendHistory();
+        }
+
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
             await base.OnDisconnectedAsync(exception);
         }
     }

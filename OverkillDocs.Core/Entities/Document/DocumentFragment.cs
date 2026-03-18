@@ -1,6 +1,7 @@
-﻿using OverkillDocs.Core.Enums;
+﻿using OverkillDocs.Core.Entities.Identity;
+using OverkillDocs.Core.Enums;
 
-namespace OverkillDocs.Core.Entities
+namespace OverkillDocs.Core.Entities.Document
 {
     public class DocumentFragment
     {

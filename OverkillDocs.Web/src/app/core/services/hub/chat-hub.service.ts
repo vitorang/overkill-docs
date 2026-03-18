@@ -1,15 +1,33 @@
-import { distinctUntilChanged, Observable, Subject, switchMap } from "rxjs";
+import { distinctUntilChanged, map, Observable, Subject, switchMap } from "rxjs";
 import { ChatMessage } from "../../../features/chat/models/chat-message.model";
 import { takeUntilDestroyed, toObservable } from "@angular/core/rxjs-interop";
 import { inject, Injectable, Signal } from "@angular/core";
 import { HubService, ResponseListener } from "./hub.service";
 
+const Hub = {
+    join: 'Chat:Join',
+    sendMessage: 'Chat:SendMessage',
+
+    onMessageReceived: 'Chat:OnMessageReceived',
+    onRecentMessagesReceived: "Chat:OnRecentMessagesReceived",
+} as const
+
+
 @Injectable({ providedIn: 'root' })
 export class ChatHubService {
     private mainHub = inject(HubService).mainHub;
 
-    readonly onMessageReceived = new Subject<ChatMessage>();
-    readonly sendMessage = (text: string): Promise<void> => this.mainHub.send('Chat:SendMessage', text);
+    private _onMessageReceived = new Subject<ChatMessage>();
+    readonly onMessageReceived = this._onMessageReceived.pipe(
+        map(message => this.mapMessage(message))
+    );
+
+    private _onRecentMessagesReceived = new Subject<ChatMessage[]>();
+    readonly onRecentMessagesReceived = this._onRecentMessagesReceived.pipe(
+        map(messages => messages.map(message => this.mapMessage(message)))
+    );
+
+    readonly sendMessage = (text: string): Promise<void> => this.mainHub.send(Hub.sendMessage, text);
 
     get connection(): Observable<boolean> {
         return this.mainHub.connection.pipe(
@@ -19,12 +37,20 @@ export class ChatHubService {
         );
     }
 
-    readonly join = (): Promise<void> => this.mainHub.send('Chat:Join');
+    readonly join = (): Promise<void> => this.mainHub.send(Hub.join);
+
     get responseListeners(): ResponseListener[] {
-        return [{ name: 'Chat:OnMessageReceived', listener: this.onMessageReceived }];
+        return [
+            { name: Hub.onMessageReceived, listener: this._onMessageReceived },
+            { name: Hub.onRecentMessagesReceived, listener: this._onRecentMessagesReceived }
+        ];
     }
 
     get isConnected(): Signal<boolean> {
         return this.mainHub.isConnected;
+    }
+
+    private mapMessage(message: ChatMessage): ChatMessage {
+        return { ...message, timestamp: new Date(message.timestamp as unknown as string) };
     }
 }

@@ -1,4 +1,4 @@
-﻿using OverkillDocs.Core.Entities;
+﻿using OverkillDocs.Core.Entities.Identity;
 
 namespace OverkillDocs.Core.Interfaces.Repositories
 {

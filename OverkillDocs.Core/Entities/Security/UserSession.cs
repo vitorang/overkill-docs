@@ -1,4 +1,6 @@
-﻿namespace OverkillDocs.Core.Entities
+﻿using OverkillDocs.Core.Entities.Identity;
+
+namespace OverkillDocs.Core.Entities.Security
 {
     public class UserSession
     {

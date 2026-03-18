@@ -6,16 +6,16 @@ namespace OverkillDocs.Api.Hubs
 {
     public partial class MainHub
     {
-        private const string chatGroup = "chat";
+        private const string chatGroup = "Chat";
 
         [HubMethodName("Chat:Join")]
-        public async Task JoinChat()
+        public async Task ChatJoin()
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, chatGroup);
         }
 
         [HubMethodName("Chat:SendMessage")]
-        public async Task SendMessage(string content)
+        public async Task ChatSendMessage(string content)
         {
             var message = new ChatMessageDto(
                     Id: Ulid.NewUlid().ToString(),
@@ -24,7 +24,14 @@ namespace OverkillDocs.Api.Hubs
                     Timestamp: DateTime.UtcNow
                 );
 
+            await chatService.AddRecent(message, default);
             await Clients.Group(chatGroup).SendAsync(HubEvents.Chat.MessageReceived, message);
+        }
+
+        private async Task ChatSendHistory()
+        {
+            var messages = await chatService.GetRecent(default);
+            await Clients.Caller.SendAsync(HubEvents.Chat.RecentMessagesReceived, messages);
         }
     }
 }

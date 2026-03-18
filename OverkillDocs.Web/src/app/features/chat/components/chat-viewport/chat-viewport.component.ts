@@ -23,11 +23,21 @@ export class ChatViewportComponent implements AfterViewInit, OnDestroy {
 
     constructor() {
         this.chatHub.onMessageReceived.pipe(takeUntilDestroyed()).subscribe(message => {
-            let messages = [...this.messages(), message];
-            if (messages.length > this.maxMessages)
-                messages = messages.slice(messages.length - this.maxMessages, messages.length);
+            const messages = [...this.messages(), message];
+            this.messages.set(this.filterRecent(messages));
+            this.autoScrollToBottom();
+        });
 
-            this.messages.set(messages);
+        this.chatHub.onRecentMessagesReceived.pipe(takeUntilDestroyed()).subscribe(recentMessages => {
+            const messages = [...this.messages()];
+            for (const recent of recentMessages) {
+                if (!messages.some(m => m.id === recent.id))
+                    messages.push(recent);
+            }
+
+            messages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+
+            this.messages.set(this.filterRecent(messages));
             this.autoScrollToBottom();
         });
     }
@@ -43,7 +53,6 @@ export class ChatViewportComponent implements AfterViewInit, OnDestroy {
     private resizeObserver = new ResizeObserver(() => {
         this.scrollToBottom(false);
     });
-
 
     private autoScrollToBottom(): void {
         if (!this.scrollContainer)
@@ -67,5 +76,11 @@ export class ChatViewportComponent implements AfterViewInit, OnDestroy {
                 behavior: smooth && this.browserService.documentIsVisible() ? 'smooth' : 'auto'
             });
         }, { injector: this.injector });
+    }
+
+    private filterRecent(messages: ChatMessage[]): ChatMessage[] {
+        if (messages.length > this.maxMessages)
+            messages = messages.slice(messages.length - this.maxMessages, messages.length);
+        return messages;
     }
 }
