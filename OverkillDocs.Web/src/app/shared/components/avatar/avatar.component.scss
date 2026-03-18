@@ -1,0 +1,10 @@
+:host {
+    display: block;
+
+    .container {
+        width: var(--avatar-size);
+        height: var(--avatar-size);
+        border-radius: 50%;
+        background-color: gray;
+    }
+}

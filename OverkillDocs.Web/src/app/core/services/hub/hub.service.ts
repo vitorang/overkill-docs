@@ -1,18 +1,29 @@
-import { computed, inject, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, Signal, signal } from "@angular/core";
 import * as signalR from '@microsoft/signalr';
 import { defer, finalize, Observable, shareReplay, Subject } from "rxjs";
 import { API } from "../../constants/api.constants";
 import { HubState } from "../../models/common.model";
 import { AuthService } from "../auth.service";
 import { ChatHubService } from "./chat-hub.service";
-import { IMainHub, ResponseListener } from "./base-hub.service";
-import { DebugHubService } from "./debug-hub.service";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface ResponseListener { name: string, listener: Subject<any> };
 
 export interface IRawMessage {
     method: string
     data: unknown
 }
 
+export interface IMainHub {
+    connection: Observable<unknown>
+    connectionState: Signal<HubState>
+    isConnected: Signal<boolean>
+    onReceived: Subject<IRawMessage>
+    onSended: Subject<IRawMessage>
+    send<T>(method: string, data?: T): Promise<void>
+    forceDisconnect(): void
+    forceConnect(): void
+}
 
 @Injectable({ providedIn: 'root' })
 export class HubService {
@@ -26,10 +37,7 @@ export class HubService {
     private listenerNames = new Set<string>();
     private authService = inject(AuthService);
 
-    get debugHub(): DebugHubService { return new DebugHubService(this.hubParams) };
-    get chatHub(): ChatHubService { return new ChatHubService(this.hubParams); }
-
-    private get hubParams(): IMainHub {
+    get mainHub(): IMainHub {
         return {
             connection: this.connection,
             connectionState: this.connectionState,
@@ -83,7 +91,6 @@ export class HubService {
     }
 
     private disconnect = (): void => {
-        console.log(this.hubConnection);
         this.hubConnection?.stop()?.then();
     }
 
@@ -96,17 +103,19 @@ export class HubService {
     }
 
     private registerListeners = () => {
-        const addListener = <T>(event: ResponseListener) => {
+        const addListener = (event: ResponseListener) => {
             if (this.listenerNames.has(event.name))
                 throw `Hub: ${event.listener} já foi registrado`;
 
             this.listenerNames.add(event.name);
-            this.hubConnection.on(event.name, (data: T) => event.listener.next(data));
-            this.hubConnection.on(event.name, (data: T) => this.onReceived.next({ method: event.name, data }));
+            this.hubConnection.on(event.name, (data: unknown) => {
+                event.listener.next(data);
+                this.onReceived.next({ method: event.name, data })
+            });
         }
 
         [
-            ...this.chatHub.responseListeners
+            ...inject(ChatHubService).responseListeners
         ].forEach(listener => addListener(listener));
     }
 }

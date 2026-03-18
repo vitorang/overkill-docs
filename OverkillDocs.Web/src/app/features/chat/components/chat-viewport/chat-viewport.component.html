@@ -1,0 +1,13 @@
+<div class="messages" #scrollContainer>
+    @for (message of messages(); track message.id; let i = $index)
+    {
+        @let previous = i > 0 ? messages()[i - 1] : null;
+        @let showUser = previous?.userHashId !== message.userHashId;
+        
+        @if (previous && showUser) {
+            <div class="separator"></div>
+        }
+        
+        <okd-chat-message [message]="message" [showUser]="showUser" />
+    }
+</div>

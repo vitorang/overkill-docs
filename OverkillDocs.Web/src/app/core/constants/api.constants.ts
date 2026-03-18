@@ -8,8 +8,8 @@ export const API = {
         REGISTER: `${url}/account/register`,
     },
     USER: {
-        CURRENT: `${url}/me`,
-        BY_ID: (id: string) => `${url}/${id}`,
+        CURRENT: `${url}/user/me`,
+        BY_ID: (id: string) => `${url}/user/${id}`,
     },
     HUB: {
         MAIN: (authToken: string) => `${url}/hubs/main?auth_token=${authToken}`

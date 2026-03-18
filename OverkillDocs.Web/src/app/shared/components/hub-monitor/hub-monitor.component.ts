@@ -1,8 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
-import { HubService, IRawMessage } from '../../../core/services/hub/hub.service';
+import { IRawMessage } from '../../../core/services/hub/hub.service';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { HubState } from '../../../core/models/common.model';
 import { SHARED_NATIVE } from '../..';
+import { DebugHubService } from '../../../core/services/hub/debug-hub.service';
 
 
 type Mode = 'received' | 'sended' | 'stateChanged'
@@ -22,7 +23,7 @@ interface ILog {
     styleUrl: './hub-monitor.component.scss',
 })
 export class HubMonitorComponent {
-    protected debugHub = inject(HubService).debugHub;
+    protected debugHub = inject(DebugHubService);
     protected logs = signal<ILog[]>([]);
     private static lastId = 0;
     private connectionState = toObservable(this.debugHub.connectionState);
@@ -37,7 +38,6 @@ export class HubMonitorComponent {
         this.debugHub.onReceived.pipe(takeUntilDestroyed()).subscribe(this.onReceived);
         this.debugHub.onSended.pipe(takeUntilDestroyed()).subscribe(this.onSended);
         this.connectionState.pipe(takeUntilDestroyed()).subscribe(this.onStatusChanged)
-        this.debugHub.connection.pipe(takeUntilDestroyed()).subscribe();
     }
 
     protected formatTime(date: Date): string {

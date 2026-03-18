@@ -1,19 +1,19 @@
 import { Component, inject, signal } from '@angular/core';
 import { SHARED_NATIVE } from '../../../../shared';
-import { FragmentCollectionComponent } from '../../../document/components/fragment-collection/fragment-collection.component';
-import { HubService } from '../../../../core/services/hub/hub.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChatViewportComponent } from '../chat-viewport/chat-viewport.component';
+import { ChatHubService } from '../../../../core/services/hub/chat-hub.service';
 
 @Component({
-    selector: 'okd-chat',
-    imports: [SHARED_NATIVE, FragmentCollectionComponent],
-    templateUrl: './chat.component.html',
-    styleUrl: './chat.component.scss',
+    selector: 'okd-chat-view',
+    imports: [SHARED_NATIVE, ChatViewportComponent],
+    templateUrl: './chat-view.component.html',
+    styleUrl: './chat-view.component.scss',
 })
-export class ChatComponent {
+export class ChatViewComponent {
     protected maxLength = 250;
     protected message = signal('');
-    private chatHub = inject(HubService).chatHub;
+    private chatHub = inject(ChatHubService);
 
     constructor() {
         this.chatHub.connection.pipe(takeUntilDestroyed()).subscribe((connected) => {

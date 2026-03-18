@@ -18,6 +18,7 @@ namespace OverkillDocs.Api.Hubs
         public async Task SendMessage(string content)
         {
             var message = new ChatMessageDto(
+                    Id: Ulid.NewUlid().ToString(),
                     Content: content,
                     UserHashId: hashids.Encode(userContext.UserId),
                     Timestamp: DateTime.UtcNow

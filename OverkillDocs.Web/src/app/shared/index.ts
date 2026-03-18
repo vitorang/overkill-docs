@@ -14,6 +14,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MainHeaderComponent } from './components/main-header/main-header.component';
 import { HubMonitorComponent } from './components/hub-monitor/hub-monitor.component';
+import { AvatarComponent } from './components/avatar/avatar.component';
 
 export const SHARED_NATIVE = [
     CommonModule,
@@ -33,6 +34,7 @@ export const SHARED_NATIVE = [
 
 
 export const SHARED_CUSTOM = [
+    AvatarComponent,
     BackgroundImageComponent,
     BrandComponent,
     HubMonitorComponent,

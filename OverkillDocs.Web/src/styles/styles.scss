@@ -9,6 +9,8 @@ html {
             typography: Inter,
             density: -1,
         ));
+
+    font-size: 100%;
 }
 
 body {
@@ -17,6 +19,7 @@ body {
     color: var(--mat-sys-on-surface);
     font: var(--mat-sys-body-medium);
     font-family: Inter, "Helvetica Neue", sans-serif;
+    font-size: 1rem;
 }
 
 html,

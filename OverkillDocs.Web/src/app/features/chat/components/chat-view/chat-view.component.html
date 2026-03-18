@@ -1,7 +1,7 @@
 <section class="talk">
-    <okd-fragment-collection type="chat"/>
+    <okd-chat-viewport />
 </section>
-<section class="message-area">
+<section class="message-editor">
     <mat-form-field appearance="outline" class="message-field" subscriptSizing="dynamic" >
         <textarea matInput
         [(ngModel)]="message"
@@ -9,7 +9,7 @@
         (keydown.enter)="onPressEnter($event)"
         ></textarea>
     </mat-form-field>
-    <button mat-icon-button class="send-button" (click)="sendMessage()">
+    <button mat-mini-fab class="send-button" (click)="sendMessage()">
         <mat-icon class="icon">send</mat-icon>
     </button>
 </section>

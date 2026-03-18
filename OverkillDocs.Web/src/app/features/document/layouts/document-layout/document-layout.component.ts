@@ -1,15 +1,15 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ChatComponent } from '../../../chat/components/chat/chat.component';
 import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { BreakpointQueries } from '../../../../shared/constants/breakpoints.constant';
+import { ChatViewComponent } from '../../../chat/components/chat-view/chat-view.component';
 
 type TabSection = 'editor' | 'chat';
 
 @Component({
     selector: 'okd-document-layout',
-    imports: [SHARED_NATIVE, SHARED_CUSTOM, RouterOutlet, ChatComponent],
+    imports: [SHARED_NATIVE, SHARED_CUSTOM, RouterOutlet, ChatViewComponent],
     templateUrl: './document-layout.component.html',
     styleUrl: './document-layout.component.scss'
 })

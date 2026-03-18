@@ -1,8 +1,13 @@
 import { Subject } from "rxjs";
-import { BaseHubService } from "./base-hub.service";
-import { IRawMessage } from "./hub.service";
+import { HubService, IRawMessage } from "./hub.service";
+import { inject, Injectable, Signal } from "@angular/core";
+import { HubState } from "../../models/common.model";
 
-export class DebugHubService extends BaseHubService {
+@Injectable({ providedIn: 'root' })
+export class DebugHubService {
+    private mainHub = inject(HubService).mainHub;
+
+    get connectionState(): Signal<HubState> { return this.mainHub.connectionState; }
     get onReceived(): Subject<IRawMessage> { return this.mainHub.onReceived; }
     get onSended(): Subject<IRawMessage> { return this.mainHub.onSended; }
     readonly forceConnect = (): void => this.mainHub.forceConnect();

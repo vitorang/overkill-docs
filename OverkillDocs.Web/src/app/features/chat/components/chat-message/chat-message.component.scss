@@ -1,0 +1,26 @@
+:host {
+    display: flex;
+    flex-direction: row;
+    line-height: 1.25em;
+
+    section.avatar {
+        width: calc(2.5em + 8px);
+    }
+
+    section.message {
+        flex: 1;
+        min-width: 0;
+
+        .name {
+            display: block;
+            white-space: nowrap;
+            text-overflow: clip;
+            font-weight: bold;
+        }
+
+        .text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    }
+}
