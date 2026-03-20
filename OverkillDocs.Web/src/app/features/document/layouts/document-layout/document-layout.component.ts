@@ -12,7 +12,7 @@ type TabSection = 'editor' | 'chat';
 
 @Component({
     selector: 'okd-document-layout',
-    imports: [SHARED_NATIVE, SHARED_CUSTOM, RouterOutlet, ChatViewComponent],
+    imports: [SHARED_NATIVE, SHARED_CUSTOM, ChatViewComponent],
     templateUrl: './document-layout.component.html',
     styleUrl: './document-layout.component.scss'
 })
