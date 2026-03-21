@@ -28,7 +28,8 @@ namespace OverkillDocs.Api.Hubs
             await Clients.Group(chatGroup).SendAsync(HubEvents.Chat.MessageReceived, message);
         }
 
-        private async Task ChatSendHistory()
+        [HubMethodName("Chat:RequestRecentMessages")]
+        public async Task RequestRecentMessages()
         {
             var messages = await chatService.GetRecent(default);
             await Clients.Caller.SendAsync(HubEvents.Chat.RecentMessagesReceived, messages);

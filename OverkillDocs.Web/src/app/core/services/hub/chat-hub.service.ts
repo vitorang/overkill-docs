@@ -6,6 +6,7 @@ import { HubService, ResponseListener } from "./hub.service";
 
 const Hub = {
     join: 'Chat:Join',
+    requestRecentMessages: 'Chat:RequestRecentMessages',
     sendMessage: 'Chat:SendMessage',
 
     onMessageReceived: 'Chat:OnMessageReceived',
@@ -38,6 +39,8 @@ export class ChatHubService {
     }
 
     readonly join = (): Promise<void> => this.mainHub.send(Hub.join);
+
+    readonly requestRecentMessages = (): Promise<void> => this.mainHub.send(Hub.requestRecentMessages);
 
     get responseListeners(): ResponseListener[] {
         return [

@@ -39,8 +39,10 @@ namespace OverkillDocs.Core.Services
 
         public async Task LogoutAsync(CancellationToken ct)
         {
-            await userSessionRepository.DeleteAsync(userContext.Token, ct);
-            await unitOfWork.CommitAsync(ct);
+            if (string.IsNullOrEmpty(userContext.Token))
+                return;
+
+            await userSessionRepository.ExecuteDeleteAsync(userContext.Token, ct);
         }
 
         public async Task<AuthResponseDto> RegisterAsync(AuthRequestDto request, CancellationToken ct)

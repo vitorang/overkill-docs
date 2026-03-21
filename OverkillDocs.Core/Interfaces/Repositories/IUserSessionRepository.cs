@@ -7,6 +7,6 @@ namespace OverkillDocs.Core.Interfaces.Repositories
     {
         Task<UserContext.UserIdentity?> FindIdentityByTokenAsync(string token, CancellationToken ct);
         Task AddAsync(UserSession userSession, CancellationToken ct);
-        Task DeleteAsync(string sessionToken, CancellationToken ct);
+        Task ExecuteDeleteAsync(string sessionToken, CancellationToken ct);
     }
 }

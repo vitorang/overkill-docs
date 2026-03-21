@@ -11,13 +11,6 @@ namespace OverkillDocs.Api.Hubs
         IChatService chatService
     ) : Hub
     {
-
-        public override async Task OnConnectedAsync()
-        {
-            await base.OnConnectedAsync();
-            await ChatSendHistory();
-        }
-
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await base.OnDisconnectedAsync(exception);

@@ -3,6 +3,7 @@ import { SHARED_NATIVE } from '../../../../shared';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChatViewportComponent } from '../chat-viewport/chat-viewport.component';
 import { ChatHubService } from '../../../../core/services/hub/chat-hub.service';
+import { filter } from 'rxjs';
 
 @Component({
     selector: 'okd-chat-view',
@@ -16,9 +17,12 @@ export class ChatViewComponent {
     private chatHub = inject(ChatHubService);
 
     constructor() {
-        this.chatHub.connection.pipe(takeUntilDestroyed()).subscribe((connected) => {
-            if (connected)
-                this.chatHub.join();
+        this.chatHub.connection.pipe(
+            takeUntilDestroyed(),
+            filter(connected => connected)
+        ).subscribe(() => {
+            this.chatHub.join();
+            this.chatHub.requestRecentMessages();
         });
     }
 

@@ -14,13 +14,10 @@ namespace OverkillDocs.Infrastructure.Repositories
             await context.UserSessions.AddAsync(userSession, ct);
         }
 
-        public async Task DeleteAsync(string sessionToken, CancellationToken ct)
+        public async Task ExecuteDeleteAsync(string sessionToken, CancellationToken ct)
         {
             await userIdentityCache.RemoveById(sessionToken, ct);
-
-            var session = await context.UserSessions.FirstOrDefaultAsync(e => e.Token == sessionToken, ct);
-            if (session != null)
-                context.UserSessions.Remove(session);
+            await context.UserSessions.Where(e => e.Token == sessionToken).ExecuteDeleteAsync(ct);
         }
 
         public async Task<UserIdentity?> FindIdentityByTokenAsync(string token, CancellationToken ct)

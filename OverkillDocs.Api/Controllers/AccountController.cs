@@ -19,6 +19,7 @@ namespace OverkillDocs.Api.Controllers
             return Ok(result);
         }
 
+        [AllowAnonymous]
         [HttpPost("Logout")]
         public async Task<IActionResult> Logout(CancellationToken ct)
         {

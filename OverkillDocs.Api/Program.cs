@@ -1,4 +1,5 @@
 using HashidsNet;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using OverkillDocs.Api.Filters;
 using OverkillDocs.Api.Handlers;
@@ -73,6 +74,7 @@ builder.Services.AddControllers(options =>
 builder.Services.AddSignalR(options =>
 {
     options.EnableDetailedErrors = true;
+    options.AddFilter<HubAuthorizationFilter>();
 });
 builder.Services.AddMemoryCache();
 
