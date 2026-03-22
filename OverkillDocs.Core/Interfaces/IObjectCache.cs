@@ -1,6 +1,6 @@
 ﻿namespace OverkillDocs.Core.Interfaces
 {
-    public interface IAppCache<T>
+    public interface IObjectCache<T>
     {
         public Task<T?> Get(int id, CancellationToken ct, Func<Task<T?>>? onCacheMiss = null);
         public Task<T?> Get(string id, CancellationToken ct, Func<Task<T?>>? onCacheMiss = null);

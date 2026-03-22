@@ -6,7 +6,7 @@ using OverkillDocs.Infrastructure.Data;
 
 namespace OverkillDocs.Infrastructure.Repositories
 {
-    public class UserRepository(AppDbContext context, IAppCache<User> userCache) : IUserRepository
+    public class UserRepository(AppDbContext context, IObjectCache<User> userCache) : IUserRepository
     {
         public async Task AddAsync(User user, CancellationToken ct)
         {

@@ -29,7 +29,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserContext>();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
-builder.Services.AddSingleton(typeof(IAppCache<>), typeof(AppCache<>));
+builder.Services.AddSingleton(typeof(IObjectCache<>), typeof(ObjectCache<>));
+builder.Services.AddSingleton(typeof(IListCache<>), typeof(ListCache<>));
 
 builder.Services.AddCors(options =>
 {
