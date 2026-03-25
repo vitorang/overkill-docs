@@ -10,6 +10,7 @@ services:
     networks:
       - overkill-network
 
+
   api:
     image: ${DOCKER_REGISTRY-}overkilldocsapi
     build:
@@ -18,25 +19,33 @@ services:
     environment:
       - ConnectionStrings__SqlServer=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
       - ConnectionStrings__Redis=redis:6379
+      - ConnectionStrings__Sqlite=Data Source=/app/data/database.sqlite
+      - FeatureFlags__UseRedis=${USE_REDIS}
+      - FeatureFlags__UseSqlite=${USE_SQLITE}
+      - Hashids__Salt=${HASHIDS_SALT}
     ports:
       - "8080:8080"
     networks:
       - overkill-network
+    volumes:
+      - sqlite_data:/app/data
     depends_on:
-      db-migrator:
+      migrator:
         condition: service_completed_successfully
       redis:
         condition: service_healthy
+
 
   web:
     build: ./OverkillDocs.Web
     networks:
       - overkill-network
 
-  db:
+
+  sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     volumes:
-      - sql_data:/var/opt/mssql
+      - sqlserver_data:/var/opt/mssql
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=${SQL_PASSWORD}
@@ -51,20 +60,23 @@ services:
       retries: 6
       start_period: 15s
 
-  db-migrator:
+
+  migrator:
     build:
       context: .
-      dockerfile: OverkillDocs.Api/Dockerfile
-      target: build
-    working_dir: /src/OverkillDocs.Api
-    networks:
-      - overkill-network
-    depends_on:
-      db:
-        condition: service_healthy
-    entrypoint: [ "dotnet", "ef", "database", "update", "--connection", "Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;" ]
+      dockerfile: OverkillDocs.Migrator/Dockerfile 
     environment:
       - ConnectionStrings__SqlServer=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
+      - ConnectionStrings__Sqlite=Data Source=/app/data/database.sqlite
+      - FeatureFlags__UseSqlite=${USE_SQLITE}
+    networks:
+      - overkill-network
+    volumes:
+      - sqlite_data:/app/data
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
 
   redis:
     image: redis:alpine
@@ -81,6 +93,8 @@ networks:
   overkill-network:
     driver: bridge
 
+
 volumes:
   caddy_data:
-  sql_data:
+  sqlserver_data:
+  sqlite_data:

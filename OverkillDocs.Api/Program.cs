@@ -23,11 +23,18 @@ builder.Services.AddSwaggerGen();
 
 
 #region Banco de dados
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("SqlServer"),
-        x => x.MigrationsAssembly("OverkillDocs.Infrastructure")
-    ));
+bool useSqlite = builder.Configuration.GetValue<bool>("FeatureFlags:UseSqlite");
+if (useSqlite)
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("Sqlite")));
+}
+else
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("SqlServer")));
+}    
 #endregion
 
 

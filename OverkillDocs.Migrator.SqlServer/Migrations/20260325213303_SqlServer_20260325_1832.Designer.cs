@@ -9,11 +9,11 @@ using OverkillDocs.Infrastructure.Data;
 
 #nullable disable
 
-namespace OverkillDocs.Infrastructure.Migrations
+namespace OverkillDocs.Migrator.SqlServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260218200512_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260325213303_SqlServer_20260325_1832")]
+    partial class SqlServer_20260325_1832
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace OverkillDocs.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.Document", b =>
+            modelBuilder.Entity("OverkillDocs.Core.Entities.Document.Document", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -56,7 +56,7 @@ namespace OverkillDocs.Infrastructure.Migrations
                     b.ToTable("Documents");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.DocumentFragment", b =>
+            modelBuilder.Entity("OverkillDocs.Core.Entities.Document.DocumentFragment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -95,7 +95,7 @@ namespace OverkillDocs.Infrastructure.Migrations
                     b.ToTable("DocumentFragments");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.User", b =>
+            modelBuilder.Entity("OverkillDocs.Core.Entities.Identity.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -129,12 +129,13 @@ namespace OverkillDocs.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Username")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("IX_User_Username");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.UserSession", b =>
+            modelBuilder.Entity("OverkillDocs.Core.Entities.Security.UserSession", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -172,9 +173,9 @@ namespace OverkillDocs.Infrastructure.Migrations
                     b.ToTable("UserSessions");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.Document", b =>
+            modelBuilder.Entity("OverkillDocs.Core.Entities.Document.Document", b =>
                 {
-                    b.HasOne("OverkillDocs.Core.Entities.User", "CreatedBy")
+                    b.HasOne("OverkillDocs.Core.Entities.Identity.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -183,15 +184,15 @@ namespace OverkillDocs.Infrastructure.Migrations
                     b.Navigation("CreatedBy");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.DocumentFragment", b =>
+            modelBuilder.Entity("OverkillDocs.Core.Entities.Document.DocumentFragment", b =>
                 {
-                    b.HasOne("OverkillDocs.Core.Entities.Document", "Document")
+                    b.HasOne("OverkillDocs.Core.Entities.Document.Document", "Document")
                         .WithMany("Fragments")
                         .HasForeignKey("DocumentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OverkillDocs.Core.Entities.User", "EditedBy")
+                    b.HasOne("OverkillDocs.Core.Entities.Identity.User", "EditedBy")
                         .WithMany()
                         .HasForeignKey("EditedById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -202,9 +203,9 @@ namespace OverkillDocs.Infrastructure.Migrations
                     b.Navigation("EditedBy");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.UserSession", b =>
+            modelBuilder.Entity("OverkillDocs.Core.Entities.Security.UserSession", b =>
                 {
-                    b.HasOne("OverkillDocs.Core.Entities.User", "User")
+                    b.HasOne("OverkillDocs.Core.Entities.Identity.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -213,7 +214,7 @@ namespace OverkillDocs.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.Document", b =>
+            modelBuilder.Entity("OverkillDocs.Core.Entities.Document.Document", b =>
                 {
                     b.Navigation("Fragments");
                 });

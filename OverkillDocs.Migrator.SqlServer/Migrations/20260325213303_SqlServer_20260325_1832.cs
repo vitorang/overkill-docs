@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace OverkillDocs.Infrastructure.Migrations
+namespace OverkillDocs.Migrator.SqlServer.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class SqlServer_20260325_1832 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -122,7 +122,7 @@ namespace OverkillDocs.Infrastructure.Migrations
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Username",
+                name: "IX_User_Username",
                 table: "Users",
                 column: "Username",
                 unique: true);
