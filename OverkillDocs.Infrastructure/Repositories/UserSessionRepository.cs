@@ -16,7 +16,7 @@ namespace OverkillDocs.Infrastructure.Repositories
 
         public async Task ExecuteDeleteAsync(string sessionToken, CancellationToken ct)
         {
-            await userIdentityCache.RemoveById(sessionToken, ct);
+            await userIdentityCache.RemoveById(sessionToken);
             await context.UserSessions.Where(e => e.Token == sessionToken).ExecuteDeleteAsync(ct);
         }
 
@@ -27,7 +27,7 @@ namespace OverkillDocs.Infrastructure.Repositories
                 .Select(e => new UserIdentity(e.UserId, e.User.Name, e.Token))
                 .FirstOrDefaultAsync(ct);
 
-            return await userIdentityCache.Get(token, ct, fetchFromDb);
+            return await userIdentityCache.Get(token, fetchFromDb);
         }
     }
 }

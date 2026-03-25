@@ -9,15 +9,15 @@ namespace OverkillDocs.Core.Services
 {
     public class ChatService(IChatRepository chatRepository, IHashids hashids) : IChatService
     {
-        public async Task AddRecent(ChatMessageDto messageDto, CancellationToken ct)
+        public async Task AddRecent(ChatMessageDto messageDto)
         {
             var message = messageDto.ToEntity(hashids);
-            await chatRepository.AddRecentMessageAsync(message, ct);
+            await chatRepository.AddRecentMessageAsync(message);
         }
 
-        public async Task<ImmutableList<ChatMessageDto>> GetRecent(CancellationToken ct)
+        public async Task<ImmutableList<ChatMessageDto>> GetRecent()
         {
-            var recentMessages = await chatRepository.GetHistoryAsync(ct);
+            var recentMessages = await chatRepository.GetHistoryAsync();
             return [.. recentMessages.Select(e => e.ToDto(hashids))];
         }
     }

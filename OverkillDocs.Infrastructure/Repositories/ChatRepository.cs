@@ -7,14 +7,14 @@ namespace OverkillDocs.Infrastructure.Repositories
 {
     public class ChatRepository(IListCache<ChatMessage> chatMessageCache) : IChatRepository
     {
-        public async Task AddRecentMessageAsync(ChatMessage message, CancellationToken ct)
+        public async Task AddRecentMessageAsync(ChatMessage message)
         {
-            await chatMessageCache.Append(message, ct);
+            await chatMessageCache.Append(message);
         }
 
-        public async Task<ImmutableList<ChatMessage>> GetHistoryAsync(CancellationToken ct)
+        public async Task<ImmutableArray<ChatMessage>> GetHistoryAsync()
         {
-            return await chatMessageCache.Get(ct);
+            return await chatMessageCache.Get();
         }
     }
 }

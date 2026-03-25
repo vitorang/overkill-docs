@@ -17,7 +17,7 @@ namespace OverkillDocs.Infrastructure.Repositories
         {
             Task<User?> fetchFromDb() => context.Users.FirstOrDefaultAsync(e => e.Id == id, ct);
 
-            return await userCache.Get(id, ct, fetchFromDb);
+            return await userCache.Get(id, fetchFromDb);
         }
 
         public async Task<User?> FindByUsernameAsync(string username, CancellationToken ct)

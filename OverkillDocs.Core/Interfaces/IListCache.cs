@@ -4,7 +4,7 @@ namespace OverkillDocs.Core.Interfaces
 {
     public interface IListCache<T>
     {
-        public Task Append(T value, CancellationToken ct);
-        public Task<ImmutableList<T>> Get(CancellationToken ct);
+        public Task Append(T value);
+        public Task<ImmutableArray<T>> Get();
     }
 }

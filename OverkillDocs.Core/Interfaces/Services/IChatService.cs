@@ -5,7 +5,7 @@ namespace OverkillDocs.Core.Interfaces.Services
 {
     public interface IChatService
     {
-        Task AddRecent(ChatMessageDto messageDto, CancellationToken ct);
-        Task<ImmutableList<ChatMessageDto>> GetRecent(CancellationToken ct);
+        Task AddRecent(ChatMessageDto messageDto);
+        Task<ImmutableList<ChatMessageDto>> GetRecent();
     }
 }

@@ -24,14 +24,14 @@ namespace OverkillDocs.Api.Hubs
                     Timestamp: DateTime.UtcNow
                 );
 
-            await chatService.AddRecent(message, default);
+            await chatService.AddRecent(message);
             await Clients.Group(chatGroup).SendAsync(HubEvents.Chat.MessageReceived, message);
         }
 
         [HubMethodName("Chat:RequestRecentMessages")]
         public async Task RequestRecentMessages()
         {
-            var messages = await chatService.GetRecent(default);
+            var messages = await chatService.GetRecent();
             await Clients.Caller.SendAsync(HubEvents.Chat.RecentMessagesReceived, messages);
         }
     }

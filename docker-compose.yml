@@ -16,7 +16,8 @@ services:
       context: .
       dockerfile: OverkillDocs.Api/Dockerfile
     environment:
-      - ConnectionStrings__DefaultConnection=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
+      - ConnectionStrings__SqlServer=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
+      - ConnectionStrings__Redis=redis:6379
     ports:
       - "8080:8080"
     networks:
@@ -24,6 +25,8 @@ services:
     depends_on:
       db-migrator:
         condition: service_completed_successfully
+      redis:
+        condition: service_healthy
 
   web:
     build: ./OverkillDocs.Web
@@ -61,7 +64,18 @@ services:
         condition: service_healthy
     entrypoint: [ "dotnet", "ef", "database", "update", "--connection", "Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;" ]
     environment:
-      - ConnectionStrings__DefaultConnection=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
+      - ConnectionStrings__SqlServer=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
+
+  redis:
+    image: redis:alpine
+    networks:
+      - overkill-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
 
 networks:
   overkill-network:
