@@ -4,7 +4,7 @@ using OverkillDocs.Core.Interfaces.Services;
 
 namespace OverkillDocs.Api.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController(IUserService userService) : ControllerBase
     {

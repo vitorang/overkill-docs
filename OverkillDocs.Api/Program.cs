@@ -1,6 +1,7 @@
 using HashidsNet;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using OverkillDocs.Api.Constants;
 using OverkillDocs.Api.Filters;
 using OverkillDocs.Api.Handlers;
 using OverkillDocs.Api.Hubs;
@@ -123,15 +124,27 @@ if (useRedis)
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+
+#region Swagger
+var swaggerRoute = "api/swagger";
+app.UseSwagger(c =>
+{
+    c.RouteTemplate = $"{swaggerRoute}/{{documentName}}/swagger.json";
+});
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint($"/{swaggerRoute}/v1/swagger.json", "OverkillDocs API");
+    c.RoutePrefix = swaggerRoute;
+});
+#endregion
+
 
 app.UseCors("LocalhostPolicy");
 
 app.UseExceptionHandler();
 app.UseMiddleware<SessionMiddleware>();
 
-app.MapHub<MainHub>("/hubs/main");
+app.MapHub<MainHub>(HubRoutes.Main);
 
 app.MapControllers();
 

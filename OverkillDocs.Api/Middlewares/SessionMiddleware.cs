@@ -1,4 +1,5 @@
-﻿using OverkillDocs.Core.Interfaces.Repositories;
+﻿using OverkillDocs.Api.Constants;
+using OverkillDocs.Core.Interfaces.Repositories;
 using System.Security.Claims;
 
 namespace OverkillDocs.Api.Middlewares
@@ -7,7 +8,7 @@ namespace OverkillDocs.Api.Middlewares
     {
         public async Task InvokeAsync(HttpContext context, IUserSessionRepository sessionRepository)
         {
-            string token = context.Request.Path.StartsWithSegments("/hubs")
+            string token = context.Request.Path.StartsWithSegments(HubRoutes.Base)
                 ? GetTokenFromQuery(context)
                 : GetTokenFromHeader(context);
 

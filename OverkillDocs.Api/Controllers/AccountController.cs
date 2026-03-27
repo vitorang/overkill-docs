@@ -6,7 +6,7 @@ using OverkillDocs.Core.Interfaces.Services;
 namespace OverkillDocs.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ProducesErrorResponseType(typeof(ProblemDetails))]
     public class AccountController(IAccountService accountService) : ControllerBase
     {
