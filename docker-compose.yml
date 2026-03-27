@@ -19,7 +19,7 @@ services:
     environment:
       - ConnectionStrings__SqlServer=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
       - ConnectionStrings__Redis=redis:6379
-      - ConnectionStrings__Sqlite=Data Source=/app/data/database.sqlite
+      - ConnectionStrings__Sqlite=Data Source=/home/data/database.sqlite
       - FeatureFlags__UseRedis=${USE_REDIS}
       - FeatureFlags__UseSqlite=${USE_SQLITE}
       - Hashids__Salt=${HASHIDS_SALT}
@@ -28,7 +28,7 @@ services:
     networks:
       - overkill-network
     volumes:
-      - sqlite_data:/app/data
+      - sqlite_data:/home/data
     depends_on:
       migrator:
         condition: service_completed_successfully
@@ -67,12 +67,12 @@ services:
       dockerfile: OverkillDocs.Migrator/Dockerfile 
     environment:
       - ConnectionStrings__SqlServer=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
-      - ConnectionStrings__Sqlite=Data Source=/app/data/database.sqlite
+      - ConnectionStrings__Sqlite=Data Source=/home/data/database.sqlite
       - FeatureFlags__UseSqlite=${USE_SQLITE}
     networks:
       - overkill-network
     volumes:
-      - sqlite_data:/app/data
+      - sqlite_data:/home/data
     depends_on:
       sqlserver:
         condition: service_healthy

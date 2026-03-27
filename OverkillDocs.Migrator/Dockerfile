@@ -6,7 +6,7 @@ USER $APP_UID
 WORKDIR /app
 
 USER root
-RUN mkdir -p /app/data && chown -R $APP_UID:$APP_UID /app/data
+RUN mkdir -p /home/data && chown -R $APP_UID:$APP_UID /home/data
 USER $APP_UID
 
 # Esta fase é usada para compilar o projeto de serviço
