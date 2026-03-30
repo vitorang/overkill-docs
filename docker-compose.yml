@@ -10,9 +10,8 @@ services:
     networks:
       - overkill-network
 
-
   api:
-    image: ${DOCKER_REGISTRY-}overkilldocsapi
+    image: overkilldocsapi
     build:
       context: .
       dockerfile: OverkillDocs.Api/Dockerfile
@@ -35,12 +34,10 @@ services:
       redis:
         condition: service_healthy
 
-
   web:
     build: ./OverkillDocs.Web
     networks:
       - overkill-network
-
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -60,11 +57,10 @@ services:
       retries: 6
       start_period: 15s
 
-
   migrator:
     build:
       context: .
-      dockerfile: OverkillDocs.Migrator/Dockerfile 
+      dockerfile: OverkillDocs.Migrator/Dockerfile
     environment:
       - ConnectionStrings__SqlServer=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
       - ConnectionStrings__Sqlite=Data Source=/home/data/database.sqlite
@@ -77,22 +73,19 @@ services:
       sqlserver:
         condition: service_healthy
 
-
   redis:
     image: redis:alpine
     networks:
       - overkill-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 5s
       timeout: 3s
       retries: 5
 
-
 networks:
   overkill-network:
     driver: bridge
-
 
 volumes:
   caddy_data:

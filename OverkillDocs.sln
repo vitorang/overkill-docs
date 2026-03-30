@@ -16,6 +16,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Migrator", "OverkillDocs.Migrator\OverkillDocs.Migrator.csproj", "{9EA28387-1037-48C4-9F4A-2EE914919757}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{380A7511-A354-6D7A-0CC0-8FA1F1BA7B6C}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile.txt = Dockerfile.txt
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Migrator.SqlServer", "OverkillDocs.Migrator.SqlServer\OverkillDocs.Migrator.SqlServer.csproj", "{73A1510D-35D9-48EC-95E5-10D8DF6486FC}"
 EndProject

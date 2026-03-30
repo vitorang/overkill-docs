@@ -1,0 +1,53 @@
+# docker build --no-cache -t okd-prod -f Dockerfile.prod .
+# docker run -d -p 8080:8080 --name okd-prod --env-file .env.prod -v "${PWD}/database:/home/data" okd-prod
+
+# ==========================================
+# ESTÁGIO 1: Build do Angular (Frontend)
+# ==========================================
+FROM node:22-alpine3.21 AS angular-builder
+WORKDIR /app
+COPY OverkillDocs.Web/package*.json ./
+RUN npm install
+COPY OverkillDocs.Web/ ./
+RUN npx ng build --configuration production
+
+# ==========================================
+# ESTÁGIO 2: Build do .NET (API + Migrator)
+# ==========================================
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dotnet-builder
+WORKDIR /src
+
+# Copia os projetos
+COPY ["OverkillDocs.Api/OverkillDocs.Api.csproj", "OverkillDocs.Api/"]
+COPY ["OverkillDocs.Core/OverkillDocs.Core.csproj", "OverkillDocs.Core/"]
+COPY ["OverkillDocs.Infrastructure/OverkillDocs.Infrastructure.csproj", "OverkillDocs.Infrastructure/"]
+COPY ["OverkillDocs.Migrator/OverkillDocs.Migrator.csproj", "OverkillDocs.Migrator/"]
+COPY ["OverkillDocs.Migrator.Sqlite/OverkillDocs.Migrator.Sqlite.csproj", "OverkillDocs.Migrator.Sqlite/"]
+COPY ["OverkillDocs.Migrator.SqlServer/OverkillDocs.Migrator.SqlServer.csproj", "OverkillDocs.Migrator.SqlServer/"]
+
+RUN dotnet restore "OverkillDocs.Api/OverkillDocs.Api.csproj"
+COPY . .
+
+# Publica a API e Migrator
+RUN dotnet publish "OverkillDocs.Api/OverkillDocs.Api.csproj" -c Release -o /app/publish/api
+RUN dotnet publish "OverkillDocs.Migrator/OverkillDocs.Migrator.csproj" -c Release -o /app/publish/migrator
+
+# ==========================================
+# ESTÁGIO 3: Final
+# ==========================================
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+EXPOSE 8080
+
+# Cria a pasta do banco e dá permissão
+USER root
+RUN mkdir -p /home/data && chown -R 1654:1654 /home/data
+USER $APP_UID
+
+# Copia os arquivos publicados
+COPY --from=dotnet-builder /app/publish/api .
+COPY --from=dotnet-builder /app/publish/migrator ./migrator
+COPY --from=angular-builder /app/dist/OverkillDocs.Web/browser ./wwwroot
+
+# Primeiro roda o Migrator, se der certo, roda a API
+ENTRYPOINT ["sh", "-c", "dotnet migrator/OverkillDocs.Migrator.dll && dotnet OverkillDocs.Api.dll"]

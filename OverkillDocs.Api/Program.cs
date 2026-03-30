@@ -39,7 +39,7 @@ else
 #endregion
 
 
-#region Injeção de dependências
+#region Injeï¿½ï¿½o de dependï¿½ncias
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserContext>();
@@ -136,6 +136,13 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint($"/{swaggerRoute}/v1/swagger.json", "OverkillDocs API");
     c.RoutePrefix = swaggerRoute;
 });
+#endregion
+
+
+#region SPA
+app.UseDefaultFiles();
+app.UseStaticFiles();
+app.MapFallbackToFile("index.html");
 #endregion
 
 

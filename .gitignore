@@ -1,9 +1,11 @@
-## Dados sens�veis
+## Ambiente
 .env
+.env.prod
 *.user
 *.userosscache
 *.sln.docstates
 usersecrets.json
+database/
 
 ## .NET / Visual Studio
 bin/
