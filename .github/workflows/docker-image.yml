@@ -14,17 +14,13 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    
+
     - name: Build the Docker image
       run: |
         SHA=$(echo ${{ github.sha }} | cut -c1-7)
         VERSION="v${{ github.run_number }}"
         docker build . --file Dockerfile --tag "overkill-docs:${VERSION}-${SHA}" --tag "overkill-docs:latest"
-    
-    - name: Install Railway CLI
-      run: npm i -g @railway/cli
 
-    - name: Deploy to Railway
-      run: railway up --detach
-      env:
-        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+    - name: Render Deploy
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: curl -f ${{ secrets.RENDER_DEPLOY_HOOK }}
