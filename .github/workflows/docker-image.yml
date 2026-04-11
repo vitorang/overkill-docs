@@ -1,0 +1,26 @@
+name: OverkillDocs Docker CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Build the Docker image
+      run: |
+        SHA=$(echo ${{ github.sha }} | cut -c1-7)
+        VERSION="v${{ github.run_number }}"
+        docker build . --file Dockerfile.prod --tag "overkill-docs:${VERSION}-${SHA}" --tag "overkill-docs:latest"
+
+    - name: Render Deploy
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: curl -f ${{ secrets.RENDER_DEPLOY_HOOK }}
