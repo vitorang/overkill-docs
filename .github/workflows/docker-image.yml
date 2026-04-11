@@ -19,7 +19,7 @@ jobs:
       run: |
         SHA=$(echo ${{ github.sha }} | cut -c1-7)
         VERSION="v${{ github.run_number }}"
-        docker build . --file Dockerfile --tag "overkill-docs:${VERSION}-${SHA}" --tag "overkill-docs:latest"
+        docker build . --file Dockerfile.prod --tag "overkill-docs:${VERSION}-${SHA}" --tag "overkill-docs:latest"
 
     - name: Render Deploy
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
