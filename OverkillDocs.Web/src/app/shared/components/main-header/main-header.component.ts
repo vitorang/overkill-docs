@@ -12,8 +12,8 @@ import { PATHS } from '../../../core/constants/routes.constant';
     styleUrl: './main-header.component.scss',
 })
 export class MainHeaderComponent {
-    protected authService = inject(AuthService);
-    protected router = inject(Router);
+    private authService = inject(AuthService);
+    private router = inject(Router);
 
     protected logout(): void {
         this.authService.logout().subscribe(

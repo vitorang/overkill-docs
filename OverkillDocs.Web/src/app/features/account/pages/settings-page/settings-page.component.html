@@ -1,1 +1,43 @@
-<p>settings-page works!</p>
+<okd-main-header></okd-main-header>
+
+<div class="page-content">
+    <okd-request-overlay [requestState]="profileState()">
+        <mat-card>
+            <mat-card-header>
+                <h2>Meu Perfil</h2>
+            </mat-card-header>
+            <mat-card-content>
+                Aqui
+            </mat-card-content>
+        </mat-card>
+    </okd-request-overlay>
+    
+    <okd-request-overlay [requestState]="sessionsState()", (retry)="loadSessions()">
+        <mat-card>
+            <mat-card-header>
+                <h2>Sessões ativas</h2>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="session-list">
+                    @for (session of sessions(); track session.hashId) {
+                        <div class="session-item">
+                            <div class="device-icon">
+                                 <mat-icon>{{session.deviceIcon}}</mat-icon>
+                            </div>
+                            <div class="device-name">
+                                {{ session.browserName }}
+                            </div>
+                            <div class="actions">
+                                @if (session.isCurrent) {
+                                    <button mat-button disabled>Atual</button>
+                                } @else {
+                                    <button mat-button (click)="logout(session)">Sair</button>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>          
+            </mat-card-content>
+        </mat-card>
+    </okd-request-overlay>
+</div>

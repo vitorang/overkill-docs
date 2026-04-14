@@ -14,9 +14,11 @@ namespace OverkillDocs.Core.Attributes
 
                 if (!UsernameRegex().IsMatch(username))
                     return new ValidationResult("Use apenas letras minúsculas e números");
+
+                return ValidationResult.Success;
             }
 
-            return ValidationResult.Success;
+            throw new InvalidOperationException($"Tipo não suportado em {nameof(UsernameAttribute)}");            
         }
 
         [GeneratedRegex(@"^[a-z0-9]+$")]

@@ -1,5 +1,5 @@
 ﻿using HashidsNet;
-using OverkillDocs.Core.DTOs.Users;
+using OverkillDocs.Core.DTOs.User;
 using OverkillDocs.Core.Exceptions;
 using OverkillDocs.Core.Extensions;
 using OverkillDocs.Core.Interfaces.Repositories;
@@ -17,7 +17,7 @@ namespace OverkillDocs.Core.Services
                 throw new NotFoundException($"HashId '{hashId}' inválido.");
             var id = ids[0];
 
-            var user = await userRepository.FindByIdAsync(id, ct);
+            var user = await userRepository.FindById(id, ct);
             if (user == null)
                 throw new NotFoundException($"Usuário id={id} não encontrado.");
 
@@ -26,7 +26,7 @@ namespace OverkillDocs.Core.Services
 
         public async Task<SimpleUserDto> GetCurrent(CancellationToken ct)
         {
-            var user = await userRepository.FindByIdAsync(userContext.UserId, ct);
+            var user = await userRepository.FindById(userContext.UserId, ct);
             if (user == null)
                 throw new NotFoundException($"Usuário id={userContext.UserId} não encontrado.");
 

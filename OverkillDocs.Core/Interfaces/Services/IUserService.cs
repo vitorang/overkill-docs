@@ -1,4 +1,4 @@
-﻿using OverkillDocs.Core.DTOs.Users;
+﻿using OverkillDocs.Core.DTOs.User;
 
 namespace OverkillDocs.Core.Interfaces.Services
 {

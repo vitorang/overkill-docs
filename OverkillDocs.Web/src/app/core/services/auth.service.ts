@@ -2,10 +2,12 @@ import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthRequest, AuthResponse, AuthStorageMode } from '../../features/account/models/auth.model';
 import { RequestState } from '../models/common.model';
-import { finalize, Observable, tap } from 'rxjs';
+import { finalize, map, Observable, tap } from 'rxjs';
 import { AUTH } from '../constants/auth.constant';
 import { API } from '../constants/api.constants';
 import { UserService } from './user.service';
+import { UserSession } from '../../features/account/models/user-session.model';
+import { parseUserAgent } from '../utils/browser.utils';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -39,6 +41,10 @@ export class AuthService {
         return this.authRequest(this.http.post<void>(API.ACCOUNT.LOGOUT, {}), () => this.deleteToken());
     }
 
+    logoutById(sessionHashId: string): Observable<void> {
+        return this.http.post<void>(API.ACCOUNT.LOGOUT_BY_ID(sessionHashId), {});
+    }
+
     register(credentials: AuthRequest, storage: AuthStorageMode): Observable<AuthResponse> {
         return this.authRequest(this.http.post<AuthResponse>(API.ACCOUNT.REGISTER, credentials), result => this.saveToken(result.token, storage));
     }
@@ -60,5 +66,16 @@ export class AuthService {
         sessionStorage.removeItem(AUTH.TOKEN);
         localStorage.removeItem(AUTH.TOKEN);
         this.userService.currentUser.set(null);
+    }
+
+    listSessions(): Observable<UserSession[]> {
+        return this.http.get<UserSession[]>(API.ACCOUNT.SESSIONS).pipe(
+            map(sessions => sessions.map(session => {
+                return {
+                    ...session,
+                    ...parseUserAgent(session.userAgent)
+                }
+            }))
+        );
     }
 }

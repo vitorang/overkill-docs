@@ -9,7 +9,7 @@ namespace OverkillDocs.Core.DTOs.Account
         string Username,
 
         [Required(ErrorMessage = "Senha obrigatória")]
-        [MinLength(3, ErrorMessage = "Mínimo de 3 caracteres")]
+        [Password]
         string Password,
         
         [Required(ErrorMessage = "User-Agent é obrigatório")]

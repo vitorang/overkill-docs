@@ -1,5 +1,5 @@
 <section class="avatar">
-    @if (showUser()) { <okd-avatar [hashId]="user()?.hashId" [size]="2.5" sizeUnit="em" /> }
+    @if (showUser()) { <okd-avatar [user]="user()" [size]="2.5" sizeUnit="em" /> }
 </section>
 
 <section class="message">

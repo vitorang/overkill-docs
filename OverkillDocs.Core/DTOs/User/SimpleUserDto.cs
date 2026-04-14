@@ -1,8 +1,9 @@
-﻿namespace OverkillDocs.Core.DTOs.Users
+﻿namespace OverkillDocs.Core.DTOs.User
 {
     public record SimpleUserDto
     (
         string HashId,
-        string Name
+        string Name,
+        string Avatar
     );
 }

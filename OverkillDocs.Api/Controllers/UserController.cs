@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OverkillDocs.Core.DTOs.Users;
+using OverkillDocs.Core.DTOs.User;
 using OverkillDocs.Core.Interfaces.Services;
 
 namespace OverkillDocs.Api.Controllers

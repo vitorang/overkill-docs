@@ -16,6 +16,7 @@ import { MainHeaderComponent } from './components/main-header/main-header.compon
 import { HubMonitorComponent } from './components/hub-monitor/hub-monitor.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { MatBadgeModule } from '@angular/material/badge';
+import { RequestOverlayComponent } from './components/request-overlay/request-overlay.component';
 
 export const SHARED_NATIVE = [
     CommonModule,
@@ -41,4 +42,5 @@ export const SHARED_CUSTOM = [
     BrandComponent,
     HubMonitorComponent,
     MainHeaderComponent,
+    RequestOverlayComponent,
 ] as const;

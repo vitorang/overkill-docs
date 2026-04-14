@@ -1,5 +1,5 @@
 ﻿using HashidsNet;
-using OverkillDocs.Core.DTOs.Users;
+using OverkillDocs.Core.DTOs.User;
 using OverkillDocs.Core.Entities.Identity;
 
 namespace OverkillDocs.Core.Extensions
@@ -11,7 +11,8 @@ namespace OverkillDocs.Core.Extensions
             return new SimpleUserDto
             (
                 HashId: hashids.Encode(user.Id),
-                Name: user.Name
+                Name: user.Name,
+                Avatar: user.Avatar
             );
         }
     }

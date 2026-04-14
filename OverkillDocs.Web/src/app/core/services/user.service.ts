@@ -1,4 +1,4 @@
-import { catchError, finalize, Observable, of, shareReplay, tap } from "rxjs";
+import { catchError, finalize, map, Observable, of, shareReplay, tap } from "rxjs";
 import { API } from "../constants/api.constants";
 import { inject, Injectable, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
@@ -14,13 +14,13 @@ export class UserService {
     private http = inject(HttpClient);
     private alertService = inject(AlertService);
 
-    public loadCurrentUser(): Observable<SimpleUser | null> {
-        if (this.currentUser()) {
-            return of(this.currentUser());
-        }
+    public loadCurrentUser(reload?: boolean): Observable<boolean> {
+        if (this.currentUser() && !reload)
+            return of(true);
 
         return this.loadUser(API.USER.CURRENT).pipe(
-            tap(user => this.currentUser.set(user))
+            tap(user => this.currentUser.set(user)),
+            map((user) => !!user)
         );
     }
 
@@ -35,7 +35,8 @@ export class UserService {
         if (!this.requests[url]) {
             this.requests[url] = this.http.get<SimpleUser>(url).pipe(
                 tap(user => {
-                    if (user) this.cache[user.hashId] = user;
+                    if (user)
+                        this.cache[user.hashId] = user;
                 }),
                 shareReplay(1),
                 finalize(() => delete this.requests[url]),

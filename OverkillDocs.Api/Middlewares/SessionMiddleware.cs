@@ -14,7 +14,7 @@ namespace OverkillDocs.Api.Middlewares
 
             if (!string.IsNullOrWhiteSpace(token))
             {
-                var session = await sessionRepository.FindIdentityByTokenAsync(token, context.RequestAborted);
+                var session = await sessionRepository.FindIdentityByToken(token, context.RequestAborted);
 
                 if (session != null)
                 {
