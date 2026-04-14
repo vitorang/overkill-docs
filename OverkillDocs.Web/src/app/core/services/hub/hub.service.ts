@@ -2,7 +2,6 @@ import { computed, inject, Injectable, Signal, signal } from "@angular/core";
 import * as signalR from '@microsoft/signalr';
 import { defer, filter, finalize, Observable, shareReplay, Subject } from "rxjs";
 import { API } from "../../constants/api.constants";
-import { HubState } from "../../models/common.model";
 import { AuthService } from "../auth.service";
 import { ChatHubService } from "./chat-hub.service";
 import { takeUntilDestroyed, toObservable } from "@angular/core/rxjs-interop";
@@ -15,10 +14,18 @@ export interface IRawMessage {
     data: unknown
 }
 
+export interface IHubState {
+    connected: Signal<boolean>,
+    disconnected: Signal<boolean>,
+    connecting: Signal<boolean>,
+    current: Signal<HubState>;
+}
+
+export type HubState = 'DISCONNECTED' | 'CONNECTED' | 'CONNECTING';
+
 export interface IMainHub {
     connection: Observable<unknown>
-    connectionState: Signal<HubState>
-    isConnected: Signal<boolean>
+    state: IHubState,
     onReceived: Subject<IRawMessage>
     onSended: Subject<IRawMessage>
     send<T>(method: string, data?: T): Promise<void>
@@ -28,8 +35,13 @@ export interface IMainHub {
 
 @Injectable({ providedIn: 'root' })
 export class HubService {
-    private connectionState = signal<HubState>(HubState.DISCONNECTED);
-    private isConnected = computed(() => this.connectionState() === HubState.CONNECTED);
+    private connectionState = signal<HubState>('DISCONNECTED');
+    private state = {
+        connected: computed(() => this.connectionState() === 'CONNECTED'),
+        connecting: computed(() => this.connectionState() === 'CONNECTING'),
+        disconnected: computed(() => this.connectionState() === 'DISCONNECTED'),
+        current: this.connectionState.asReadonly(),
+    };
 
     private onReceived = new Subject<IRawMessage>();
     private onSended = new Subject<IRawMessage>();
@@ -50,8 +62,7 @@ export class HubService {
     get mainHub(): IMainHub {
         return {
             connection: this.connection,
-            connectionState: this.connectionState,
-            isConnected: this.isConnected,
+            state: this.state,
             onReceived: this.onReceived,
             onSended: this.onSended,
             send: this.send,
@@ -69,7 +80,7 @@ export class HubService {
     );
 
     private connect = (): void => {
-        if (this.connectionState() !== HubState.DISCONNECTED)
+        if (!this.state.disconnected())
             return;
 
         if (!this.hubConnection) {
@@ -78,25 +89,25 @@ export class HubService {
                 .withAutomaticReconnect()
                 .build();
 
-            this.hubConnection.onreconnecting(() => this.connectionState.set(HubState.CONNECTING));
-            this.hubConnection.onreconnected(() => this.connectionState.set(HubState.CONNECTED));
+            this.hubConnection.onreconnecting(() => this.connectionState.set('CONNECTING'));
+            this.hubConnection.onreconnected(() => this.connectionState.set('CONNECTED'));
             this.hubConnection.onclose((error) => {
                 if (error)
                     console.error('Hub:', error);
 
-                this.connectionState.set(HubState.DISCONNECTED);
+                this.connectionState.set('DISCONNECTED');
             });
-            this.connectionState.set(HubState.CONNECTING);
+            this.connectionState.set('CONNECTING');
 
             this.registerListeners();
         }
 
         this.hubConnection
             .start()
-            .then(() => this.connectionState.set(HubState.CONNECTED))
+            .then(() => this.connectionState.set('CONNECTED'))
             .catch((error) => {
                 console.error('Hub:', error);
-                this.connectionState.set(HubState.DISCONNECTED)
+                this.connectionState.set('DISCONNECTED')
             });
     }
 

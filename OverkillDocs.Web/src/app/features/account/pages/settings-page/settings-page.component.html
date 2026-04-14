@@ -1,7 +1,7 @@
 <okd-main-header></okd-main-header>
 
 <div class="page-content">
-    <okd-request-overlay [requestState]="profileState()">
+    <okd-request-overlay [requestHandler]="profileHandler">
         <mat-card>
             <mat-card-header>
                 <h2>Meu Perfil</h2>
@@ -12,7 +12,7 @@
         </mat-card>
     </okd-request-overlay>
     
-    <okd-request-overlay [requestState]="sessionsState()", (retry)="loadSessions()">
+    <okd-request-overlay [requestHandler]="sessionsHandler", (retry)="loadSessions()">
         <mat-card>
             <mat-card-header>
                 <h2>Sessões ativas</h2>

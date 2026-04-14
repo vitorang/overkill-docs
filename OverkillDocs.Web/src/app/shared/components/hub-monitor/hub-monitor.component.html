@@ -28,7 +28,7 @@
     }
 </div>
 <div class="state">
-    <button (click)="toggleConnection()" mat-flat-button [style.background-color]="stateColors[debugHub.connectionState()]">
-        <span class="state-text">{{debugHub.connectionState()}}</span>
+    <button (click)="toggleConnection()" mat-flat-button [style.background-color]="stateColor()">
+        <span class="state-text">{{debugHub.state.current()}}</span>
     </button>
 </div>

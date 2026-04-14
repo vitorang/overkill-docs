@@ -1,14 +1,14 @@
-<div class="child-content" [class.is-blocked]="requestState() !== RequestState.SUCCESS">
+<div class="child-content" [class.is-locked]="locked()">
     <ng-content/>
 </div>
 
-@if (requestState() !== RequestState.SUCCESS) {
+@if (locked()) {
     <div class="overlay-content">
-        @if (requestState() === RequestState.LOADING) {
+        @if (requestHandler().loading()) {
             <mat-spinner />
         }
 
-        @if (requestState() === RequestState.ERROR) {
+        @if (requestHandler().error()) {
             <p>Ocorreu um erro, tente novamente</p>
             <button mat-flat-button (click)="retry.emit()">Ok</button>
         }

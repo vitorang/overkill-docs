@@ -4,9 +4,3 @@ export enum RequestState {
     SUCCESS = 'SUCCESS',
     ERROR = 'ERROR'
 }
-
-export enum HubState {
-    DISCONNECTED = 'DISCONNECTED',
-    CONNECTED = 'CONNECTED',
-    CONNECTING = 'CONNECTING'
-}

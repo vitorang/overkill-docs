@@ -38,7 +38,7 @@ export class ChatViewComponent {
     protected async sendMessage(): Promise<void> {
         const text = this.message().trim();
 
-        if (text && this.chatHub.isConnected()) {
+        if (text && this.chatHub.state.connected()) {
             await this.chatHub.sendMessage(text);
             this.message.set('');
         }

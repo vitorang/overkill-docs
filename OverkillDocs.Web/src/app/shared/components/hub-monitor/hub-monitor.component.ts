@@ -1,7 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
-import { IRawMessage } from '../../../core/services/hub/hub.service';
+import { Component, computed, inject, signal } from '@angular/core';
+import { HubState, IRawMessage } from '../../../core/services/hub/hub.service';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { HubState } from '../../../core/models/common.model';
 import { SHARED_NATIVE } from '../..';
 import { DebugHubService } from '../../../core/services/hub/debug-hub.service';
 
@@ -26,12 +25,13 @@ export class HubMonitorComponent {
     protected debugHub = inject(DebugHubService);
     protected logs = signal<ILog[]>([]);
     private static lastId = 0;
-    private connectionState = toObservable(this.debugHub.connectionState);
+    private connectionState = toObservable(this.debugHub.state.current);
 
-    protected stateColors: Record<HubState, string> = {
-        [HubState.CONNECTED]: 'green',
-        [HubState.CONNECTING]: 'chocolate',
-        [HubState.DISCONNECTED]: 'firebrick',
+    protected stateColor = computed(() => this.stateColors[this.debugHub.state.current()]);
+    private stateColors: Record<HubState, string> = {
+        CONNECTED: 'green',
+        CONNECTING: 'chocolate',
+        DISCONNECTED: 'firebrick',
     }
 
     constructor() {
@@ -50,9 +50,9 @@ export class HubMonitorComponent {
     }
 
     protected toggleConnection(): void {
-        if (this.debugHub.connectionState() === HubState.CONNECTED)
+        if (this.debugHub.state.connected())
             this.debugHub.forceDisconnect();
-        else if (this.debugHub.connectionState() === HubState.DISCONNECTED)
+        else if (this.debugHub.state.disconnected())
             this.debugHub.forceConnect();
     }
 

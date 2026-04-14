@@ -1,8 +1,8 @@
 import { distinctUntilChanged, map, Observable, Subject, switchMap } from "rxjs";
 import { ChatMessage } from "../../../features/chat/models/chat-message.model";
 import { takeUntilDestroyed, toObservable } from "@angular/core/rxjs-interop";
-import { inject, Injectable, Signal } from "@angular/core";
-import { HubService, ResponseListener } from "./hub.service";
+import { inject, Injectable } from "@angular/core";
+import { HubService, IHubState, ResponseListener } from "./hub.service";
 
 const Hub = {
     join: 'Chat:Join',
@@ -33,7 +33,7 @@ export class ChatHubService {
     get connection(): Observable<boolean> {
         return this.mainHub.connection.pipe(
             takeUntilDestroyed(),
-            switchMap(() => toObservable(this.mainHub.isConnected)),
+            switchMap(() => toObservable(this.state.connected)),
             distinctUntilChanged()
         );
     }
@@ -49,8 +49,8 @@ export class ChatHubService {
         ];
     }
 
-    get isConnected(): Signal<boolean> {
-        return this.mainHub.isConnected;
+    get state(): IHubState {
+        return this.mainHub.state;
     }
 
     private mapMessage(message: ChatMessage): ChatMessage {

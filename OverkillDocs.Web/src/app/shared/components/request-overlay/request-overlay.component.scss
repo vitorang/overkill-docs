@@ -3,7 +3,7 @@
     position: relative;
 
     .child-content {
-        &.is-blocked {
+        &.is-locked {
             opacity: 0.4;
             filter: blur(2px);
             pointer-events: none;
