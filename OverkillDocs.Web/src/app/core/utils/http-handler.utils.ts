@@ -1,10 +1,11 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { computed, DestroyRef, inject, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { finalize, Observable } from "rxjs";
 
 type RequestState = 'IDLE' | 'LOADING' | 'SUCCESS' | 'ERROR';
 
-export class RequestHandler {
+export class HttpHandler {
     private state = signal<RequestState>('IDLE');
 
     readonly idle = computed(() => this.state() === 'IDLE');
@@ -17,7 +18,7 @@ export class RequestHandler {
     execute<T>(
         observable: Observable<T>,
         onSuccess?: (result: T) => void,
-        onError?: (error: unknown) => void
+        onError?: (error: HttpErrorResponse) => void
     ): void {
         if (this.state() === 'LOADING')
             throw 'Outra requisição já está em execução.';
@@ -28,7 +29,7 @@ export class RequestHandler {
                 onSuccess(result);
         };
 
-        const error = (error: unknown) => {
+        const error = (error: HttpErrorResponse) => {
             this.state.set('ERROR');
             if (onError)
                 onError(error);
@@ -45,7 +46,7 @@ export class RequestHandler {
     }
 }
 
-export function requestHandler(): RequestHandler {
+export function httpHandler(): HttpHandler {
     const destroyRef = inject(DestroyRef);
-    return new RequestHandler(destroyRef);
+    return new HttpHandler(destroyRef);
 }

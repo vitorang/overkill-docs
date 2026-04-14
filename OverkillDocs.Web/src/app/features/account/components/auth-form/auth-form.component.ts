@@ -1,4 +1,4 @@
-import { Component, computed, inject, output } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { AuthRequest, AuthStorageMode } from '../../models/auth.model';
 import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
@@ -6,8 +6,8 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { FormUtils } from '../../../../core/utils/form.utils';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '../../../../core/services/alert.service';
-import { ProblemDetails } from '../../../../core/models/problem-details.mode';
-import { RequestState } from '../../../../core/models/common.model';
+import { ProblemDetails } from '../../../../core/models/problem-details.model';
+import { httpHandler } from '../../../../core/utils/http-handler.utils';
 
 interface AuthFormData extends AuthRequest {
     storage: AuthStorageMode;
@@ -29,6 +29,7 @@ export class AuthFormComponent {
     private formBuilder = inject(NonNullableFormBuilder);
     private authService = inject(AuthService);
     private alertService = inject(AlertService);
+    protected authHandler = httpHandler();
 
     protected readonly AuthStorage = AuthStorageMode;
     protected isLogin = true;
@@ -39,8 +40,6 @@ export class AuthFormComponent {
         userAgent: [navigator.userAgent],
         storage: [AuthStorageMode.LocalStorage]
     });
-
-    protected readonly isLoading = computed(() => this.authService.loginState() === RequestState.LOADING);
 
     protected onSubmit(): void {
         if (!this.loginForm.valid)
@@ -58,18 +57,17 @@ export class AuthFormComponent {
             ? this.authService.login(data, storage)
             : this.authService.register(data, storage);
 
-        request.subscribe({
-            next: () => {
-                this.authSuccess.emit();
-            },
-            error: (err: HttpErrorResponse) => {
+        this.authHandler.execute(
+            request,
+            () => this.authSuccess.emit(),
+            (err: HttpErrorResponse) => {
                 const problem = err.error as ProblemDetails | undefined;
                 if (problem?.errors)
                     FormUtils.injectError(this.loginForm, problem.errors);
                 else
                     this.alertService.error(problem?.detail);
             }
-        });
+        )
     }
 
     protected get usernameError(): string {

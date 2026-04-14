@@ -1,8 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthRequest, AuthResponse, AuthStorageMode } from '../../features/account/models/auth.model';
-import { RequestState } from '../models/common.model';
-import { finalize, map, Observable, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { AUTH } from '../constants/auth.constant';
 import { API } from '../constants/api.constants';
 import { UserService } from './user.service';
@@ -15,21 +14,14 @@ export class AuthService {
     private userService = inject(UserService);
 
     token = signal<string | null>(this.getToken());
-    loginState = signal<RequestState>(RequestState.IDLE);
 
     private authRequest<T>(observable: Observable<T>, onSuccess: (result: T) => void): Observable<T> {
-        this.loginState.set(RequestState.LOADING);
         return observable.pipe(
             tap({
                 next: (response) => {
                     onSuccess(response);
-                    this.loginState.set(RequestState.SUCCESS);
                 }
             }),
-            finalize(() => {
-                if (this.loginState() !== RequestState.SUCCESS)
-                    this.loginState.set(RequestState.IDLE);
-            })
         );
     }
 

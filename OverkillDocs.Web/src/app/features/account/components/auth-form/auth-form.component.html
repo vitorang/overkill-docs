@@ -31,10 +31,10 @@
     </mat-form-field>
 
     <div class="button-group">
-        <button mat-flat-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading()">
+        <button mat-flat-button type="submit" [disabled]="loginForm.invalid || authHandler.loading()">
             {{ isLogin? 'Entrar' : 'Cadastrar' }}
         </button>
-        <button mat-button type="button" (click)="isLogin = !isLogin" [disabled]="isLoading()">
+        <button mat-button type="button" (click)="isLogin = !isLogin" [disabled]="authHandler.loading()">
             {{ isLogin ? 'Não tem conta?' : 'Possui conta?' }}
         </button>
     </div>
