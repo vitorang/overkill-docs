@@ -1,4 +1,4 @@
-import { ParsedUserAgent } from "../../../core/utils/browser.utils"
+import { ParsedUserAgent } from "@core/utils/browser.utils"
 
 export interface UserSession extends ParsedUserAgent {
     hashId: string

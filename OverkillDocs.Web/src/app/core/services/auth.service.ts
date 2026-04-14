@@ -1,12 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AuthRequest, AuthResponse, AuthStorageMode } from '../../features/account/models/auth.model';
 import { map, Observable, tap } from 'rxjs';
-import { AUTH } from '../constants/auth.constant';
-import { API } from '../constants/api.constants';
-import { UserService } from './user.service';
-import { UserSession } from '../../features/account/models/user-session.model';
-import { parseUserAgent } from '../utils/browser.utils';
+import { UserService } from '@core/services/user.service';
+import { API } from '@core/constants/api.constants';
+import { AUTH } from '@core/constants/auth.constant';
+import { UserSession } from '@features/account/models/user-session.model';
+import { parseUserAgent } from '@core/utils/browser.utils';
+import { AuthRequest, AuthResponse, AuthStorageMode } from '@features/account/models/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

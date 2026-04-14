@@ -1,18 +1,18 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { BreakpointQueries } from '../../../../shared/constants/breakpoints.constant';
-import { ChatViewComponent } from '../../../chat/components/chat-view/chat-view.component';
-import { ChatHubService } from '../../../../core/services/hub/chat-hub.service';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
+import { SHARED_CUSTOM, SHARED_NATIVE } from '@shared/index';
+import { ChatViewComponent } from '@features/chat/components/chat-view/chat-view.component';
+import { ChatHubService } from '@features/chat/services/chat-hub.service';
+import { BreakpointQueries } from '@shared/constants/breakpoints.constant';
+import { HubMonitorComponent } from '@features/debug/components/hub-monitor/hub-monitor.component';
 
 type TabSection = 'editor' | 'chat';
 
 @Component({
     selector: 'okd-document-layout',
-    imports: [SHARED_NATIVE, SHARED_CUSTOM, ChatViewComponent],
+    imports: [SHARED_NATIVE, SHARED_CUSTOM, ChatViewComponent, HubMonitorComponent],
     templateUrl: './document-layout.component.html',
     styleUrl: './document-layout.component.scss'
 })

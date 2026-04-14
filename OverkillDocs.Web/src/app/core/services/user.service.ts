@@ -1,9 +1,10 @@
 import { catchError, finalize, map, Observable, of, shareReplay, tap } from "rxjs";
-import { API } from "../constants/api.constants";
 import { inject, Injectable, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { AlertService } from "./alert.service";
-import { SimpleUser } from "../models/user.model";
+import { SimpleUser } from "@core/models/user.model";
+import { AlertService } from "@core/services/alert.service";
+import { API } from "@core/constants/api.constants";
+
 
 @Injectable({ providedIn: 'root' })
 export class UserService {

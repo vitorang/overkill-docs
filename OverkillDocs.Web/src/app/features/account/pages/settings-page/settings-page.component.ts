@@ -1,8 +1,9 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
-import { UserSession } from '../../models/user-session.model';
-import { AuthService } from '../../../../core/services/auth.service';
-import { httpHandler } from '../../../../core/utils/http-handler.utils';
+import { AuthService } from '@core/services/auth.service';
+import { apiHandler } from '@core/utils/api-handler.utils';
+import { UserSession } from '@features/account/models/user-session.model';
+import { SHARED_CUSTOM, SHARED_NATIVE } from '@shared/index';
+
 
 @Component({
     selector: 'okd-settings-page',
@@ -11,10 +12,10 @@ import { httpHandler } from '../../../../core/utils/http-handler.utils';
     styleUrl: './settings-page.component.scss',
 })
 export class SettingsPageComponent implements OnInit {
-    protected profileHandler = httpHandler();
+    protected profileHandler = apiHandler();
     protected profile = {};
 
-    protected sessionsHandler = httpHandler();
+    protected sessionsHandler = apiHandler();
     protected sessions = signal<UserSession[]>([]);
 
     private authService = inject(AuthService);

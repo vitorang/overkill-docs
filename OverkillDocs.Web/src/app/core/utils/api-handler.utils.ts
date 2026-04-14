@@ -5,7 +5,7 @@ import { finalize, Observable } from "rxjs";
 
 type RequestState = 'IDLE' | 'LOADING' | 'SUCCESS' | 'ERROR';
 
-export class HttpHandler {
+export class ApiHandler {
     private state = signal<RequestState>('IDLE');
 
     readonly idle = computed(() => this.state() === 'IDLE');
@@ -46,7 +46,7 @@ export class HttpHandler {
     }
 }
 
-export function httpHandler(): HttpHandler {
+export function apiHandler(): ApiHandler {
     const destroyRef = inject(DestroyRef);
-    return new HttpHandler(destroyRef);
+    return new ApiHandler(destroyRef);
 }

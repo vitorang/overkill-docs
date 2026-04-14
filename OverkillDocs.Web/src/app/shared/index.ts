@@ -1,5 +1,4 @@
 import { MatInputModule } from '@angular/material/input';
-import { BackgroundImageComponent } from './components/background-image/background-image.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -9,14 +8,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
-import { BrandComponent } from './components/brand/brand.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
-import { MainHeaderComponent } from './components/main-header/main-header.component';
-import { HubMonitorComponent } from './components/hub-monitor/hub-monitor.component';
-import { AvatarComponent } from './components/avatar/avatar.component';
 import { MatBadgeModule } from '@angular/material/badge';
-import { RequestOverlayComponent } from './components/request-overlay/request-overlay.component';
+import { AvatarComponent } from '@shared/components/avatar/avatar.component';
+import { BackgroundImageComponent } from '@shared/components/background-image/background-image.component';
+import { BrandComponent } from '@shared/components/brand/brand.component';
+import { RequestOverlayComponent } from '@shared/components/request-overlay/request-overlay.component';
+import { MainHeaderComponent } from '@shared/components/main-header/main-header.component';
 
 export const SHARED_NATIVE = [
     CommonModule,
@@ -40,7 +39,6 @@ export const SHARED_CUSTOM = [
     AvatarComponent,
     BackgroundImageComponent,
     BrandComponent,
-    HubMonitorComponent,
     MainHeaderComponent,
     RequestOverlayComponent,
 ] as const;

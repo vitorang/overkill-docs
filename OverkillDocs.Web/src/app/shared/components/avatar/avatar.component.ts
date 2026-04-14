@@ -3,9 +3,9 @@ import { Component, HostBinding, inject, input, signal } from '@angular/core';
 import { createAvatar } from '@dicebear/core';
 import { botttsNeutral } from '@dicebear/collection';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { SimpleUser } from '../../../core/models/user.model';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { filter } from 'rxjs';
+import { SimpleUser } from '@core/models/user.model';
 
 type sizeUnit = 'px' | 'em' | 'rem' | '%';
 

@@ -1,9 +1,10 @@
-import { Component, computed, inject, input } from '@angular/core';
-import { ChatMessage } from '../../models/chat-message.model';
+import { Component, inject, input } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { UserService } from '@core/services/user.service';
+import { ChatMessage } from '@features/chat/models/chat-message.model';
+import { SHARED_CUSTOM, SHARED_NATIVE } from '@shared/index';
 import { distinctUntilChanged, map, switchMap } from 'rxjs';
-import { UserService } from '../../../../core/services/user.service';
-import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
+
 
 @Component({
     selector: 'okd-chat-message',

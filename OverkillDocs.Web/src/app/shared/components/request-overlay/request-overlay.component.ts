@@ -1,6 +1,6 @@
 import { Component, computed, input, output } from '@angular/core';
-import { SHARED_NATIVE } from '../..';
-import { HttpHandler } from '../../../core/utils/http-handler.utils';
+import { ApiHandler } from '@core/utils/api-handler.utils';
+import { SHARED_NATIVE } from '@shared/index';
 
 @Component({
     selector: 'okd-request-overlay',
@@ -9,7 +9,7 @@ import { HttpHandler } from '../../../core/utils/http-handler.utils';
     styleUrl: './request-overlay.component.scss',
 })
 export class RequestOverlayComponent {
-    requestHandler = input.required<HttpHandler>();
+    requestHandler = input.required<ApiHandler>();
     retry = output();
     protected locked = computed(() => this.requestHandler().loading() || this.requestHandler().error())
 }

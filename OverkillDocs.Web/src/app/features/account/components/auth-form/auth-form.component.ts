@@ -1,13 +1,14 @@
 import { Component, inject, output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { AuthRequest, AuthStorageMode } from '../../models/auth.model';
-import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
-import { AuthService } from '../../../../core/services/auth.service';
-import { FormUtils } from '../../../../core/utils/form.utils';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AlertService } from '../../../../core/services/alert.service';
-import { ProblemDetails } from '../../../../core/models/problem-details.model';
-import { httpHandler } from '../../../../core/utils/http-handler.utils';
+import { AuthRequest, AuthStorageMode } from '@features/account/models/auth.model';
+import { SHARED_CUSTOM, SHARED_NATIVE } from '@shared/index';
+import { AuthService } from '@core/services/auth.service';
+import { AlertService } from '@core/services/alert.service';
+import { apiHandler } from '@core/utils/api-handler.utils';
+import { ProblemDetails } from '@core/models/problem-details.model';
+import { FormUtils } from '@core/utils/form.utils';
+
 
 interface AuthFormData extends AuthRequest {
     storage: AuthStorageMode;
@@ -29,7 +30,7 @@ export class AuthFormComponent {
     private formBuilder = inject(NonNullableFormBuilder);
     private authService = inject(AuthService);
     private alertService = inject(AlertService);
-    protected authHandler = httpHandler();
+    protected authHandler = apiHandler();
 
     protected readonly AuthStorage = AuthStorageMode;
     protected isLogin = true;

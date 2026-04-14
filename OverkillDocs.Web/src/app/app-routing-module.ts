@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { NotFoundPageComponent } from './features/error/pages/not-found-page/not-found-page.component';
-import { SEGMENTS } from './core/constants/routes.constant';
-import { authGuard } from './core/guards/auth.guard';
+import { SEGMENTS } from '@core/constants/routes.constant';
+import { authGuard } from '@core/guards/auth.guard';
+import { NotFoundPageComponent } from '@features/error/pages/not-found-page/not-found-page.component';
+
 
 const S = SEGMENTS;
 const routes: Routes = [

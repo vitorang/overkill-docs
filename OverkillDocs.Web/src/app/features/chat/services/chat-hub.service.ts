@@ -1,8 +1,8 @@
 import { distinctUntilChanged, map, Observable, Subject, switchMap } from "rxjs";
-import { ChatMessage } from "../../../features/chat/models/chat-message.model";
 import { takeUntilDestroyed, toObservable } from "@angular/core/rxjs-interop";
 import { inject, Injectable } from "@angular/core";
-import { HubService, IHubState, ResponseListener } from "./hub.service";
+import { HubService, IHubState, ResponseListener } from "@core/services/hub.service";
+import { ChatMessage } from "@features/chat/models/chat-message.model";
 
 const Hub = {
     join: 'Chat:Join',

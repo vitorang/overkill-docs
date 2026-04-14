@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { SHARED_NATIVE } from '../..';
-import { BrandComponent } from '../brand/brand.component';
-import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
-import { PATHS } from '../../../core/constants/routes.constant';
+import { PATHS } from '@core/constants/routes.constant';
+import { AuthService } from '@core/services/auth.service';
+import { BrandComponent } from '@shared/components/brand/brand.component';
+import { SHARED_NATIVE } from '@shared/index';
 
 @Component({
     selector: 'okd-main-header',

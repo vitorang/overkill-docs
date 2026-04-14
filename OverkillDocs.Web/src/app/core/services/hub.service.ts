@@ -1,10 +1,10 @@
 import { computed, inject, Injectable, Signal, signal } from "@angular/core";
 import * as signalR from '@microsoft/signalr';
 import { defer, filter, finalize, Observable, shareReplay, Subject } from "rxjs";
-import { API } from "../../constants/api.constants";
-import { AuthService } from "../auth.service";
-import { ChatHubService } from "./chat-hub.service";
 import { takeUntilDestroyed, toObservable } from "@angular/core/rxjs-interop";
+import { AuthService } from "@core/services/auth.service";
+import { API } from "@core/constants/api.constants";
+import { ChatHubService } from "@features/chat/services/chat-hub.service";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface ResponseListener { name: string, listener: Subject<any> };

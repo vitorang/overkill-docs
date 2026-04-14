@@ -1,8 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
-import { SHARED_NATIVE } from '../../../../shared';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChatViewportComponent } from '../chat-viewport/chat-viewport.component';
-import { ChatHubService } from '../../../../core/services/hub/chat-hub.service';
+import { ChatViewportComponent } from '@features/chat/components/chat-viewport/chat-viewport.component';
+import { ChatHubService } from '@features/chat/services/chat-hub.service';
+import { SHARED_NATIVE } from '@shared/index';
+
 import { filter } from 'rxjs';
 
 @Component({

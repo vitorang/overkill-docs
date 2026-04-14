@@ -1,9 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
-import { AuthFormComponent } from '../../components/auth-form/auth-form.component';
-import { AuthFormWrapperComponent } from '../../components/auth-form-wrapper/auth-form-wrapper.component';
 import { Router } from '@angular/router';
-import { PATHS } from '../../../../core/constants/routes.constant';
+import { PATHS } from '@core/constants/routes.constant';
+import { AuthFormWrapperComponent } from '@features/account/components/auth-form-wrapper/auth-form-wrapper.component';
+import { AuthFormComponent } from '@features/account/components/auth-form/auth-form.component';
+import { SHARED_CUSTOM, SHARED_NATIVE } from '@shared/index';
+
 
 @Component({
     selector: 'okd-login-page',

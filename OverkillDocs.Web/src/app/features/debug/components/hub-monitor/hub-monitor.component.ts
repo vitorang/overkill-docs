@@ -1,8 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { HubState, IRawMessage } from '../../../core/services/hub/hub.service';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { SHARED_NATIVE } from '../..';
-import { DebugHubService } from '../../../core/services/hub/debug-hub.service';
+import { HubState, IRawMessage } from '@core/services/hub.service';
+import { DebugHubService } from '@features/debug/services/debug-hub.service';
+import { SHARED_NATIVE } from '@shared/index';
+
 
 
 type Mode = 'received' | 'sended' | 'stateChanged'
