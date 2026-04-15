@@ -43,7 +43,7 @@ export class AuthFormComponent {
     });
 
     protected onSubmit(): void {
-        if (!this.loginForm.valid)
+        if (!this.loginForm.valid || this.authHandler.loading())
             return;
 
         const value = this.loginForm.getRawValue();

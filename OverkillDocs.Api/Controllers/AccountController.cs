@@ -9,7 +9,7 @@ namespace OverkillDocs.Api.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [ProducesErrorResponseType(typeof(ProblemDetails))]
-    public class AccountController(IAccountService accountService) : ControllerBase
+    public class AccountController(IAccountService accountService, IUserService userService) : ControllerBase
     {
         [AllowAnonymous]
         [HttpPost("Login")]
@@ -50,6 +50,22 @@ namespace OverkillDocs.Api.Controllers
         public async Task<ActionResult<AuthResponseDto>> Sessions(CancellationToken ct)
         {
             var result = await accountService.ListSessions(ct);
+            return Ok(result);
+        }
+
+        [HttpGet("profile")]
+        [ProducesResponseType(typeof(ProfileDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<ProfileDto>> Profile(CancellationToken ct)
+        {
+            var result = await userService.GetProfile(ct: ct);
+            return Ok(result);
+        }
+
+        [HttpPost("profile")]
+        [ProducesResponseType(typeof(ProfileDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<ProfileDto>> Profile([FromBody] ProfileDto profileDto, CancellationToken ct)
+        {
+            var result = await userService.UpdateProfile(profileDto, ct: ct);
             return Ok(result);
         }
     }

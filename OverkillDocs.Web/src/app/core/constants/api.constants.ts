@@ -6,6 +6,7 @@ export const API = {
         LOGIN: `${url}/account/login`,
         LOGOUT: `${url}/account/logout`,
         LOGOUT_BY_ID: (id: string) => `${url}/account/logout/${id}`,
+        PROFILE: `${url}/account/profile`,
         REGISTER: `${url}/account/register`,
         SESSIONS: `${url}/account/sessions`,
     },

@@ -1,0 +1,10 @@
+@use 'mixins/forms' as forms;
+
+:host {
+    display: block;
+    width: 100%;
+
+    form {
+        @include forms.layout;
+    }
+}

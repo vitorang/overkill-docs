@@ -3,14 +3,13 @@ import { computed, DestroyRef, inject, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { finalize, Observable } from "rxjs";
 
-type RequestState = 'IDLE' | 'LOADING' | 'SUCCESS' | 'ERROR';
+type RequestState = 'IDLE' | 'LOADING' | 'ERROR';
 
 export class ApiHandler {
     private state = signal<RequestState>('IDLE');
 
     readonly idle = computed(() => this.state() === 'IDLE');
     readonly loading = computed(() => this.state() === 'LOADING');
-    readonly success = computed(() => this.state() === 'SUCCESS');
     readonly error = computed(() => this.state() === 'ERROR');
 
     constructor(private destroyRef: DestroyRef) { }
@@ -21,10 +20,10 @@ export class ApiHandler {
         onError?: (error: HttpErrorResponse) => void
     ): void {
         if (this.state() === 'LOADING')
-            throw 'Outra requisição já está em execução.';
+            throw 'Outra requisição está em execução.';
 
         const next = (result: T) => {
-            this.state.set('SUCCESS');
+            this.state.set('IDLE');
             if (onSuccess)
                 onSuccess(result);
         };

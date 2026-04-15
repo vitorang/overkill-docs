@@ -1,18 +1,18 @@
 <okd-main-header></okd-main-header>
 
 <div class="page-content">
-    <okd-request-overlay [requestHandler]="profileHandler">
+    <okd-request-overlay [requestHandler]="profileHandler" (retry)="loadProfile()">
         <mat-card>
             <mat-card-header>
                 <h2>Meu Perfil</h2>
             </mat-card-header>
             <mat-card-content>
-                Aqui
+                <okd-profile-form [value]="profile()" (saved)="onProfileSaved($event)"/>
             </mat-card-content>
         </mat-card>
     </okd-request-overlay>
     
-    <okd-request-overlay [requestHandler]="sessionsHandler", (retry)="loadSessions()">
+    <okd-request-overlay [requestHandler]="sessionsHandler" (retry)="loadSessions()">
         <mat-card>
             <mat-card-header>
                 <h2>Sessões ativas</h2>

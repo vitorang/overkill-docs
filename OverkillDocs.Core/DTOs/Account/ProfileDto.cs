@@ -1,8 +1,13 @@
-﻿namespace OverkillDocs.Core.DTOs.Account
+﻿using OverkillDocs.Core.Attributes;
+
+namespace OverkillDocs.Core.DTOs.Account
 {
     public record ProfileDto(
-        string Username,
+        [ProfileName]
         string Name,
+
+        string Username,
+
         string Avatar
     );
 }

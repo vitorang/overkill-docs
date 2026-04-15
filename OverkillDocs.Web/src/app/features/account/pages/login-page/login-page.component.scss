@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@use 'index' as *;
+@use 'mixins/breakpoints' as *;
 
 $formWidth: 500px;
 

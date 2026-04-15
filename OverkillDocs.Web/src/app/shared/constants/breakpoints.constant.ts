@@ -1,4 +1,4 @@
-// Ao editar, atualize _breakpoints.scss
+// Ao editar, atualize styles/mixins/_breakpoints.scss
 
 export const Breakpoints = {
     small: { min: '0px', max: '599.98px' },

@@ -1,0 +1,26 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline">
+        <mat-label>Nome</mat-label>
+        <input matInput formControlName="name">
+        
+        @if (nameError) {
+            <mat-error>{{nameError}}</mat-error>
+        }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Nome de usuário</mat-label>
+        <input matInput formControlName="username">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Avatar</mat-label>
+        <input matInput formControlName="avatar">
+    </mat-form-field>
+         
+    <div class="button-group">
+        <button mat-flat-button type="submit" [disabled]="formGroup.invalid || profileHandler.loading()">
+            Salvar
+        </button>
+    </div>
+</form>

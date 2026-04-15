@@ -1,17 +1,8 @@
-:host {
-    display: block;
+@mixin layout {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     width: 100%;
-
-    okd-brand {
-        margin-bottom: 1rem;
-    }
-
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        width: 100%;
-    }
 
     mat-form-field {
         width: 100%;
