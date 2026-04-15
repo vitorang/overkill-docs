@@ -1,5 +1,7 @@
 <mat-toolbar color="primary" class="main-toolbar">
-    <okd-brand [compact]="true"/>
+    <button okdClearButton (click)="goToHome()">
+        <okd-brand [compact]="true" />
+    </button>
     <ng-content></ng-content>
     <span class="header-spacer"></span>
     <button mat-icon-button [matMenuTriggerFor]="profileMenu">
