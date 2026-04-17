@@ -11,6 +11,14 @@ namespace OverkillDocs.Api.Controllers
     [ProducesErrorResponseType(typeof(ProblemDetails))]
     public class AccountController(IAccountService accountService, IUserService userService) : ControllerBase
     {
+        [HttpPost("Change-Password")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> ChangePassword([FromBody] PasswordChangeDto passwordChangeDto, CancellationToken ct)
+        {
+            await accountService.ChangePassword(passwordChangeDto, ct);
+            return NoContent();
+        }
+
         [AllowAnonymous]
         [HttpPost("Login")]
         [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
@@ -22,6 +30,7 @@ namespace OverkillDocs.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("Logout")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Logout(CancellationToken ct)
         {
             await accountService.Logout(null, ct);
@@ -30,6 +39,7 @@ namespace OverkillDocs.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("Logout/{hashId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Logout(string hashId, CancellationToken ct)
         {
             await accountService.Logout(hashId, ct);

@@ -11,6 +11,17 @@
             </mat-card-content>
         </mat-card>
     </okd-request-overlay>
+
+    <mat-card>
+        <mat-card-header>
+            <h2>Segurança</h2>
+        </mat-card-header>
+
+        <mat-card-content>
+            <h3>Alterar senha</h3>
+            <okd-password-change-form (saved)="alertSuccess()"/>
+        </mat-card-content>
+    </mat-card>
     
     <okd-request-overlay [requestHandler]="sessionsHandler" (retry)="loadSessions()">
         <mat-card>

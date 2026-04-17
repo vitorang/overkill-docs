@@ -20,6 +20,19 @@ namespace OverkillDocs.Core.Services
         IHashids hashids,
         UserContext userContext) : IAccountService
     {
+        public async Task ChangePassword(PasswordChangeDto passwordChange, CancellationToken ct)
+        {
+            var user = (await userRepository.FindById(userContext.UserId, useCache: false, ct: ct));
+
+            if (user == null || !passwordService.VerifyPassword(passwordChange.CurrentPassword, user.PasswordHash))
+                throw new ForbiddenException("Senha incorreta"); ;
+
+            user.PasswordHash = passwordService.CalculeHash(passwordChange.NewPassword);
+            await userRepository.InvalidateCache(user);
+
+            await unitOfWork.CommitAsync(ct);
+        }
+
         public async Task<ImmutableArray<UserSessionDto>> ListSessions(CancellationToken ct)
         {
             var sessions = (await userSessionRepository.List(userContext.UserId, ct: ct))

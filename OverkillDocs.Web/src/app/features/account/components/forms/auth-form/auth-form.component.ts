@@ -8,6 +8,7 @@ import { AlertService } from '@core/services/alert.service';
 import { apiHandler } from '@core/utils/api-handler.utils';
 import { ProblemDetails } from '@core/models/problem-details.model';
 import { FormUtils } from '@core/utils/form.utils';
+import { PASSWORD_VALIDATORS } from '@features/account/constants/form-validators.constants';
 
 
 interface AuthFormData extends AuthRequest {
@@ -37,7 +38,7 @@ export class AuthFormComponent {
 
     protected loginForm: LoginForm = this.formBuilder.group({
         username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
-        password: ['', [Validators.required, Validators.minLength(3)]],
+        password: ['', [...PASSWORD_VALIDATORS]],
         userAgent: [navigator.userAgent],
         storage: [AuthStorageMode.LocalStorage]
     });

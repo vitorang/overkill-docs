@@ -7,10 +7,11 @@ import { ProfileService } from '@features/account/services/profile.service';
 import { SHARED_CUSTOM, SHARED_NATIVE } from '@shared/index';
 import { ProfileFormComponent } from "@features/account/components/forms/profile-form/profile-form.component";
 import { AlertService } from '@core/services/alert.service';
+import { PasswordChangeFormComponent } from "@features/account/components/forms/password-change-form/password-change-form.component";
 
 @Component({
     selector: 'okd-settings-page',
-    imports: [SHARED_NATIVE, SHARED_CUSTOM, ProfileFormComponent],
+    imports: [SHARED_NATIVE, SHARED_CUSTOM, ProfileFormComponent, PasswordChangeFormComponent],
     templateUrl: './settings-page.component.html',
     styleUrl: './settings-page.component.scss',
 })
@@ -57,7 +58,7 @@ export class SettingsPageComponent implements OnInit {
         this.alertSuccess();
     }
 
-    private alertSuccess() {
+    protected alertSuccess(): void {
         this.alertService.info('Alterações salvas!')
     }
 }

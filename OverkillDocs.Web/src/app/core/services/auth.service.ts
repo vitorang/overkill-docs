@@ -7,6 +7,7 @@ import { AUTH } from '@core/constants/auth.constant';
 import { UserSession } from '@features/account/models/user-session.model';
 import { parseUserAgent } from '@core/utils/browser.utils';
 import { AuthRequest, AuthResponse, AuthStorageMode } from '@features/account/models/auth.model';
+import { PasswordChange } from '@features/account/models/password-change.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -23,6 +24,10 @@ export class AuthService {
                 }
             }),
         );
+    }
+
+    changePassword(credentials: PasswordChange): Observable<void> {
+        return this.http.post<void>(API.ACCOUNT.CHANGE_PASSWORD, credentials);
     }
 
     login(credentials: AuthRequest, storage: AuthStorageMode): Observable<AuthResponse> {
