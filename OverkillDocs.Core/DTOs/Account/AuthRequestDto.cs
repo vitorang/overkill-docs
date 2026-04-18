@@ -10,6 +10,7 @@ namespace OverkillDocs.Core.DTOs.Account
 
         [Required(ErrorMessage = "Senha obrigatória")]
         [Password]
+        [DataType(DataType.Password)]
         string Password,
         
         [Required(ErrorMessage = "User-Agent é obrigatório")]

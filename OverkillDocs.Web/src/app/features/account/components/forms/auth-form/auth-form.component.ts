@@ -1,14 +1,15 @@
 import { Component, inject, output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AuthRequest, AuthStorageMode } from '@features/account/models/auth.model';
 import { SHARED_CUSTOM, SHARED_NATIVE } from '@shared/index';
-import { AuthService } from '@core/services/auth.service';
 import { AlertService } from '@core/services/alert.service';
 import { apiHandler } from '@core/utils/api-handler.utils';
 import { ProblemDetails } from '@core/models/problem-details.model';
 import { FormUtils } from '@core/utils/form.utils';
 import { PASSWORD_VALIDATORS } from '@features/account/constants/form-validators.constants';
+import { AccountService } from '@features/account/services/account.service';
+import { AuthStorageMode } from '@core/constants/auth.constants';
+import { AuthRequest } from '@features/account/account.models';
 
 
 interface AuthFormData extends AuthRequest {
@@ -29,7 +30,7 @@ export class AuthFormComponent {
     authSuccess = output<void>();
 
     private formBuilder = inject(NonNullableFormBuilder);
-    private authService = inject(AuthService);
+    private accountService = inject(AccountService);
     private alertService = inject(AlertService);
     protected authHandler = apiHandler();
 
@@ -56,8 +57,8 @@ export class AuthFormComponent {
         };
 
         const request = this.isLogin
-            ? this.authService.login(data, storage)
-            : this.authService.register(data, storage);
+            ? this.accountService.login(data, storage)
+            : this.accountService.register(data, storage);
 
         this.authHandler.execute(
             request,

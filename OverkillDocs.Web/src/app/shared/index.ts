@@ -17,6 +17,7 @@ import { BrandComponent } from '@shared/components/brand/brand.component';
 import { RequestOverlayComponent } from '@shared/components/request-overlay/request-overlay.component';
 import { MainHeaderComponent } from '@shared/components/main-header/main-header.component';
 import { ClearButtonDirective } from '@shared/directives/clear-button.directive';
+import { MatDialogModule } from '@angular/material/dialog';
 
 export const SHARED_NATIVE = [
     CommonModule,
@@ -24,6 +25,7 @@ export const SHARED_NATIVE = [
     MatBadgeModule,
     MatButtonModule,
     MatCardModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,

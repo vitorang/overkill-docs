@@ -1,4 +1,5 @@
-﻿using OverkillDocs.Core.Interfaces;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using OverkillDocs.Core.Interfaces;
 using StackExchange.Redis;
 using System.Text.Json;
 
@@ -79,6 +80,17 @@ namespace OverkillDocs.Infrastructure.Cache.Redis
             if (string.IsNullOrEmpty(json))
                 return default;
             return JsonSerializer.Deserialize<T>(json, jsonOptions);
+        }
+
+        public async Task RemoveAll(IEnumerable<T> values)
+        {
+            var batch = database.CreateBatch();
+            var tasks = values
+                .Select(e => batch.KeyDeleteAsync(KeyOf(e)))
+                .ToArray();
+
+            batch.Execute();
+            await Task.WhenAll(tasks);
         }
     }
 }

@@ -15,6 +15,18 @@ namespace OverkillDocs.Infrastructure.Repositories
             await context.UserSessions.AddAsync(userSession, ct);
         }
 
+        public async Task ExecuteDeleteAllSessions(int userId, CancellationToken ct)
+        {
+            var query = context.UserSessions.Where(e => e.UserId == userId);
+
+            var identities = await query
+                .Select(e => new UserIdentity(e.UserId, e.User.Name, e.Token))
+                .ToArrayAsync(ct);
+
+            await query.ExecuteDeleteAsync(ct);
+            await userIdentityCache.RemoveAll(identities);
+        }
+
         public async Task ExecuteDelete(string sessionToken, CancellationToken ct)
         {
             await userIdentityCache.RemoveById(sessionToken);

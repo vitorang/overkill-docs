@@ -3,11 +3,11 @@ import { Component, inject, output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ProblemDetails } from '@core/models/problem-details.model';
 import { AlertService } from '@core/services/alert.service';
-import { AuthService } from '@core/services/auth.service';
 import { apiHandler } from '@core/utils/api-handler.utils';
 import { FormUtils } from '@core/utils/form.utils';
+import { PasswordChange } from '@features/account/account.models';
 import { PASSWORD_VALIDATORS } from '@features/account/constants/form-validators.constants';
-import { PasswordChange } from '@features/account/models/password-change.model';
+import { AccountSettingsService } from '@features/account/services/account-settings.service';
 import { SHARED_NATIVE } from '@shared/index';
 
 type PasswordChangeForm = FormGroup<{
@@ -24,7 +24,7 @@ export class PasswordChangeFormComponent {
     saved = output<void>();
 
     private formBuilder = inject(NonNullableFormBuilder);
-    private authService = inject(AuthService);
+    private accountSettingsService = inject(AccountSettingsService);
     private alertService = inject(AlertService);
     protected authHandler = apiHandler();
 
@@ -41,7 +41,7 @@ export class PasswordChangeFormComponent {
         const value: PasswordChange = this.formGroup.getRawValue();
 
         this.authHandler.execute(
-            this.authService.changePassword(value),
+            this.accountSettingsService.changePassword(value),
             () => this.saved.emit(),
             (err: HttpErrorResponse) => {
                 const problem = err.error as ProblemDetails | undefined;

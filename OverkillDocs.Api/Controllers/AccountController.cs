@@ -19,6 +19,14 @@ namespace OverkillDocs.Api.Controllers
             return NoContent();
         }
 
+        [HttpPost("Delete-Account")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> DeleteAccount([FromBody] AccountDeletionDto accountDeletionDto, CancellationToken ct)
+        {
+            await accountService.AnonymizeAccount(accountDeletionDto, ct);
+            return NoContent();
+        }
+
         [AllowAnonymous]
         [HttpPost("Login")]
         [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]

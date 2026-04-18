@@ -4,6 +4,7 @@ const url = environment.apiUrl;
 export const API = {
     ACCOUNT: {
         CHANGE_PASSWORD: `${url}/account/change-password`,
+        DELETE_ACCOUNT: `${url}/account/delete-account`,
         LOGIN: `${url}/account/login`,
         LOGOUT: `${url}/account/logout`,
         LOGOUT_BY_ID: (id: string) => `${url}/account/logout/${id}`,

@@ -26,5 +26,20 @@ namespace OverkillDocs.Core.Extensions
                 Avatar: user.Avatar
             );
         }
+
+        public static User Clone(this User user)
+        {
+            return new User
+            {
+                Username = user.Username,
+                Avatar = user.Avatar,
+                Name = user.Name,
+                PasswordHash = user.PasswordHash,
+                CreatedAt = user.CreatedAt,
+                Id = user.Id,
+                IsActive = user.IsActive,
+                UpdatedAt = user.UpdatedAt
+            };
+        }
     }
 }

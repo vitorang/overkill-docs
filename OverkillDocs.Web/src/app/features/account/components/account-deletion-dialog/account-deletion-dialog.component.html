@@ -1,0 +1,15 @@
+<h2 mat-dialog-title class="text-warn">Confirmar Encerramento</h2>
+<mat-dialog-content>
+    <p>Esta ação é irreversível. Digite a senha para confirmar:</p>
+    <mat-form-field appearance="outline" [style.width.%]="100">
+        <mat-label>Senha</mat-label>
+        <input matInput type="password" [formControl]="passwordControl">
+    </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancelar</button>
+    <button mat-flat-button [disabled]="passwordControl.invalid || authHandler.loading()" (click)="submit()">
+        Confirmar
+    </button>
+</mat-dialog-actions>

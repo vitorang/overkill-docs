@@ -20,16 +20,28 @@ namespace OverkillDocs.Core.Services
         IHashids hashids,
         UserContext userContext) : IAccountService
     {
+        public async Task AnonymizeAccount(AccountDeletionDto accountDeletionDto, CancellationToken ct)
+        {
+            var user = await CurrentAuthenticatedUser(accountDeletionDto.Password, ct);
+
+            await userSessionRepository.ExecuteDeleteAllSessions(user.Id, ct: ct);
+
+            var oldUser = user.Clone();
+            user.Name = user.Username = $"Anonymized {user.Id}";
+            user.Avatar = string.Empty;
+            user.PasswordHash = string.Empty;
+            user.IsActive = false;
+
+            await unitOfWork.CommitAsync(ct);
+            await userRepository.InvalidateCache(oldUser);
+        }
+
         public async Task ChangePassword(PasswordChangeDto passwordChange, CancellationToken ct)
         {
-            var user = (await userRepository.FindById(userContext.UserId, useCache: false, ct: ct));
-
-            if (user == null || !passwordService.VerifyPassword(passwordChange.CurrentPassword, user.PasswordHash))
-                throw new ForbiddenException("Senha incorreta"); ;
-
+            var user = await CurrentAuthenticatedUser(passwordChange.CurrentPassword, ct);
             user.PasswordHash = passwordService.CalculeHash(passwordChange.NewPassword);
+            
             await userRepository.InvalidateCache(user);
-
             await unitOfWork.CommitAsync(ct);
         }
 
@@ -111,6 +123,16 @@ namespace OverkillDocs.Core.Services
             await unitOfWork.CommitAsync(ct);
 
             return session.ToAuthResponse();
+        }
+
+        private async Task<User> CurrentAuthenticatedUser(string password, CancellationToken ct)
+        {
+            var user = (await userRepository.FindById(userContext.UserId, useCache: false, ct: ct));
+
+            if (user == null || !passwordService.VerifyPassword(password, user.PasswordHash))
+                throw new ForbiddenException("Senha incorreta");
+
+            return user;
         }
     }
 }

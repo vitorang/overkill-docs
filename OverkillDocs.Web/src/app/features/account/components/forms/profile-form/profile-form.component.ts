@@ -5,8 +5,8 @@ import { ProblemDetails } from '@core/models/problem-details.model';
 import { AlertService } from '@core/services/alert.service';
 import { apiHandler } from '@core/utils/api-handler.utils';
 import { FormUtils } from '@core/utils/form.utils';
-import { Profile } from '@features/account/models/profile.model';
-import { ProfileService } from '@features/account/services/profile.service';
+import { Profile } from '@features/account/account.models';
+import { AccountSettingsService } from '@features/account/services/account-settings.service';
 import { SHARED_NATIVE } from '@shared/index';
 
 
@@ -26,7 +26,7 @@ export class ProfileFormComponent {
     saved = output<Profile>();
 
     private alertService = inject(AlertService);
-    private profileService = inject(ProfileService);
+    private accountSettingsService = inject(AccountSettingsService);
     protected profileHandler = apiHandler();
 
     private formBuilder = inject(NonNullableFormBuilder);
@@ -47,7 +47,7 @@ export class ProfileFormComponent {
         const profile: Profile = this.formGroup.getRawValue();
 
         this.profileHandler.execute(
-            this.profileService.update(profile),
+            this.accountSettingsService.updateProfile(profile),
             (result) => this.saved.emit(result),
             (err: HttpErrorResponse) => {
                 const problem = err.error as ProblemDetails | undefined;
