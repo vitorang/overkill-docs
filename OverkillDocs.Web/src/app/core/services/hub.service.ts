@@ -1,36 +1,39 @@
-import { computed, inject, Injectable, Signal, signal } from "@angular/core";
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { defer, filter, finalize, Observable, shareReplay, Subject } from "rxjs";
-import { takeUntilDestroyed, toObservable } from "@angular/core/rxjs-interop";
-import { AuthService } from "@core/services/auth.service";
-import { API } from "@core/constants/api.constants";
-import { ChatHubService } from "@features/chat/services/chat-hub.service";
+import { defer, filter, finalize, Observable, shareReplay, Subject } from 'rxjs';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { AuthService } from '@core/services/auth.service';
+import { API } from '@core/constants/api.constants';
+import { ChatHubService } from '@features/chat/services/chat-hub.service';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface ResponseListener { name: string, listener: Subject<any> };
+export interface ResponseListener {
+    name: string;
+    listener: Subject<any>;
+}
 
 export interface IRawMessage {
-    method: string
-    data: unknown
+    method: string;
+    data: unknown;
 }
 
 export interface IHubState {
-    connected: Signal<boolean>,
-    disconnected: Signal<boolean>,
-    connecting: Signal<boolean>,
+    connected: Signal<boolean>;
+    disconnected: Signal<boolean>;
+    connecting: Signal<boolean>;
     current: Signal<HubState>;
 }
 
 export type HubState = 'DISCONNECTED' | 'CONNECTED' | 'CONNECTING';
 
 export interface IMainHub {
-    connection: Observable<unknown>
-    state: IHubState,
-    onReceived: Subject<IRawMessage>
-    onSended: Subject<IRawMessage>
-    send<T>(method: string, data?: T): Promise<void>
-    forceDisconnect(): void
-    forceConnect(): void
+    connection: Observable<unknown>;
+    state: IHubState;
+    onReceived: Subject<IRawMessage>;
+    onSended: Subject<IRawMessage>;
+    send<T>(method: string, data?: T): Promise<void>;
+    forceDisconnect(): void;
+    forceConnect(): void;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -51,12 +54,14 @@ export class HubService {
     private authService = inject(AuthService);
 
     constructor() {
-        toObservable(this.authService.token).pipe(
-            takeUntilDestroyed(),
-            filter(token => !token)
-        ).subscribe(() => {
-            this.disposeConnection();
-        });
+        toObservable(this.authService.token)
+            .pipe(
+                takeUntilDestroyed(),
+                filter((token) => !token),
+            )
+            .subscribe(() => {
+                this.disposeConnection();
+            });
     }
 
     get mainHub(): IMainHub {
@@ -68,20 +73,19 @@ export class HubService {
             send: this.send,
             forceConnect: this.connect,
             forceDisconnect: this.disconnect,
-        }
+        };
     }
 
     private connection = defer(() => {
         this.connect();
-        return new Observable(subscriber => subscriber.next(this.hubConnection));
+        return new Observable((subscriber) => subscriber.next(this.hubConnection));
     }).pipe(
         shareReplay({ bufferSize: 1, refCount: true }),
         finalize(() => this.disconnect()),
     );
 
     private connect = (): void => {
-        if (!this.state.disconnected())
-            return;
+        if (!this.state.disconnected()) return;
 
         if (!this.hubConnection) {
             this.hubConnection = new signalR.HubConnectionBuilder()
@@ -92,8 +96,7 @@ export class HubService {
             this.hubConnection.onreconnecting(() => this.connectionState.set('CONNECTING'));
             this.hubConnection.onreconnected(() => this.connectionState.set('CONNECTED'));
             this.hubConnection.onclose((error) => {
-                if (error)
-                    console.error('Hub:', error);
+                if (error) console.error('Hub:', error);
 
                 this.connectionState.set('DISCONNECTED');
             });
@@ -107,49 +110,43 @@ export class HubService {
             .then(() => this.connectionState.set('CONNECTED'))
             .catch((error) => {
                 console.error('Hub:', error);
-                this.connectionState.set('DISCONNECTED')
+                this.connectionState.set('DISCONNECTED');
             });
-    }
+    };
 
     private disconnect = (): void => {
         this.hubConnection?.stop()?.then();
-    }
+    };
 
     private send = <T>(method: string, data: T): Promise<void> => {
-        if (!this.hubConnection)
-            throw 'Conexão indefinida.';
+        if (!this.hubConnection) throw 'Conexão indefinida.';
 
         this.onSended.next({ method, data });
-        if (data === undefined)
-            return this.hubConnection.invoke(method);
+        if (data === undefined) return this.hubConnection.invoke(method);
 
         return this.hubConnection.invoke(method, data);
-    }
+    };
 
     private registerListeners = () => {
         const addListener = (event: ResponseListener) => {
             if (this.listenerNames.has(event.name))
                 throw `Hub: ${event.listener} já foi registrado`;
-            if (!this.hubConnection)
-                throw 'Conexão indefinida.';
+            if (!this.hubConnection) throw 'Conexão indefinida.';
 
             this.listenerNames.add(event.name);
             this.hubConnection.on(event.name, (data: unknown) => {
                 event.listener.next(data);
-                this.onReceived.next({ method: event.name, data })
+                this.onReceived.next({ method: event.name, data });
             });
-        }
+        };
 
-        [
-            ...inject(ChatHubService).responseListeners
-        ].forEach(listener => addListener(listener));
-    }
+        [...inject(ChatHubService).responseListeners].forEach((listener) => addListener(listener));
+    };
 
     private disposeConnection = () => {
-        this.listenerNames.forEach(name => this.hubConnection?.off(name));
+        this.listenerNames.forEach((name) => this.hubConnection?.off(name));
         this.listenerNames.clear();
         this.disconnect();
         this.hubConnection = null;
-    }
+    };
 }
-

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { PATHS } from '@core/constants/routes.constant';
 import { BrandComponent } from '@shared/components/brand/brand.component';
 import { SHARED } from '@shared/index';
-import { ClearButtonDirective } from "@shared/directives/clear-button.directive";
+import { ClearButtonDirective } from '@shared/directives/clear-button.directive';
 import { AccountService } from '@features/account/services/account.service';
 
 @Component({
@@ -17,7 +17,9 @@ export class MainHeaderComponent {
     private router = inject(Router);
 
     protected logout(): void {
-        this.accountService.logout().subscribe(() => this.router.navigateByUrl(PATHS.ACCOUNT.LOGIN));
+        this.accountService
+            .logout()
+            .subscribe(() => this.router.navigateByUrl(PATHS.ACCOUNT.LOGIN));
     }
 
     protected goToSettings(): void {

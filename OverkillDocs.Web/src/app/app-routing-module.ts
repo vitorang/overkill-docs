@@ -4,26 +4,25 @@ import { SEGMENTS } from '@core/constants/routes.constant';
 import { authGuard } from '@core/guards/auth.guard';
 import { NotFoundPageComponent } from '@features/error/pages/not-found-page/not-found-page.component';
 
-
 const S = SEGMENTS;
 const routes: Routes = [
     { path: '', redirectTo: S.DOCUMENT.ROOT, pathMatch: 'full' },
     {
         path: S.ACCOUNT.ROOT,
-        loadChildren: () => import('./features/account/account.routes').then(r => r.ACCOUNT_ROUTES)
+        loadChildren: () =>
+            import('./features/account/account.routes').then((r) => r.ACCOUNT_ROUTES),
     },
     {
         path: S.DOCUMENT.ROOT,
-        loadChildren: () => import('./features/document/document.routes').then(r => r.DOCUMENT_ROUTES),
-        canActivate: [authGuard]
+        loadChildren: () =>
+            import('./features/document/document.routes').then((r) => r.DOCUMENT_ROUTES),
+        canActivate: [authGuard],
     },
-    { path: '**', component: NotFoundPageComponent }
+    { path: '**', component: NotFoundPageComponent },
 ];
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
-    exports: [RouterModule]
+    exports: [RouterModule],
 })
-export class AppRoutingModule { }
-
-
+export class AppRoutingModule {}

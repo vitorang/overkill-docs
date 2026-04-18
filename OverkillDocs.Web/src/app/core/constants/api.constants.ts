@@ -1,4 +1,4 @@
-import { environment } from "@env/environment";
+import { environment } from '@env/environment';
 
 const url = environment.apiUrl;
 export const API = {
@@ -17,6 +17,6 @@ export const API = {
         BY_ID: (id: string) => `${url}/user/${id}`,
     },
     HUB: {
-        MAIN: (authToken: string) => `${url}/hubs/main?auth_token=${authToken}`
+        MAIN: (authToken: string) => `${url}/hubs/main?auth_token=${authToken}`,
     },
 } as const;

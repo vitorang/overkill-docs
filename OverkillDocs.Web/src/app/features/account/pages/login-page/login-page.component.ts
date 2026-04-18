@@ -4,8 +4,7 @@ import { PATHS } from '@core/constants/routes.constant';
 import { AuthFormWrapperComponent } from '@features/account/components/auth-form-wrapper/auth-form-wrapper.component';
 import { AuthFormComponent } from '@features/account/components/forms/auth-form/auth-form.component';
 import { SHARED } from '@shared/index';
-import { BackgroundImageComponent } from "@shared/components/background-image/background-image.component";
-
+import { BackgroundImageComponent } from '@shared/components/background-image/background-image.component';
 
 @Component({
     selector: 'okd-login-page',

@@ -5,7 +5,7 @@ import { Directive } from '@angular/core';
     host: {
         '[style]': 'buttonStyles',
         '[attr.type]': '"type"',
-    }
+    },
 })
 export class ClearButtonDirective {
     protected buttonStyles: Partial<CSSStyleDeclaration> = {
@@ -21,6 +21,6 @@ export class ClearButtonDirective {
         alignItems: 'center',
         justifyContent: 'center',
         outline: 'none',
-        textDecoration: 'none'
+        textDecoration: 'none',
     };
 }

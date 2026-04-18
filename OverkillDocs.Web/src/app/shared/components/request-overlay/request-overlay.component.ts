@@ -11,5 +11,7 @@ import { SHARED } from '@shared/index';
 export class RequestOverlayComponent {
     requestHandler = input.required<ApiHandler>();
     retry = output();
-    protected locked = computed(() => this.requestHandler().loading() || this.requestHandler().error())
+    protected locked = computed(
+        () => this.requestHandler().loading() || this.requestHandler().error(),
+    );
 }

@@ -13,7 +13,7 @@ import { SHARED } from '@shared/index';
 @Component({
     selector: 'okd-account-deletion-dialog',
     imports: [SHARED],
-    templateUrl: './account-deletion-dialog.component.html'
+    templateUrl: './account-deletion-dialog.component.html',
 })
 export class AccountDeletionDialogComponent {
     private accountService = inject(AccountService);
@@ -25,11 +25,10 @@ export class AccountDeletionDialogComponent {
     protected passwordControl = new FormControl('', Validators.required);
 
     protected submit = (): void => {
-        if (this.passwordControl.invalid || this.authHandler.loading())
-            return;
+        if (this.passwordControl.invalid || this.authHandler.loading()) return;
 
         const accountDeletion: AccountDeletion = {
-            password: this.passwordControl.value ?? ''
+            password: this.passwordControl.value ?? '',
         };
 
         this.authHandler.execute(
@@ -38,9 +37,9 @@ export class AccountDeletionDialogComponent {
             (err: HttpErrorResponse) => {
                 const problem = err.error as ProblemDetails | undefined;
                 this.alertService.error(problem?.detail);
-            }
-        )
-    }
+            },
+        );
+    };
 
     private onDeleteAccount() {
         this.authService.deleteToken();

@@ -1,27 +1,30 @@
 <div class="logs">
-    @for (log of logs(); track log.id)
-    {
+    @for (log of logs(); track log.id) {
         <mat-card>
             <mat-card-header>
                 <span>
-                    @if (log.mode === 'received') { <mat-icon>arrow_downward</mat-icon> }
-                    @if (log.mode === 'sended') { <mat-icon>arrow_upward</mat-icon> }
-                    @if (log.mode === 'stateChanged') { <mat-icon>cached</mat-icon> }
+                    @if (log.mode === 'received') {
+                        <mat-icon>arrow_downward</mat-icon>
+                    }
+                    @if (log.mode === 'sended') {
+                        <mat-icon>arrow_upward</mat-icon>
+                    }
+                    @if (log.mode === 'stateChanged') {
+                        <mat-icon>cached</mat-icon>
+                    }
                 </span>
                 &nbsp;
-                <span>{{log.method}}</span>
-                
+                <span>{{ log.method }}</span>
             </mat-card-header>
             <mat-card-content>
-                @if (log.data)
-                {
+                @if (log.data) {
                     <div class="data">
-                        {{log.data}}
+                        {{ log.data }}
                     </div>
                 }
-                
+
                 <div class="timestamp">
-                    {{formatTime(log.timestamp)}}
+                    {{ formatTime(log.timestamp) }}
                 </div>
             </mat-card-content>
         </mat-card>
@@ -29,6 +32,6 @@
 </div>
 <div class="state">
     <button (click)="toggleConnection()" mat-flat-button [style.background-color]="stateColor()">
-        <span class="state-text">{{debugHub.state.current()}}</span>
+        <span class="state-text">{{ debugHub.state.current() }}</span>
     </button>
 </div>

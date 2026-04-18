@@ -9,11 +9,9 @@ import { Profile } from '@features/account/account.models';
 import { AccountSettingsService } from '@features/account/services/account-settings.service';
 import { SHARED } from '@shared/index';
 
-
 type ProfileForm = FormGroup<{
-    [K in keyof Profile]: FormControl<Profile[K]>
+    [K in keyof Profile]: FormControl<Profile[K]>;
 }>;
-
 
 @Component({
     selector: 'okd-profile-form',
@@ -33,7 +31,7 @@ export class ProfileFormComponent {
     protected formGroup: ProfileForm = this.formBuilder.group({
         name: ['', [Validators.required, Validators.maxLength(15)]],
         username: [{ value: '', disabled: true }],
-        avatar: [{ value: '', disabled: true }]
+        avatar: [{ value: '', disabled: true }],
     });
 
     constructor() {
@@ -41,8 +39,7 @@ export class ProfileFormComponent {
     }
 
     protected onSubmit(): void {
-        if (!this.formGroup.valid || this.profileHandler.loading())
-            return;
+        if (!this.formGroup.valid || this.profileHandler.loading()) return;
 
         const profile: Profile = this.formGroup.getRawValue();
 
@@ -51,12 +48,10 @@ export class ProfileFormComponent {
             (result) => this.saved.emit(result),
             (err: HttpErrorResponse) => {
                 const problem = err.error as ProblemDetails | undefined;
-                if (problem?.errors)
-                    FormUtils.injectError(this.formGroup, problem.errors);
-                else
-                    this.alertService.error(problem?.detail);
-            }
-        )
+                if (problem?.errors) FormUtils.injectError(this.formGroup, problem.errors);
+                else this.alertService.error(problem?.detail);
+            },
+        );
     }
 
     protected get nameError(): string {

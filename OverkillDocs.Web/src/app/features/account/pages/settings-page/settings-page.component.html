@@ -9,13 +9,12 @@
                         <h2>Meu Perfil</h2>
                     </mat-card-header>
                     <mat-card-content>
-                        <okd-profile-form [value]="profile()" (saved)="onProfileSaved($event)"/>
+                        <okd-profile-form [value]="profile()" (saved)="onProfileSaved($event)" />
                     </mat-card-content>
                 </mat-card>
             </okd-request-overlay>
         </div>
-        
-        
+
         <div class="group">
             <okd-request-overlay [requestHandler]="sessionsHandler" (retry)="loadSessions()">
                 <mat-card>
@@ -27,7 +26,7 @@
                             @for (session of sessions(); track session.hashId) {
                                 <div class="session-item">
                                     <div class="device-icon">
-                                        <mat-icon>{{session.deviceIcon}}</mat-icon>
+                                        <mat-icon>{{ session.deviceIcon }}</mat-icon>
                                     </div>
                                     <div class="device-name">
                                         {{ session.browserName }}
@@ -36,7 +35,13 @@
                                         @if (session.isCurrent) {
                                             <button mat-button disabled>Atual</button>
                                         } @else {
-                                            <button mat-button [disabled]="logoutHandler.loading()" (click)="logout(session)">Sair</button>
+                                            <button
+                                                mat-button
+                                                [disabled]="logoutHandler.loading()"
+                                                (click)="logout(session)"
+                                            >
+                                                Sair
+                                            </button>
                                         }
                                     </div>
                                 </div>
@@ -46,29 +51,30 @@
                 </mat-card>
             </okd-request-overlay>
         </div>
-        
-        
+
         <div class="group">
             <mat-card>
                 <mat-card-header>
                     <h2>Alterar senha</h2>
                 </mat-card-header>
-                
+
                 <mat-card-content>
-                    <okd-password-change-form (saved)="alertSuccess()"/>
+                    <okd-password-change-form (saved)="alertSuccess()" />
                 </mat-card-content>
             </mat-card>
-            
+
             <mat-card>
                 <mat-card-header>
                     <h2>Encerrar conta</h2>
                 </mat-card-header>
-                
+
                 <mat-card-content>
-                    Ao encerrar sua conta, os dados serão anonimizados.<br/>
+                    Ao encerrar sua conta, os dados serão anonimizados.<br />
                     Porém, os documentos continuarão acessíveis.
                     <div [style.margin-top.rem]="1.5">
-                        <button mat-stroked-button (click)="showAccountDeletionDialog()">Encerrar conta</button>
+                        <button mat-stroked-button (click)="showAccountDeletionDialog()">
+                            Encerrar conta
+                        </button>
                     </div>
                 </mat-card-content>
             </mat-card>

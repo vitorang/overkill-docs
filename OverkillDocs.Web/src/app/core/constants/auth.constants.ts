@@ -4,5 +4,5 @@ export const AUTH = {
 
 export enum AuthStorageMode {
     LocalStorage = 'LOCAL_STORAGE',
-    SessionStorage = 'SESSION_STORAGE'
+    SessionStorage = 'SESSION_STORAGE',
 }

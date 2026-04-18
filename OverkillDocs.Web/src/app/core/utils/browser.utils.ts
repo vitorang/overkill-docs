@@ -6,16 +6,15 @@ export interface ParsedUserAgent {
 }
 
 const DEVICE_ICONS: Record<string, string> = {
-    'mobile': 'smartphone',
-    'tablet': 'tablet',
-    'smarttv': 'tv',
-    'console': 'videogame_asset',
-    'wearable': 'watch',
-    'embedded': 'memory',
-    'xr': 'vrpano',
-    'desktop': 'desktop_windows',
+    mobile: 'smartphone',
+    tablet: 'tablet',
+    smarttv: 'tv',
+    console: 'videogame_asset',
+    wearable: 'watch',
+    embedded: 'memory',
+    xr: 'vrpano',
+    desktop: 'desktop_windows',
 };
-
 
 export function parseUserAgent(userAgent: string): ParsedUserAgent {
     const res = new UAParser(userAgent).getResult();
@@ -23,6 +22,6 @@ export function parseUserAgent(userAgent: string): ParsedUserAgent {
 
     return {
         browserName: res.browser.name || userAgent,
-        deviceIcon: DEVICE_ICONS[type] || 'help_outline'
+        deviceIcon: DEVICE_ICONS[type] || 'help_outline',
     };
 }

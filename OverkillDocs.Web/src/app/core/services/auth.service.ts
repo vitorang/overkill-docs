@@ -10,8 +10,7 @@ export class AuthService {
 
     saveToken(token: string, storage: AuthStorageMode): void {
         this.token.set(token);
-        if (storage === AuthStorageMode.LocalStorage)
-            localStorage.setItem(AUTH.TOKEN, token);
+        if (storage === AuthStorageMode.LocalStorage) localStorage.setItem(AUTH.TOKEN, token);
         else if (storage === AuthStorageMode.SessionStorage)
             sessionStorage.setItem(AUTH.TOKEN, token);
     }
@@ -26,6 +25,4 @@ export class AuthService {
         localStorage.removeItem(AUTH.TOKEN);
         this.userService.currentUser.set(null);
     }
-
-
 }

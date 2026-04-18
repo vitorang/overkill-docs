@@ -11,7 +11,7 @@ import { AccountSettingsService } from '@features/account/services/account-setti
 import { SHARED } from '@shared/index';
 
 type PasswordChangeForm = FormGroup<{
-    [K in keyof PasswordChange]: FormControl<PasswordChange[K]>
+    [K in keyof PasswordChange]: FormControl<PasswordChange[K]>;
 }>;
 
 @Component({
@@ -33,10 +33,8 @@ export class PasswordChangeFormComponent {
         newPassword: ['', [...PASSWORD_VALIDATORS]],
     });
 
-
     protected onSubmit(): void {
-        if (!this.formGroup.valid || this.authHandler.loading())
-            return;
+        if (!this.formGroup.valid || this.authHandler.loading()) return;
 
         const value: PasswordChange = this.formGroup.getRawValue();
 
@@ -45,12 +43,10 @@ export class PasswordChangeFormComponent {
             () => this.saved.emit(),
             (err: HttpErrorResponse) => {
                 const problem = err.error as ProblemDetails | undefined;
-                if (problem?.errors)
-                    FormUtils.injectError(this.formGroup, problem.errors);
-                else
-                    this.alertService.error(problem?.detail);
-            }
-        )
+                if (problem?.errors) FormUtils.injectError(this.formGroup, problem.errors);
+                else this.alertService.error(problem?.detail);
+            },
+        );
     }
 
     protected get currentPasswordError(): string {

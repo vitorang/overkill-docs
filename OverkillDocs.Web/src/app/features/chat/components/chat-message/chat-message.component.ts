@@ -4,8 +4,7 @@ import { UserService } from '@core/services/user.service';
 import { ChatMessage } from '@features/chat/models/chat-message.model';
 import { SHARED } from '@shared/index';
 import { distinctUntilChanged, map, switchMap } from 'rxjs';
-import { AvatarComponent } from "@shared/components/avatar/avatar.component";
-
+import { AvatarComponent } from '@shared/components/avatar/avatar.component';
 
 @Component({
     selector: 'okd-chat-message',
@@ -21,9 +20,9 @@ export class ChatMessageComponent {
 
     protected user = toSignal(
         toObservable(this.message).pipe(
-            map(m => m.userHashId),
+            map((m) => m.userHashId),
             distinctUntilChanged(),
-            switchMap(hashId => this.userService.getUser(hashId))
-        )
+            switchMap((hashId) => this.userService.getUser(hashId)),
+        ),
     );
 }

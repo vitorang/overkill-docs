@@ -18,19 +18,20 @@ export class ChatViewComponent {
     private chatHub = inject(ChatHubService);
 
     constructor() {
-        this.chatHub.connection.pipe(
-            takeUntilDestroyed(),
-            filter(connected => connected)
-        ).subscribe(() => {
-            this.chatHub.join();
-            this.chatHub.requestRecentMessages();
-        });
+        this.chatHub.connection
+            .pipe(
+                takeUntilDestroyed(),
+                filter((connected) => connected),
+            )
+            .subscribe(() => {
+                this.chatHub.join();
+                this.chatHub.requestRecentMessages();
+            });
     }
 
     protected onPressEnter(event: Event): void {
         const keyboardEvent = event as KeyboardEvent;
-        if (keyboardEvent.shiftKey)
-            return;
+        if (keyboardEvent.shiftKey) return;
 
         event.preventDefault();
         this.sendMessage();

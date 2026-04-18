@@ -29,9 +29,9 @@ export class AvatarComponent {
         toObservable(this.user)
             .pipe(
                 takeUntilDestroyed(),
-                filter(user => !!user)
+                filter((user) => !!user),
             )
-            .subscribe(user => this.createAvatar(user));
+            .subscribe((user) => this.createAvatar(user));
     }
 
     private createAvatar = (user: SimpleUser) => {
@@ -39,7 +39,7 @@ export class AvatarComponent {
 
         const avatar = createAvatar(botttsNeutral, { seed: user?.hashId ?? '', radius });
         this.svgAvatar.set(this.domSanitizer.bypassSecurityTrustHtml(avatar.toString()));
-    }
+    };
 
     @HostBinding('style.--avatar-size')
     protected get avatarSize(): string {

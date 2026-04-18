@@ -10,7 +10,7 @@ export class AlertService {
             duration: 5000,
             panelClass: [`${type}-toast`],
             horizontalPosition: 'center',
-            verticalPosition: 'bottom'
+            verticalPosition: 'bottom',
         });
     }
 

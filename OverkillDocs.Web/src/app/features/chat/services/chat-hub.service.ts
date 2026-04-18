@@ -1,8 +1,8 @@
-import { distinctUntilChanged, map, Observable, Subject, switchMap } from "rxjs";
-import { takeUntilDestroyed, toObservable } from "@angular/core/rxjs-interop";
-import { inject, Injectable } from "@angular/core";
-import { HubService, IHubState, ResponseListener } from "@core/services/hub.service";
-import { ChatMessage } from "@features/chat/models/chat-message.model";
+import { distinctUntilChanged, map, Observable, Subject, switchMap } from 'rxjs';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { inject, Injectable } from '@angular/core';
+import { HubService, IHubState, ResponseListener } from '@core/services/hub.service';
+import { ChatMessage } from '@features/chat/models/chat-message.model';
 
 const Hub = {
     join: 'Chat:Join',
@@ -10,9 +10,8 @@ const Hub = {
     sendMessage: 'Chat:SendMessage',
 
     onMessageReceived: 'Chat:OnMessageReceived',
-    onRecentMessagesReceived: "Chat:OnRecentMessagesReceived",
-} as const
-
+    onRecentMessagesReceived: 'Chat:OnRecentMessagesReceived',
+} as const;
 
 @Injectable({ providedIn: 'root' })
 export class ChatHubService {
@@ -20,32 +19,34 @@ export class ChatHubService {
 
     private _onMessageReceived = new Subject<ChatMessage>();
     readonly onMessageReceived = this._onMessageReceived.pipe(
-        map(message => this.mapMessage(message))
+        map((message) => this.mapMessage(message)),
     );
 
     private _onRecentMessagesReceived = new Subject<ChatMessage[]>();
     readonly onRecentMessagesReceived = this._onRecentMessagesReceived.pipe(
-        map(messages => messages.map(message => this.mapMessage(message)))
+        map((messages) => messages.map((message) => this.mapMessage(message))),
     );
 
-    readonly sendMessage = (text: string): Promise<void> => this.mainHub.send(Hub.sendMessage, text);
+    readonly sendMessage = (text: string): Promise<void> =>
+        this.mainHub.send(Hub.sendMessage, text);
 
     get connection(): Observable<boolean> {
         return this.mainHub.connection.pipe(
             takeUntilDestroyed(),
             switchMap(() => toObservable(this.state.connected)),
-            distinctUntilChanged()
+            distinctUntilChanged(),
         );
     }
 
     readonly join = (): Promise<void> => this.mainHub.send(Hub.join);
 
-    readonly requestRecentMessages = (): Promise<void> => this.mainHub.send(Hub.requestRecentMessages);
+    readonly requestRecentMessages = (): Promise<void> =>
+        this.mainHub.send(Hub.requestRecentMessages);
 
     get responseListeners(): ResponseListener[] {
         return [
             { name: Hub.onMessageReceived, listener: this._onMessageReceived },
-            { name: Hub.onRecentMessagesReceived, listener: this._onRecentMessagesReceived }
+            { name: Hub.onRecentMessagesReceived, listener: this._onRecentMessagesReceived },
         ];
     }
 

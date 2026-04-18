@@ -7,7 +7,7 @@ import { ChatViewComponent } from '@features/chat/components/chat-view/chat-view
 import { ChatHubService } from '@features/chat/services/chat-hub.service';
 import { BreakpointQueries } from '@shared/constants/breakpoints.constant';
 import { HubMonitorComponent } from '@features/debug/components/hub-monitor/hub-monitor.component';
-import { MainHeaderComponent } from "@shared/components/main-header/main-header.component";
+import { MainHeaderComponent } from '@shared/components/main-header/main-header.component';
 
 type TabSection = 'editor' | 'chat';
 
@@ -15,7 +15,7 @@ type TabSection = 'editor' | 'chat';
     selector: 'okd-document-layout',
     imports: [SHARED, ChatViewComponent, HubMonitorComponent, MainHeaderComponent],
     templateUrl: './document-layout.component.html',
-    styleUrl: './document-layout.component.scss'
+    styleUrl: './document-layout.component.scss',
 })
 export class DocumentLayoutComponent {
     private breakpointObserver = inject(BreakpointObserver);
@@ -26,28 +26,23 @@ export class DocumentLayoutComponent {
     protected hasUnreadMessage = signal(false);
 
     constructor() {
-        this.breakpointObserver
-            .observe([BreakpointQueries.smallMedium])
-            .subscribe(result => {
-                const isMobile = result.matches;
+        this.breakpointObserver.observe([BreakpointQueries.smallMedium]).subscribe((result) => {
+            const isMobile = result.matches;
 
-                this.isMobile.set(isMobile);
-                if (!isMobile)
-                    this.hasUnreadMessage.set(false);
-            });
+            this.isMobile.set(isMobile);
+            if (!isMobile) this.hasUnreadMessage.set(false);
+        });
 
-        this.chatHub.onMessageReceived
-            .pipe(takeUntilDestroyed())
-            .subscribe(() => {
-                this.hasUnreadMessage.set(this.isMobile() && this.activeSection() !== 'chat');
-            });
+        this.chatHub.onMessageReceived.pipe(takeUntilDestroyed()).subscribe(() => {
+            this.hasUnreadMessage.set(this.isMobile() && this.activeSection() !== 'chat');
+        });
 
         toObservable(this.activeSection)
             .pipe(
                 takeUntilDestroyed(),
-                filter(session => session === 'chat')
+                filter((session) => session === 'chat'),
             )
-            .subscribe(() => this.hasUnreadMessage.set(false))
+            .subscribe(() => this.hasUnreadMessage.set(false));
     }
 
     protected toggleSection(): void {
