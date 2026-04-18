@@ -6,9 +6,9 @@ import { AuthService } from '@core/services/auth.service';
 import { API } from '@core/constants/api.constants';
 import { ChatHubService } from '@features/chat/services/chat-hub.service';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface ResponseListener {
     name: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     listener: Subject<any>;
 }
 

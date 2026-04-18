@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ProblemDetails } from '@core/models/problem-details.model';
-import { AlertService } from '@core/services/alert.service';
+import { AlertService } from '@shared/services/alert.service';
 import { AuthService } from '@core/services/auth.service';
 import { apiHandler } from '@core/utils/api-handler.utils';
 import { AccountDeletion } from '@features/account/account.models';

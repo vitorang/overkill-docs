@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, effect, inject, input, output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ProblemDetails } from '@core/models/problem-details.model';
-import { AlertService } from '@core/services/alert.service';
+import { AlertService } from '@shared/services/alert.service';
 import { apiHandler } from '@core/utils/api-handler.utils';
 import { FormUtils } from '@core/utils/form.utils';
 import { Profile } from '@features/account/account.models';

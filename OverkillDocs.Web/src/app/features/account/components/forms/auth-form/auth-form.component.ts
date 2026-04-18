@@ -2,7 +2,7 @@ import { Component, inject, output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SHARED } from '@shared/index';
-import { AlertService } from '@core/services/alert.service';
+import { AlertService } from '@shared/services/alert.service';
 import { apiHandler } from '@core/utils/api-handler.utils';
 import { ProblemDetails } from '@core/models/problem-details.model';
 import { FormUtils } from '@core/utils/form.utils';

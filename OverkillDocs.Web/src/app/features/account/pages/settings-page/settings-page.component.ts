@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { apiHandler } from '@core/utils/api-handler.utils';
 import { SHARED } from '@shared/index';
 import { ProfileFormComponent } from '@features/account/components/forms/profile-form/profile-form.component';
-import { AlertService } from '@core/services/alert.service';
+import { AlertService } from '@shared/services/alert.service';
 import { PasswordChangeFormComponent } from '@features/account/components/forms/password-change-form/password-change-form.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountDeletionDialogComponent } from '@features/account/components/account-deletion-dialog/account-deletion-dialog.component';
