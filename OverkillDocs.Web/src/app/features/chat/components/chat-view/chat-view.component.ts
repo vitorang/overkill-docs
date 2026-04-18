@@ -2,13 +2,13 @@ import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChatViewportComponent } from '@features/chat/components/chat-viewport/chat-viewport.component';
 import { ChatHubService } from '@features/chat/services/chat-hub.service';
-import { SHARED_NATIVE } from '@shared/index';
+import { SHARED } from '@shared/index';
 
 import { filter } from 'rxjs';
 
 @Component({
     selector: 'okd-chat-view',
-    imports: [SHARED_NATIVE, ChatViewportComponent],
+    imports: [SHARED, ChatViewportComponent],
     templateUrl: './chat-view.component.html',
     styleUrl: './chat-view.component.scss',
 })

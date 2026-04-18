@@ -1,10 +1,10 @@
 import { Component, computed, input, output } from '@angular/core';
 import { ApiHandler } from '@core/utils/api-handler.utils';
-import { SHARED_NATIVE } from '@shared/index';
+import { SHARED } from '@shared/index';
 
 @Component({
     selector: 'okd-request-overlay',
-    imports: [SHARED_NATIVE],
+    imports: [SHARED],
     templateUrl: './request-overlay.component.html',
     styleUrl: './request-overlay.component.scss',
 })

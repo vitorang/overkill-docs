@@ -7,7 +7,7 @@ import { apiHandler } from '@core/utils/api-handler.utils';
 import { FormUtils } from '@core/utils/form.utils';
 import { Profile } from '@features/account/account.models';
 import { AccountSettingsService } from '@features/account/services/account-settings.service';
-import { SHARED_NATIVE } from '@shared/index';
+import { SHARED } from '@shared/index';
 
 
 type ProfileForm = FormGroup<{
@@ -17,7 +17,7 @@ type ProfileForm = FormGroup<{
 
 @Component({
     selector: 'okd-profile-form',
-    imports: [SHARED_NATIVE],
+    imports: [SHARED],
     templateUrl: './profile-form.component.html',
     styleUrl: './profile-form.component.scss',
 })

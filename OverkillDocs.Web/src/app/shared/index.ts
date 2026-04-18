@@ -11,15 +11,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
-import { AvatarComponent } from '@shared/components/avatar/avatar.component';
-import { BackgroundImageComponent } from '@shared/components/background-image/background-image.component';
-import { BrandComponent } from '@shared/components/brand/brand.component';
-import { RequestOverlayComponent } from '@shared/components/request-overlay/request-overlay.component';
-import { MainHeaderComponent } from '@shared/components/main-header/main-header.component';
-import { ClearButtonDirective } from '@shared/directives/clear-button.directive';
 import { MatDialogModule } from '@angular/material/dialog';
 
-export const SHARED_NATIVE = [
+export const SHARED = [
     CommonModule,
     FormsModule,
     MatBadgeModule,
@@ -35,14 +29,4 @@ export const SHARED_NATIVE = [
     MatSelectModule,
     MatToolbarModule,
     ReactiveFormsModule,
-] as const;
-
-
-export const SHARED_CUSTOM = [
-    AvatarComponent,
-    BackgroundImageComponent,
-    BrandComponent,
-    ClearButtonDirective,
-    MainHeaderComponent,
-    RequestOverlayComponent,
 ] as const;

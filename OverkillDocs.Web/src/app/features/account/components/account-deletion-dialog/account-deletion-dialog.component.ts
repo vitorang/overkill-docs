@@ -8,11 +8,11 @@ import { AuthService } from '@core/services/auth.service';
 import { apiHandler } from '@core/utils/api-handler.utils';
 import { AccountDeletion } from '@features/account/account.models';
 import { AccountService } from '@features/account/services/account.service';
-import { SHARED_NATIVE } from '@shared/index';
+import { SHARED } from '@shared/index';
 
 @Component({
     selector: 'okd-account-deletion-dialog',
-    imports: [SHARED_NATIVE],
+    imports: [SHARED],
     templateUrl: './account-deletion-dialog.component.html'
 })
 export class AccountDeletionDialogComponent {

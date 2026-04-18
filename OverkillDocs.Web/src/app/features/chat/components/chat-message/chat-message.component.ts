@@ -2,13 +2,14 @@ import { Component, inject, input } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { UserService } from '@core/services/user.service';
 import { ChatMessage } from '@features/chat/models/chat-message.model';
-import { SHARED_CUSTOM, SHARED_NATIVE } from '@shared/index';
+import { SHARED } from '@shared/index';
 import { distinctUntilChanged, map, switchMap } from 'rxjs';
+import { AvatarComponent } from "@shared/components/avatar/avatar.component";
 
 
 @Component({
     selector: 'okd-chat-message',
-    imports: [SHARED_NATIVE, SHARED_CUSTOM],
+    imports: [SHARED, AvatarComponent],
     templateUrl: './chat-message.component.html',
     styleUrl: './chat-message.component.scss',
 })

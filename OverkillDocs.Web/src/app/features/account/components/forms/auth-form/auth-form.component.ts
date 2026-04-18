@@ -1,7 +1,7 @@
 import { Component, inject, output } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SHARED_CUSTOM, SHARED_NATIVE } from '@shared/index';
+import { SHARED } from '@shared/index';
 import { AlertService } from '@core/services/alert.service';
 import { apiHandler } from '@core/utils/api-handler.utils';
 import { ProblemDetails } from '@core/models/problem-details.model';
@@ -10,6 +10,7 @@ import { PASSWORD_VALIDATORS } from '@features/account/constants/form-validators
 import { AccountService } from '@features/account/services/account.service';
 import { AuthStorageMode } from '@core/constants/auth.constants';
 import { AuthRequest } from '@features/account/account.models';
+import { BrandComponent } from "@shared/components/brand/brand.component";
 
 
 interface AuthFormData extends AuthRequest {
@@ -22,7 +23,7 @@ type LoginForm = FormGroup<{
 
 @Component({
     selector: 'okd-auth-form',
-    imports: [SHARED_NATIVE, SHARED_CUSTOM],
+    imports: [SHARED, BrandComponent],
     templateUrl: './auth-form.component.html',
     styleUrl: './auth-form.component.scss',
 })

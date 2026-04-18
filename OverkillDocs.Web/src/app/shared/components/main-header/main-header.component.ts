@@ -2,13 +2,13 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { PATHS } from '@core/constants/routes.constant';
 import { BrandComponent } from '@shared/components/brand/brand.component';
-import { SHARED_NATIVE } from '@shared/index';
+import { SHARED } from '@shared/index';
 import { ClearButtonDirective } from "@shared/directives/clear-button.directive";
 import { AccountService } from '@features/account/services/account.service';
 
 @Component({
     selector: 'okd-main-header',
-    imports: [SHARED_NATIVE, BrandComponent, ClearButtonDirective],
+    imports: [SHARED, BrandComponent, ClearButtonDirective],
     templateUrl: './main-header.component.html',
     styleUrl: './main-header.component.scss',
 })

@@ -8,7 +8,7 @@ import { FormUtils } from '@core/utils/form.utils';
 import { PasswordChange } from '@features/account/account.models';
 import { PASSWORD_VALIDATORS } from '@features/account/constants/form-validators.constants';
 import { AccountSettingsService } from '@features/account/services/account-settings.service';
-import { SHARED_NATIVE } from '@shared/index';
+import { SHARED } from '@shared/index';
 
 type PasswordChangeForm = FormGroup<{
     [K in keyof PasswordChange]: FormControl<PasswordChange[K]>
@@ -16,7 +16,7 @@ type PasswordChangeForm = FormGroup<{
 
 @Component({
     selector: 'okd-password-change-form',
-    imports: [SHARED_NATIVE],
+    imports: [SHARED],
     templateUrl: './password-change-form.component.html',
     styleUrl: './password-change-form.component.scss',
 })

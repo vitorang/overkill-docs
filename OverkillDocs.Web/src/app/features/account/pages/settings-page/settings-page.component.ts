@@ -1,6 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { apiHandler } from '@core/utils/api-handler.utils';
-import { SHARED_CUSTOM, SHARED_NATIVE } from '@shared/index';
+import { SHARED } from '@shared/index';
 import { ProfileFormComponent } from "@features/account/components/forms/profile-form/profile-form.component";
 import { AlertService } from '@core/services/alert.service';
 import { PasswordChangeFormComponent } from "@features/account/components/forms/password-change-form/password-change-form.component";
@@ -9,10 +9,12 @@ import { AccountDeletionDialogComponent } from '@features/account/components/acc
 import { AccountService } from '@features/account/services/account.service';
 import { Profile, UserSession } from '@features/account/account.models';
 import { AccountSettingsService } from '@features/account/services/account-settings.service';
+import { RequestOverlayComponent } from "@shared/components/request-overlay/request-overlay.component";
+import { MainHeaderComponent } from "@shared/components/main-header/main-header.component";
 
 @Component({
     selector: 'okd-settings-page',
-    imports: [SHARED_NATIVE, SHARED_CUSTOM, ProfileFormComponent, PasswordChangeFormComponent],
+    imports: [SHARED, ProfileFormComponent, PasswordChangeFormComponent, RequestOverlayComponent, MainHeaderComponent],
     templateUrl: './settings-page.component.html',
     styleUrl: './settings-page.component.scss',
 })
