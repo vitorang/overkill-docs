@@ -82,7 +82,8 @@
                             "buildTarget": "OverkillDocs.Web:build:production"
                         },
                         "development": {
-                            "buildTarget": "OverkillDocs.Web:build:development"
+                            "buildTarget": "OverkillDocs.Web:build:development",
+                            "hmr": false
                         }
                     },
                     "defaultConfiguration": "development",
