@@ -8,6 +8,7 @@ import { ChatHubService } from '@features/chat/services/chat-hub.service';
 import { BreakpointQueries } from '@shared/constants/breakpoints.constant';
 import { HubMonitorComponent } from '@features/debug/components/hub-monitor/hub-monitor.component';
 import { MainHeaderComponent } from '@shared/components/main-header/main-header.component';
+import { UserService } from '@core/services/user.service';
 
 type TabSection = 'editor' | 'chat';
 
@@ -16,6 +17,7 @@ type TabSection = 'editor' | 'chat';
     imports: [SHARED, ChatViewComponent, HubMonitorComponent, MainHeaderComponent],
     templateUrl: './document-layout.component.html',
     styleUrl: './document-layout.component.scss',
+    providers: [UserService, ChatHubService],
 })
 export class DocumentLayoutComponent {
     private breakpointObserver = inject(BreakpointObserver);

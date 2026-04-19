@@ -1,11 +1,8 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { UserService } from '@core/services/user.service';
+import { Injectable, signal } from '@angular/core';
 import { AUTH, AuthStorageMode } from '@core/constants/auth.constants';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    private userService = inject(UserService);
-
     token = signal<string | null>(this.getToken());
 
     saveToken(token: string, storage: AuthStorageMode): void {
@@ -23,6 +20,5 @@ export class AuthService {
         this.token.set(null);
         sessionStorage.removeItem(AUTH.TOKEN);
         localStorage.removeItem(AUTH.TOKEN);
-        this.userService.currentUser.set(null);
     }
 }

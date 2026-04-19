@@ -17,13 +17,14 @@ namespace OverkillDocs.Core.Extensions
             );
         }
 
-        public static ProfileDto ToProfileDto(this User user)
+        public static ProfileDto ToProfileDto(this User user, IHashids hashids)
         {
             return new ProfileDto
             (
                 Username: user.Username,
                 Name: user.Name,
-                Avatar: user.Avatar
+                Avatar: user.Avatar,
+                HashId: hashids.Encode(user.Id)
             );
         }
 

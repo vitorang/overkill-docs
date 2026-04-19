@@ -7,7 +7,7 @@ namespace OverkillDocs.Core.DTOs.Account
         string Name,
 
         string Username,
-
-        string Avatar
+        string Avatar,
+        string HashId
     );
 }

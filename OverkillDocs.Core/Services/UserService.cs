@@ -40,7 +40,7 @@ namespace OverkillDocs.Core.Services
         public async Task<ProfileDto> GetProfile(CancellationToken ct)
         {
             var user = await GetCurrentUser(useCache: true, ct: ct);
-            return user.ToProfileDto();
+            return user.ToProfileDto(hashids);
         }
 
         public async Task<ProfileDto> UpdateProfile(ProfileDto profileDto, CancellationToken ct)
@@ -55,7 +55,7 @@ namespace OverkillDocs.Core.Services
             await unitOfWork.CommitAsync(ct);
             await userRepository.InvalidateCache(user);
 
-            return user.ToProfileDto();
+            return user.ToProfileDto(hashids);
         }
 
         private async Task<User> GetCurrentUser(bool useCache, CancellationToken ct)

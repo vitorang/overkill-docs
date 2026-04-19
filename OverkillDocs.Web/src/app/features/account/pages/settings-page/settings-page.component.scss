@@ -14,19 +14,18 @@
     .page-content {
         padding: 1rem;
         min-height: 0px;
-
         width: 100%;
-        max-width: 1200px;
         margin: 0 auto;
-
         display: grid;
 
         @include breakpoint('large') {
+            max-width: 1200px;
             grid-template-columns: 3fr 2fr;
             grid-template-rows: auto auto;
         }
 
         @include breakpoint('small-medium') {
+            max-width: 690px;
             grid-template-columns: 1fr;
             grid-template-rows: auto;
         }

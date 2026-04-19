@@ -5,9 +5,9 @@ import { SimpleUser } from '@core/models/user.model';
 import { AlertService } from '@shared/services/alert.service';
 import { API } from '@core/constants/api.constants';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class UserService {
-    readonly currentUser = signal(null as SimpleUser | null);
+    readonly currentUser = signal<SimpleUser | null>(null);
 
     private cache: Record<string, SimpleUser> = {};
     private requests: Record<string, Observable<SimpleUser | null>> = {};

@@ -15,10 +15,14 @@
         margin-top: 0.5rem;
     }
 
-    .button-group {
+    .button-group,
+    .button-group-space-between {
         display: flex;
-        justify-content: space-between;
         gap: 8px;
         width: 100%;
+    }
+
+    .button-group-space-between {
+        justify-content: space-between;
     }
 }

@@ -1,4 +1,5 @@
 @use 'mixins/forms' as forms;
+@use 'mixins/breakpoints' as *;
 
 :host {
     display: block;
@@ -6,5 +7,47 @@
 
     form {
         @include forms.layout;
+
+        .avatar-option {
+            display: flex;
+            margin-bottom: 1.5rem;
+            margin-top: 1rem;
+
+            @include breakpoint('medium-large') {
+                flex-direction: row;
+                align-items: center;
+                gap: 2.5rem;
+            }
+
+            @include breakpoint('small') {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+
+                .avatar-actions {
+                    align-items: center;
+                }
+            }
+
+            .avatar-actions {
+                display: flex;
+                flex-direction: column;
+
+                .title {
+                    font-weight: 400;
+                    flex: 1;
+                    margin: 0;
+                    margin-top: 0.5rem;
+                }
+
+                .avatar-buttons {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 0.5em;
+                    margin-top: 1rem;
+                    margin-bottom: 0.5rem;
+                }
+            }
+        }
     }
 }

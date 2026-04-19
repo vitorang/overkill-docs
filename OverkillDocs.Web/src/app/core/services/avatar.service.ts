@@ -78,7 +78,7 @@ export class AvatarService {
         return split;
     }
 
-    private generateAvatarCode(seed: string) {
+    generateAvatarCode(seed: string): string {
         const rngSeed = this.generateNumber(seed);
         const color = this.pickOne(COLORS, rngSeed);
         const eyes = this.pickOne(EYES, rngSeed + 1);

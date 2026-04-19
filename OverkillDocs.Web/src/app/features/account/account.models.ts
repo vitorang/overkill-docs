@@ -23,6 +23,7 @@ export interface Profile {
     avatar: string;
     name: string;
     username: string;
+    hashId: string;
 }
 
 export interface UserSession extends ParsedUserAgent {

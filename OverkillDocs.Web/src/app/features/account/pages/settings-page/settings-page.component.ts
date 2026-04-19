@@ -35,6 +35,7 @@ export class SettingsPageComponent implements OnInit {
         avatar: '',
         name: '',
         username: '',
+        hashId: '',
     });
 
     protected sessionsHandler = apiHandler();

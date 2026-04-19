@@ -9,6 +9,7 @@ import { apiHandler } from '@core/utils/api-handler.utils';
 import { AccountDeletion } from '@features/account/account.models';
 import { AccountService } from '@features/account/services/account.service';
 import { SHARED } from '@shared/index';
+import { PATHS } from '@core/constants/routes.constant';
 
 @Component({
     selector: 'okd-account-deletion-dialog',
@@ -44,6 +45,6 @@ export class AccountDeletionDialogComponent {
     private onDeleteAccount() {
         this.authService.deleteToken();
         this.dialogRef.close();
-        window.location.href = '/';
+        window.location.href = PATHS.ROOT;
     }
 }

@@ -1,0 +1,7 @@
+.button-grid {
+    width: fit-content;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto auto;
+    margin: 0 auto;
+}
