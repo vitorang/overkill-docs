@@ -1,13 +1,14 @@
 import { Component, inject } from '@angular/core';
-import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
-import { AuthFormComponent } from '../../components/auth-form/auth-form.component';
-import { AuthFormWrapperComponent } from '../../components/auth-form-wrapper/auth-form-wrapper.component';
 import { Router } from '@angular/router';
-import { PATHS } from '../../../../core/constants/routes.constant';
+import { PATHS } from '@core/constants/routes.constant';
+import { AuthFormWrapperComponent } from '@features/account/components/auth-form-wrapper/auth-form-wrapper.component';
+import { AuthFormComponent } from '@features/account/components/forms/auth-form/auth-form.component';
+import { SHARED } from '@shared/index';
+import { BackgroundImageComponent } from '@shared/components/background-image/background-image.component';
 
 @Component({
     selector: 'okd-login-page',
-    imports: [SHARED_NATIVE, SHARED_CUSTOM, AuthFormComponent, AuthFormWrapperComponent],
+    imports: [SHARED, AuthFormComponent, AuthFormWrapperComponent, BackgroundImageComponent],
     templateUrl: './login-page.component.html',
     styleUrl: './login-page.component.scss',
 })

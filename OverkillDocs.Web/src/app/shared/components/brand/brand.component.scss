@@ -2,7 +2,8 @@
     font-weight: 700;
     font-family: 'Inter', sans-serif;
     user-select: none;
-    cursor: default;
+    pointer-events: none;
+    user-select: none;
 
     .name1 {
         color: firebrick;
@@ -15,6 +16,5 @@
 
     &.compact {
         font-size: 24px;
-
     }
 }

@@ -1,1 +1,83 @@
-<p>settings-page works!</p>
+<okd-main-header></okd-main-header>
+
+<div class="scroll">
+    <div class="page-content">
+        <div class="group">
+            <okd-request-overlay [requestHandler]="profileHandler" (retry)="loadProfile()">
+                <mat-card>
+                    <mat-card-header>
+                        <h2>Meu Perfil</h2>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <okd-profile-form [value]="profile()" (saved)="onProfileSaved($event)" />
+                    </mat-card-content>
+                </mat-card>
+            </okd-request-overlay>
+        </div>
+
+        <div class="group">
+            <okd-request-overlay [requestHandler]="sessionsHandler" (retry)="loadSessions()">
+                <mat-card>
+                    <mat-card-header>
+                        <h2>Sessões ativas</h2>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <div class="session-list">
+                            @for (session of sessions(); track session.hashId) {
+                                <div class="session-item">
+                                    <div class="device-icon">
+                                        <mat-icon>{{ session.deviceIcon }}</mat-icon>
+                                    </div>
+                                    <div class="device-name">
+                                        {{ session.browserName }}
+                                    </div>
+                                    <div class="actions">
+                                        @if (session.isCurrent) {
+                                            <button mat-button disabled>Atual</button>
+                                        } @else {
+                                            <button
+                                                mat-button
+                                                [disabled]="logoutHandler.loading()"
+                                                (click)="logout(session)"
+                                            >
+                                                Sair
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </okd-request-overlay>
+        </div>
+
+        <div class="group">
+            <mat-card>
+                <mat-card-header>
+                    <h2>Alterar senha</h2>
+                </mat-card-header>
+
+                <mat-card-content>
+                    <okd-password-change-form (saved)="alertSuccess()" />
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card>
+                <mat-card-header>
+                    <h2>Encerrar conta</h2>
+                </mat-card-header>
+
+                <mat-card-content>
+                    Ao encerrar sua conta, os dados serão anonimizados.<br />
+                    Porém, os documentos continuarão acessíveis.
+                    <div [style.margin-top.rem]="1.5">
+                        <button mat-stroked-button (click)="showAccountDeletionDialog()">
+                            Encerrar conta
+                        </button>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>

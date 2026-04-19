@@ -1,0 +1,24 @@
+<h2 mat-dialog-title class="text-warn">
+    @if (data.customization === 'color') {
+        Cor
+    }
+    @if (data.customization === 'eyes') {
+        Olhos
+    }
+    @if (data.customization === 'mouth') {
+        Boca
+    }
+</h2>
+<mat-dialog-content>
+    <div class="button-grid">
+        @for (code of variations(); track code) {
+            <button okdClearButton [mat-dialog-close]="code">
+                <okd-avatar [avatarCode]="code" [seed]="data.seed" [size]="24 * 3" sizeUnit="px" />
+            </button>
+        }
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button [mat-dialog-close]="null">Cancelar</button>
+</mat-dialog-actions>

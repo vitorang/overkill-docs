@@ -1,13 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
-import { SHARED_NATIVE } from '../../../../shared';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChatViewportComponent } from '../chat-viewport/chat-viewport.component';
-import { ChatHubService } from '../../../../core/services/hub/chat-hub.service';
+import { ChatViewportComponent } from '@features/chat/components/chat-viewport/chat-viewport.component';
+import { ChatHubService } from '@features/chat/services/chat-hub.service';
+import { SHARED } from '@shared/index';
+
 import { filter } from 'rxjs';
 
 @Component({
     selector: 'okd-chat-view',
-    imports: [SHARED_NATIVE, ChatViewportComponent],
+    imports: [SHARED, ChatViewportComponent],
     templateUrl: './chat-view.component.html',
     styleUrl: './chat-view.component.scss',
 })
@@ -17,19 +18,20 @@ export class ChatViewComponent {
     private chatHub = inject(ChatHubService);
 
     constructor() {
-        this.chatHub.connection.pipe(
-            takeUntilDestroyed(),
-            filter(connected => connected)
-        ).subscribe(() => {
-            this.chatHub.join();
-            this.chatHub.requestRecentMessages();
-        });
+        this.chatHub.connection
+            .pipe(
+                takeUntilDestroyed(),
+                filter((connected) => connected),
+            )
+            .subscribe(() => {
+                this.chatHub.join();
+                this.chatHub.requestRecentMessages();
+            });
     }
 
     protected onPressEnter(event: Event): void {
         const keyboardEvent = event as KeyboardEvent;
-        if (keyboardEvent.shiftKey)
-            return;
+        if (keyboardEvent.shiftKey) return;
 
         event.preventDefault();
         this.sendMessage();
@@ -38,7 +40,7 @@ export class ChatViewComponent {
     protected async sendMessage(): Promise<void> {
         const text = this.message().trim();
 
-        if (text && this.chatHub.isConnected()) {
+        if (text && this.chatHub.state.connected()) {
             await this.chatHub.sendMessage(text);
             this.message.set('');
         }

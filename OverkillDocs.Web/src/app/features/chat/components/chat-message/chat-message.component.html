@@ -1,8 +1,17 @@
 <section class="avatar">
-    @if (showUser()) { <okd-avatar [hashId]="user()?.hashId" [size]="2.5" sizeUnit="em" /> }
+    @if (showUser() && user()) {
+        <okd-avatar
+            [avatarCode]="user()!.avatar"
+            [seed]="user()!.hashId"
+            [size]="2.5"
+            sizeUnit="em"
+        />
+    }
 </section>
 
 <section class="message">
-    @if (showUser()) { <div class="name">{{user()?.name ?? '-'}}</div> }
-    <div class="text">{{message().content}}</div>
+    @if (showUser()) {
+        <div class="name">{{ user()?.name ?? '...' }}</div>
+    }
+    <div class="text">{{ message().content }}</div>
 </section>

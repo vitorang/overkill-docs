@@ -4,8 +4,9 @@ namespace OverkillDocs.Core.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        Task AddAsync(User user, CancellationToken ct);
-        Task<User?> FindByIdAsync(int id, CancellationToken ct);
-        Task<User?> FindByUsernameAsync(string username, CancellationToken ct);
+        Task Add(User user, CancellationToken ct);
+        Task<User?> FindById(int id, bool useCache, CancellationToken ct);
+        Task<User?> FindByUsername(string username, CancellationToken ct);
+        public Task InvalidateCache(User user);
     }
 }

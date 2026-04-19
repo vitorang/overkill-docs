@@ -1,11 +1,11 @@
 import { Component, signal } from '@angular/core';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.html',
-  standalone: false,
-  styleUrl: './app.css'
+    selector: 'app-root',
+    templateUrl: './app.html',
+    standalone: false,
+    styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('OverkillDocs.Web');
+    protected readonly title = signal('OverkillDocs.Web');
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Caching.Memory;
 using OverkillDocs.Core.Interfaces;
 
 namespace OverkillDocs.Infrastructure.Cache.Memory
@@ -42,6 +43,13 @@ namespace OverkillDocs.Infrastructure.Cache.Memory
         {
             var key = KeyFrom(id);
             cache.Remove(key);
+            return Task.CompletedTask;
+        }
+
+        public Task RemoveAll(IEnumerable<T> values)
+        {
+            foreach (var value in values)
+                cache.Remove(KeyOf(value));
             return Task.CompletedTask;
         }
     }

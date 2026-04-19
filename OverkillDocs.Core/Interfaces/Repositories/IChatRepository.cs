@@ -5,7 +5,7 @@ namespace OverkillDocs.Core.Interfaces.Repositories
 {
     public interface IChatRepository
     {
-        Task AddRecentMessageAsync(ChatMessage message);
-        Task<ImmutableArray<ChatMessage>> GetHistoryAsync();
+        Task AddRecentMessage(ChatMessage message);
+        Task<ImmutableArray<ChatMessage>> GetHistory();
     }
 }

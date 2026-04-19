@@ -1,0 +1,42 @@
+// Ao editar, atualize shared/constants/breakpoints.constants.ts
+
+$breakpoints: (
+    'small': (
+        0px,
+        599.98px,
+    ),
+    'medium': (
+        600px,
+        1199.98px,
+    ),
+    'large': (
+        1200px,
+        null,
+    ),
+    'small-medium': (
+        0px,
+        1199.98px,
+    ),
+    'medium-large': (
+        600px,
+        null,
+    ),
+);
+
+@mixin breakpoint($size) {
+    $range: map-get($breakpoints, $size);
+    $min: nth($range, 1);
+    $max: nth($range, 2);
+
+    @if $min and $max {
+        @media (min-width: $min) and (max-width: $max) {
+            @content;
+        }
+    } @else if $min {
+        @media (min-width: $min) {
+            @content;
+        }
+    } @else {
+        @error "Breakpoint '#{$size}' não reconhecido.";
+    }
+}

@@ -2,12 +2,12 @@ export const SEGMENTS = {
     ACCOUNT: {
         ROOT: 'account',
         LOGIN: 'login',
-        SETTINGS: 'settings'
+        SETTINGS: 'settings',
     },
     DOCUMENT: {
         ROOT: 'documents',
-        EDITOR: ':id'
-    }
+        EDITOR: ':id',
+    },
 } as const;
 
 const S = SEGMENTS;
@@ -15,10 +15,10 @@ export const PATHS = {
     ROOT: '/',
     ACCOUNT: {
         LOGIN: `/${S.ACCOUNT.ROOT}/${S.ACCOUNT.LOGIN}`,
-        SETTINGS: `/${S.ACCOUNT.ROOT}/${S.ACCOUNT.SETTINGS}`
+        SETTINGS: `/${S.ACCOUNT.ROOT}/${S.ACCOUNT.SETTINGS}`,
     },
     DOCUMENT: {
         INDEX: `${S.DOCUMENT.ROOT}`,
-        EDITOR: `${S.DOCUMENT.ROOT}/${S.DOCUMENT.EDITOR}`
-    }
+        EDITOR: `${S.DOCUMENT.ROOT}/${S.DOCUMENT.EDITOR}`,
+    },
 } as const;

@@ -6,5 +6,4 @@ import { Component } from '@angular/core';
     templateUrl: './auth-form-wrapper.component.html',
     styleUrl: './auth-form-wrapper.component.scss',
 })
-export class AuthFormWrapperComponent {
-}
+export class AuthFormWrapperComponent {}

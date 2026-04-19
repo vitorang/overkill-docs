@@ -12,12 +12,12 @@ namespace OverkillDocs.Core.Services
         public async Task AddRecent(ChatMessageDto messageDto)
         {
             var message = messageDto.ToEntity(hashids);
-            await chatRepository.AddRecentMessageAsync(message);
+            await chatRepository.AddRecentMessage(message);
         }
 
         public async Task<ImmutableList<ChatMessageDto>> GetRecent()
         {
-            var recentMessages = await chatRepository.GetHistoryAsync();
+            var recentMessages = await chatRepository.GetHistory();
             return [.. recentMessages.Select(e => e.ToDto(hashids))];
         }
     }

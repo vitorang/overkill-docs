@@ -1,0 +1,56 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <div class="avatar-option">
+        <okd-avatar [avatarCode]="avatar()" [seed]="value().hashId" [size]="24 * 4" sizeUnit="px" />
+        <div class="avatar-actions">
+            <h2 class="title">Personalizar avatar</h2>
+
+            <div class="avatar-buttons">
+                <button
+                    type="button"
+                    mat-stroked-button
+                    (click)="showAvatarCustomizationDialog('color')"
+                >
+                    Cor
+                </button>
+                <button
+                    type="button"
+                    mat-stroked-button
+                    (click)="showAvatarCustomizationDialog('eyes')"
+                >
+                    Olhos
+                </button>
+                <button
+                    type="button"
+                    mat-stroked-button
+                    (click)="showAvatarCustomizationDialog('mouth')"
+                >
+                    Boca
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Nome</mat-label>
+        <input matInput formControlName="name" />
+
+        @if (nameError) {
+            <mat-error>{{ nameError }}</mat-error>
+        }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Nome de usuário</mat-label>
+        <input matInput formControlName="username" />
+    </mat-form-field>
+
+    <div class="button-group">
+        <button
+            mat-flat-button
+            type="submit"
+            [disabled]="formGroup.invalid || profileHandler.loading()"
+        >
+            Salvar
+        </button>
+    </div>
+</form>

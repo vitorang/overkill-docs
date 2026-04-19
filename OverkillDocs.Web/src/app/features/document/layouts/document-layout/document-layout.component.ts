@@ -1,20 +1,23 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { SHARED_CUSTOM, SHARED_NATIVE } from '../../../../shared';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { BreakpointQueries } from '../../../../shared/constants/breakpoints.constant';
-import { ChatViewComponent } from '../../../chat/components/chat-view/chat-view.component';
-import { ChatHubService } from '../../../../core/services/hub/chat-hub.service';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
+import { SHARED } from '@shared/index';
+import { ChatViewComponent } from '@features/chat/components/chat-view/chat-view.component';
+import { ChatHubService } from '@features/chat/services/chat-hub.service';
+import { BreakpointQueries } from '@shared/constants/breakpoints.constant';
+import { HubMonitorComponent } from '@features/debug/components/hub-monitor/hub-monitor.component';
+import { MainHeaderComponent } from '@shared/components/main-header/main-header.component';
+import { UserService } from '@core/services/user.service';
 
 type TabSection = 'editor' | 'chat';
 
 @Component({
     selector: 'okd-document-layout',
-    imports: [SHARED_NATIVE, SHARED_CUSTOM, ChatViewComponent],
+    imports: [SHARED, ChatViewComponent, HubMonitorComponent, MainHeaderComponent],
     templateUrl: './document-layout.component.html',
-    styleUrl: './document-layout.component.scss'
+    styleUrl: './document-layout.component.scss',
+    providers: [UserService, ChatHubService],
 })
 export class DocumentLayoutComponent {
     private breakpointObserver = inject(BreakpointObserver);
@@ -25,28 +28,23 @@ export class DocumentLayoutComponent {
     protected hasUnreadMessage = signal(false);
 
     constructor() {
-        this.breakpointObserver
-            .observe([BreakpointQueries.smallMedium])
-            .subscribe(result => {
-                const isMobile = result.matches;
+        this.breakpointObserver.observe([BreakpointQueries.smallMedium]).subscribe((result) => {
+            const isMobile = result.matches;
 
-                this.isMobile.set(isMobile);
-                if (!isMobile)
-                    this.hasUnreadMessage.set(false);
-            });
+            this.isMobile.set(isMobile);
+            if (!isMobile) this.hasUnreadMessage.set(false);
+        });
 
-        this.chatHub.onMessageReceived
-            .pipe(takeUntilDestroyed())
-            .subscribe(() => {
-                this.hasUnreadMessage.set(this.isMobile() && this.activeSection() !== 'chat');
-            });
+        this.chatHub.onMessageReceived.pipe(takeUntilDestroyed()).subscribe(() => {
+            this.hasUnreadMessage.set(this.isMobile() && this.activeSection() !== 'chat');
+        });
 
         toObservable(this.activeSection)
             .pipe(
                 takeUntilDestroyed(),
-                filter(session => session === 'chat')
+                filter((session) => session === 'chat'),
             )
-            .subscribe(() => this.hasUnreadMessage.set(false))
+            .subscribe(() => this.hasUnreadMessage.set(false));
     }
 
     protected toggleSection(): void {

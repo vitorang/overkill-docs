@@ -1,27 +1,23 @@
-import { NgModule, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import {
+    NgModule,
+    provideBrowserGlobalErrorListeners,
+    provideZonelessChangeDetection,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './core/interceptors/auth.interceptor';
-
+import { authInterceptor } from '@core/interceptors/auth.interceptor';
 
 @NgModule({
-    declarations: [
-        App,
-    ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule
-    ],
+    declarations: [App],
+    imports: [BrowserModule, AppRoutingModule],
     providers: [
         provideZonelessChangeDetection(),
         provideBrowserGlobalErrorListeners(),
-        provideHttpClient(
-            withInterceptors([authInterceptor])
-        )
+        provideHttpClient(withInterceptors([authInterceptor])),
     ],
-    bootstrap: [App]
+    bootstrap: [App],
 })
-export class AppModule { }
+export class AppModule {}

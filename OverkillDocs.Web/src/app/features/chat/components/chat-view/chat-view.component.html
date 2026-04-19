@@ -2,11 +2,12 @@
     <okd-chat-viewport />
 </section>
 <section class="message-editor">
-    <mat-form-field appearance="outline" class="message-field" subscriptSizing="dynamic" >
-        <textarea matInput
-        [(ngModel)]="message"
-        [maxLength]="maxLength"
-        (keydown.enter)="onPressEnter($event)"
+    <mat-form-field appearance="outline" class="message-field" subscriptSizing="dynamic">
+        <textarea
+            matInput
+            [(ngModel)]="message"
+            [maxLength]="maxLength"
+            (keydown.enter)="onPressEnter($event)"
         ></textarea>
     </mat-form-field>
     <button mat-mini-fab class="send-button" (click)="sendMessage()">

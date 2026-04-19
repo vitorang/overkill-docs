@@ -1,6 +1,12 @@
 :host {
-    okd-brand {
+    .brand {
         padding-right: 8px;
+        text-decoration: none;
+
+        &,
+        & > * {
+            cursor: pointer;
+        }
     }
 
     .header-spacer {

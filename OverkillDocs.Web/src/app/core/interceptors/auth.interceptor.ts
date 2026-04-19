@@ -1,10 +1,9 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
-import { AuthService } from '../services/auth.service';
-import { PATHS } from '../constants/routes.constant';
 import { Router } from '@angular/router';
-
+import { AuthService } from '@core/services/auth.service';
+import { PATHS } from '@core/constants/routes.constant';
 
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
     const authService = inject(AuthService);
@@ -14,7 +13,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
     let authRequest = request;
     if (token) {
         authRequest = request.clone({
-            setHeaders: { Authorization: `Bearer ${token}` }
+            setHeaders: { Authorization: `Bearer ${token}` },
         });
     }
 
@@ -25,6 +24,6 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
                 router.navigateByUrl(PATHS.ACCOUNT.LOGIN);
             }
             return throwError(() => error);
-        })
+        }),
     );
 };

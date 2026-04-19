@@ -1,29 +1,32 @@
 import { Component, inject } from '@angular/core';
-import { SHARED_NATIVE } from '../..';
-import { BrandComponent } from '../brand/brand.component';
-import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
-import { PATHS } from '../../../core/constants/routes.constant';
+import { PATHS } from '@core/constants/routes.constant';
+import { BrandComponent } from '@shared/components/brand/brand.component';
+import { SHARED } from '@shared/index';
+import { ClearButtonDirective } from '@shared/directives/clear-button.directive';
+import { AccountService } from '@features/account/services/account.service';
 
 @Component({
     selector: 'okd-main-header',
-    imports: [SHARED_NATIVE, BrandComponent],
+    imports: [SHARED, BrandComponent, ClearButtonDirective],
     templateUrl: './main-header.component.html',
     styleUrl: './main-header.component.scss',
 })
 export class MainHeaderComponent {
-    protected authService = inject(AuthService);
-    protected router = inject(Router);
+    private accountService = inject(AccountService);
+    private router = inject(Router);
 
     protected logout(): void {
-        this.authService.logout().subscribe(
-            {
-                next: () => this.router.navigateByUrl(PATHS.ACCOUNT.LOGIN)
-            }
-        );
+        this.accountService
+            .logout()
+            .subscribe(() => this.router.navigateByUrl(PATHS.ACCOUNT.LOGIN));
     }
 
     protected goToSettings(): void {
         this.router.navigateByUrl(PATHS.ACCOUNT.SETTINGS);
+    }
+
+    protected goToHome(): void {
+        this.router.navigateByUrl(PATHS.ROOT);
     }
 }

@@ -31,10 +31,13 @@
     "@angular/material": "^20.2.14",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@dicebear/collection": "^9.4.2",
+    "@dicebear/core": "^9.4.2",
     "@microsoft/signalr": "^10.0.0",
     "jest-editor-support": "*",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "ua-parser-js": "^2.0.9",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
@@ -51,6 +54,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "prettier": "^3.8.3",
+    "prettier-eslint": "^16.4.2",
     "stylelint": "^17.4.0",
     "stylelint-config-standard-scss": "^17.0.0",
     "stylelint-config-tailwindcss": "^1.0.1",

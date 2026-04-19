@@ -12,6 +12,7 @@ using OverkillDocs.Infrastructure.Cache.Memory;
 using OverkillDocs.Infrastructure.Cache.Redis;
 using OverkillDocs.Infrastructure.Data;
 using StackExchange.Redis;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,7 +40,7 @@ else
 #endregion
 
 
-#region Inje��o de depend�ncias
+#region Injeção de dependências
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserContext>();
@@ -139,9 +140,11 @@ app.UseSwaggerUI(c =>
 #endregion
 
 
-#region SPA
+#region SPA e roteamento
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
+app.Map("/api/{*path}", (string path) => Results.NotFound());
 app.MapFallbackToFile("index.html");
 #endregion
 

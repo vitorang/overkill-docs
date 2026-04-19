@@ -1,0 +1,55 @@
+@use 'mixins/breakpoints' as *;
+
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    .scroll {
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+    }
+
+    .page-content {
+        padding: 1rem;
+        min-height: 0px;
+        width: 100%;
+        margin: 0 auto;
+        display: grid;
+
+        @include breakpoint('large') {
+            max-width: 1200px;
+            grid-template-columns: 3fr 2fr;
+            grid-template-rows: auto auto;
+        }
+
+        @include breakpoint('small-medium') {
+            max-width: 690px;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto;
+        }
+
+        .group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        &,
+        .group {
+            gap: 1rem;
+        }
+    }
+
+    .session-list {
+        .session-item {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+
+            .device-name {
+                flex: 1;
+            }
+        }
+    }
+}

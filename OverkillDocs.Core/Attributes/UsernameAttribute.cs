@@ -7,16 +7,18 @@ namespace OverkillDocs.Core.Attributes
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value is string username)
+            if (value is string strValue)
             {
-                if (username.Length is < 3 or > 15)
+                if (strValue.Length is < 3 or > 15)
                     return new ValidationResult("Deve ter de 3 a 15 caracteres");
 
-                if (!UsernameRegex().IsMatch(username))
+                if (!UsernameRegex().IsMatch(strValue))
                     return new ValidationResult("Use apenas letras minúsculas e números");
+
+                return ValidationResult.Success;
             }
 
-            return ValidationResult.Success;
+            throw new InvalidOperationException($"Tipo não suportado em validador");
         }
 
         [GeneratedRegex(@"^[a-z0-9]+$")]

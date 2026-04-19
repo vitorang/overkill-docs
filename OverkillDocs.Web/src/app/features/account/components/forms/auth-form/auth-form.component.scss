@@ -1,0 +1,14 @@
+@use 'mixins/forms' as forms;
+
+:host {
+    display: block;
+    width: 100%;
+
+    okd-brand {
+        margin-bottom: 1rem;
+    }
+
+    form {
+        @include forms.layout;
+    }
+}

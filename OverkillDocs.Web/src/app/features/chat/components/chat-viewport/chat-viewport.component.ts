@@ -1,9 +1,19 @@
-import { afterNextRender, AfterViewInit, Component, ElementRef, inject, Injector, OnDestroy, signal, ViewChild } from '@angular/core';
-import { ChatMessage } from '../../models/chat-message.model';
+import {
+    afterNextRender,
+    AfterViewInit,
+    Component,
+    ElementRef,
+    inject,
+    Injector,
+    OnDestroy,
+    signal,
+    ViewChild,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ChatMessageComponent } from '../chat-message/chat-message.component';
-import { ChatHubService } from '../../../../core/services/hub/chat-hub.service';
-import { BrowserService } from '../../../../core/services/browser.service';
+import { ChatMessageComponent } from '@features/chat/components/chat-message/chat-message.component';
+import { ChatHubService } from '@features/chat/services/chat-hub.service';
+import { BrowserService } from '@shared/services/browser.service';
+import { ChatMessage } from '@features/chat/chat.models';
 
 @Component({
     selector: 'okd-chat-viewport',
@@ -22,24 +32,25 @@ export class ChatViewportComponent implements AfterViewInit, OnDestroy {
     protected messages = signal<ChatMessage[]>([]);
 
     constructor() {
-        this.chatHub.onMessageReceived.pipe(takeUntilDestroyed()).subscribe(message => {
+        this.chatHub.onMessageReceived.pipe(takeUntilDestroyed()).subscribe((message) => {
             const messages = [...this.messages(), message];
             this.messages.set(this.filterRecent(messages));
             this.autoScrollToBottom();
         });
 
-        this.chatHub.onRecentMessagesReceived.pipe(takeUntilDestroyed()).subscribe(recentMessages => {
-            const messages = [...this.messages()];
-            for (const recent of recentMessages) {
-                if (!messages.some(m => m.id === recent.id))
-                    messages.push(recent);
-            }
+        this.chatHub.onRecentMessagesReceived
+            .pipe(takeUntilDestroyed())
+            .subscribe((recentMessages) => {
+                const messages = [...this.messages()];
+                for (const recent of recentMessages) {
+                    if (!messages.some((m) => m.id === recent.id)) messages.push(recent);
+                }
 
-            messages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+                messages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
 
-            this.messages.set(this.filterRecent(messages));
-            this.autoScrollToBottom();
-        });
+                this.messages.set(this.filterRecent(messages));
+                this.autoScrollToBottom();
+            });
     }
 
     ngAfterViewInit(): void {
@@ -55,27 +66,27 @@ export class ChatViewportComponent implements AfterViewInit, OnDestroy {
     });
 
     private autoScrollToBottom(): void {
-        if (!this.scrollContainer)
-            return;
+        if (!this.scrollContainer) return;
 
         const { scrollHeight, scrollTop, clientHeight } = this.scrollContainer.nativeElement;
         const tolerance = 100;
 
-        if (scrollHeight - scrollTop <= clientHeight + tolerance)
-            this.scrollToBottom(true);
+        if (scrollHeight - scrollTop <= clientHeight + tolerance) this.scrollToBottom(true);
     }
 
     private scrollToBottom(smooth: boolean): void {
-        afterNextRender(() => {
-            const scrollContainer = this.scrollContainer?.nativeElement;
-            if (!scrollContainer)
-                return;
+        afterNextRender(
+            () => {
+                const scrollContainer = this.scrollContainer?.nativeElement;
+                if (!scrollContainer) return;
 
-            scrollContainer.scrollTo({
-                top: scrollContainer.scrollHeight,
-                behavior: smooth && this.browserService.documentIsVisible() ? 'smooth' : 'auto'
-            });
-        }, { injector: this.injector });
+                scrollContainer.scrollTo({
+                    top: scrollContainer.scrollHeight,
+                    behavior: smooth && this.browserService.documentIsVisible() ? 'smooth' : 'auto',
+                });
+            },
+            { injector: this.injector },
+        );
     }
 
     private filterRecent(messages: ChatMessage[]): ChatMessage[] {

@@ -1,4 +1,4 @@
-import { AbstractControl, FormGroup } from "@angular/forms";
+import { AbstractControl, FormGroup } from '@angular/forms';
 
 export class FormUtils {
     static injectError(form: FormGroup, errors?: Record<string, string[]>): void {
@@ -10,7 +10,7 @@ export class FormUtils {
 
             if (control) {
                 control.setErrors({
-                    serverError: errors[fieldName][0]
+                    serverError: errors[fieldName][0],
                 });
             }
         });
@@ -19,14 +19,12 @@ export class FormUtils {
     }
 
     static getFieldError(control: AbstractControl): string {
-        if (!control.errors || !control.touched)
-            return '';
+        if (!control.errors || !control.touched) return '';
 
         const firstKey = Object.keys(control.errors)[0];
         const errorValue = control.errors[firstKey];
 
-        if (typeof errorValue === 'string')
-            return errorValue;
+        if (typeof errorValue === 'string') return errorValue;
 
         const messages: Record<string, string> = {
             required: 'Deve ser preenchido.',
