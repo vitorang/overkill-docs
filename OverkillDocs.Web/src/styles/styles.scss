@@ -38,6 +38,8 @@ body {
     box-sizing: border-box;
 }
 
-.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
-    //background-color: rgba(0, 0, 0, 0.8);
+@media (prefers-color-scheme: dark) {
+    .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
 }
