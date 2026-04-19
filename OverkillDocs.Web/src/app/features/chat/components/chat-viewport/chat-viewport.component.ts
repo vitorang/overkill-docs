@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChatMessageComponent } from '@features/chat/components/chat-message/chat-message.component';
 import { ChatHubService } from '@features/chat/services/chat-hub.service';
 import { BrowserService } from '@shared/services/browser.service';
-import { ChatMessage } from '@features/chat/models/chat-message.model';
+import { ChatMessage } from '@features/chat/chat.models';
 
 @Component({
     selector: 'okd-chat-viewport',

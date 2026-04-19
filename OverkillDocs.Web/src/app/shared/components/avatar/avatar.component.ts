@@ -1,11 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, inject, input, signal } from '@angular/core';
-import { createAvatar } from '@dicebear/core';
-import { botttsNeutral } from '@dicebear/collection';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { Component, HostBinding, inject, input, signal, OnInit, effect } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { filter } from 'rxjs';
-import { SimpleUser } from '@core/models/user.model';
+import { AvatarService } from '@core/services/avatar.service';
 
 type sizeUnit = 'px' | 'em' | 'rem' | '%';
 
@@ -15,8 +11,12 @@ type sizeUnit = 'px' | 'em' | 'rem' | '%';
     templateUrl: './avatar.component.html',
     styleUrl: './avatar.component.scss',
 })
-export class AvatarComponent {
-    readonly user = input<SimpleUser | null>();
+export class AvatarComponent implements OnInit {
+    private avatarService = inject(AvatarService);
+
+    readonly avatarCode = input.required<string>();
+    readonly seed = input.required<string>();
+
     readonly size = input.required<number>();
     readonly sizeUnit = input.required<sizeUnit>();
 
@@ -24,22 +24,23 @@ export class AvatarComponent {
     protected svgAvatar = signal(null as SafeHtml | null);
 
     constructor() {
-        this.svgAvatar.set('');
+        effect(() => {
+            const code = this.avatarCode();
+            const seed = this.seed();
 
-        toObservable(this.user)
-            .pipe(
-                takeUntilDestroyed(),
-                filter((user) => !!user),
-            )
-            .subscribe((user) => this.createAvatar(user));
+            this.createAvatar(code, seed);
+        });
     }
 
-    private createAvatar = (user: SimpleUser) => {
-        const radius = 16;
+    ngOnInit(): void {
+        this.createAvatar(this.avatarCode(), this.seed());
+    }
 
-        const avatar = createAvatar(botttsNeutral, { seed: user?.hashId ?? '', radius });
-        this.svgAvatar.set(this.domSanitizer.bypassSecurityTrustHtml(avatar.toString()));
-    };
+    private createAvatar(avatarCode: string, seed: string) {
+        const radius = 16;
+        const svg = this.avatarService.generateSvg(avatarCode, seed, radius);
+        this.svgAvatar.set(this.domSanitizer.bypassSecurityTrustHtml(svg));
+    }
 
     @HostBinding('style.--avatar-size')
     protected get avatarSize(): string {
