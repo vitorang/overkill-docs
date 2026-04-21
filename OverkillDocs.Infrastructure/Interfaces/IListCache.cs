@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 
-namespace OverkillDocs.Core.Interfaces
+namespace OverkillDocs.Infrastructure.Interfaces
 {
     public interface IListCache<T>
     {

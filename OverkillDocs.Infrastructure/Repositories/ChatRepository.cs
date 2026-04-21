@@ -1,6 +1,6 @@
 ﻿using OverkillDocs.Core.Entities.Chat;
-using OverkillDocs.Core.Interfaces;
 using OverkillDocs.Core.Interfaces.Repositories;
+using OverkillDocs.Infrastructure.Interfaces;
 using System.Collections.Immutable;
 
 namespace OverkillDocs.Infrastructure.Repositories

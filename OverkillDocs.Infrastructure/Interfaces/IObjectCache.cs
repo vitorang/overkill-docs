@@ -1,4 +1,4 @@
-﻿namespace OverkillDocs.Core.Interfaces
+﻿namespace OverkillDocs.Infrastructure.Interfaces
 {
     public interface IObjectCache<T>
     {

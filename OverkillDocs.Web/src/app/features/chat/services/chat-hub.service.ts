@@ -13,7 +13,7 @@ const Hub = {
     onRecentMessagesReceived: 'Chat:OnRecentMessagesReceived',
 } as const;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ChatHubService {
     private mainHub = inject(HubService).mainHub;
 

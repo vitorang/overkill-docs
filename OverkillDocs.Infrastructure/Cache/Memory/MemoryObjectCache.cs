@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Caching.Memory;
-using OverkillDocs.Core.Interfaces;
+using OverkillDocs.Infrastructure.Interfaces;
 
 namespace OverkillDocs.Infrastructure.Cache.Memory
 {

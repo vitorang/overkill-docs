@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OverkillDocs.Core.Entities.Security;
-using OverkillDocs.Core.Interfaces;
 using OverkillDocs.Core.Interfaces.Repositories;
 using OverkillDocs.Infrastructure.Data;
+using OverkillDocs.Infrastructure.Interfaces;
 using System.Collections.Immutable;
 using static OverkillDocs.Core.Security.UserContext;
 

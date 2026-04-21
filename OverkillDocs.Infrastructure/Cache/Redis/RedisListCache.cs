@@ -1,4 +1,4 @@
-﻿using OverkillDocs.Core.Interfaces;
+﻿using OverkillDocs.Infrastructure.Interfaces;
 using StackExchange.Redis;
 using System.Collections.Immutable;
 using System.Text.Json;
