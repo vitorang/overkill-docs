@@ -28,6 +28,7 @@ services:
         condition: service_completed_successfully
       redis:
         condition: service_healthy
+        required: false
 
   web:
     build: ./OverkillDocs.Web
@@ -36,6 +37,8 @@ services:
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    profiles:
+      - sqlserver
     volumes:
       - sqlserver_data:/var/opt/mssql
     environment:
@@ -65,9 +68,12 @@ services:
     depends_on:
       sqlserver:
         condition: service_healthy
+        required: false
 
   redis:
     image: redis:alpine
+    profiles:
+      - redis
     networks:
       - overkill-network
     healthcheck:
