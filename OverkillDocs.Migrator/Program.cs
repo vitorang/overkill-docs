@@ -29,7 +29,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             x => x.MigrationsAssembly("OverkillDocs.Migrator.Sqlite")),
 
         EntityProvider.SqlServer => options.UseSqlServer(
-            builder.Configuration.GetConnectionString("SqlServer"),
+            builder.Configuration.GetConnectionString("SqlServerAdmin"),
             x => x.MigrationsAssembly("OverkillDocs.Migrator.SqlServer")),
 
         _ => throw new Exception("Provedor de banco de dados não mapeado")
