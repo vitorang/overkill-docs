@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using OverkillDocs.Core.Interfaces;
+using OverkillDocs.Infrastructure.Interfaces;
 using StackExchange.Redis;
 using System.Text.Json;
 

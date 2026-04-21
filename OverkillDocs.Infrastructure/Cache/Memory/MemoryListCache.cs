@@ -1,4 +1,4 @@
-﻿using OverkillDocs.Core.Interfaces;
+﻿using OverkillDocs.Infrastructure.Interfaces;
 using System.Collections.Immutable;
 
 namespace OverkillDocs.Infrastructure.Cache.Memory

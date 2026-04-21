@@ -11,6 +11,7 @@ using OverkillDocs.Core.Security;
 using OverkillDocs.Infrastructure.Cache.Memory;
 using OverkillDocs.Infrastructure.Cache.Redis;
 using OverkillDocs.Infrastructure.Data;
+using OverkillDocs.Infrastructure.Interfaces;
 using StackExchange.Redis;
 using System.Net;
 
