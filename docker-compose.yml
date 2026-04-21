@@ -15,13 +15,8 @@ services:
     build:
       context: .
       dockerfile: OverkillDocs.Api/Dockerfile
-    environment:
-      - ConnectionStrings__SqlServer=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
-      - ConnectionStrings__Redis=redis:6379
-      - ConnectionStrings__Sqlite=Data Source=/home/data/database.sqlite
-      - FeatureFlags__UseRedis=${USE_REDIS}
-      - FeatureFlags__UseSqlite=${USE_SQLITE}
-      - Hashids__Salt=${HASHIDS_SALT}
+    env_file:
+      - .env
     ports:
       - "8080:8080"
     networks:
@@ -45,13 +40,13 @@ services:
       - sqlserver_data:/var/opt/mssql
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=${SQL_PASSWORD}
+      - MSSQL_SA_PASSWORD
     ports:
       - "1433:1433"
     networks:
       - overkill-network
     healthcheck:
-      test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-C", "-U", "${SQL_USER}", "-P", "${SQL_PASSWORD}", "-Q", "SELECT 1" ]
+      test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-C", "-U", "sa", "-P", "${MSSQL_SA_PASSWORD}", "-Q", "SELECT 1" ]
       interval: 10s
       timeout: 5s
       retries: 6
@@ -61,10 +56,8 @@ services:
     build:
       context: .
       dockerfile: OverkillDocs.Migrator/Dockerfile
-    environment:
-      - ConnectionStrings__SqlServer=Server=${SQL_SERVER};Database=${SQL_DB};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True;
-      - ConnectionStrings__Sqlite=Data Source=/home/data/database.sqlite
-      - FeatureFlags__UseSqlite=${USE_SQLITE}
+    env_file:
+      - .env
     networks:
       - overkill-network
     volumes:

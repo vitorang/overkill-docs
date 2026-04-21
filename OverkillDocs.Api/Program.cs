@@ -13,7 +13,6 @@ using OverkillDocs.Infrastructure.Cache.Redis;
 using OverkillDocs.Infrastructure.Data;
 using OverkillDocs.Infrastructure.Interfaces;
 using StackExchange.Redis;
-using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,18 +25,31 @@ builder.Services.AddSwaggerGen();
 
 
 #region Banco de dados
-bool useSqlite = builder.Configuration.GetValue<bool>("FeatureFlags:UseSqlite");
-if (useSqlite)
+string entityProviderConfig = builder.Configuration.GetValue<string>("FeatureFlags:Database")
+    ?? throw new Exception("Banco de dados não definido");
+
+var entityProvider = entityProviderConfig switch
 {
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("Sqlite")));
-}
-else
+    "sqlite" => EntityProvider.Sqlite,
+    "sqlserver" => EntityProvider.SqlServer,
+    _ => EntityProvider.Unknown
+};
+
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlServer(
-            builder.Configuration.GetConnectionString("SqlServer")));
-}    
+    _ = entityProvider switch
+    {
+        EntityProvider.Sqlite => options.UseSqlite(
+            builder.Configuration.GetConnectionString("Sqlite"),
+            x => x.MigrationsAssembly("OverkillDocs.Migrator.Sqlite")),
+
+        EntityProvider.SqlServer => options.UseSqlServer(
+            builder.Configuration.GetConnectionString("SqlServer"),
+            x => x.MigrationsAssembly("OverkillDocs.Migrator.SqlServer")),
+
+        _ => throw new Exception("Provedor de banco de dados não mapeado")
+    };
+});
 #endregion
 
 
@@ -160,3 +172,10 @@ app.MapHub<MainHub>(HubRoutes.Main);
 app.MapControllers();
 
 app.Run();
+
+enum EntityProvider
+{
+    Sqlite,
+    SqlServer,
+    Unknown
+}

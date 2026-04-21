@@ -8,7 +8,7 @@ $NameSqlite = "Sqlite_$timestamp"
 $NameSqlServer = "SqlServer_$timestamp"
 
 Write-Host "Gerando Migracao SQL Server: $NameSqlServer" -ForegroundColor Cyan
-$env:EF_PROVIDER="SqlServer"
+$env:EF_PROVIDER="sqlserver"
 
 dotnet ef migrations add $NameSqlServer `
     --project OverkillDocs.Migrator.SqlServer `
@@ -16,7 +16,7 @@ dotnet ef migrations add $NameSqlServer `
 
 
 Write-Host "Gerando Migracao Sqlite: $NameSqlite" -ForegroundColor Cyan
-$env:EF_PROVIDER="Sqlite"
+$env:EF_PROVIDER="sqlite"
 
 dotnet ef migrations add $NameSqlite `
     --project OverkillDocs.Migrator.Sqlite `
