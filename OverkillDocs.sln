@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.4.11626.88 stable
+VisualStudioVersion = 18.4.11626.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Api", "OverkillDocs.Api\OverkillDocs.Api.csproj", "{F0942131-FA92-4AB9-BD2E-91F76E1DC6AC}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Migrator.SqlServer", "OverkillDocs.Migrator.SqlServer\OverkillDocs.Migrator.SqlServer.csproj", "{73A1510D-35D9-48EC-95E5-10D8DF6486FC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Migrator.Sqlite", "OverkillDocs.Migrator.Sqlite\OverkillDocs.Migrator.Sqlite.csproj", "{F1CD94FB-D88F-45B2-B6EE-A74719A59552}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Migrator.Postgres", "OverkillDocs.Migrator.Postgres\OverkillDocs.Migrator.Postgres.csproj", "{BCAEF070-EDDC-415E-965B-2B935C40BEC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{F1CD94FB-D88F-45B2-B6EE-A74719A59552}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1CD94FB-D88F-45B2-B6EE-A74719A59552}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1CD94FB-D88F-45B2-B6EE-A74719A59552}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCAEF070-EDDC-415E-965B-2B935C40BEC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCAEF070-EDDC-415E-965B-2B935C40BEC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCAEF070-EDDC-415E-965B-2B935C40BEC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCAEF070-EDDC-415E-965B-2B935C40BEC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

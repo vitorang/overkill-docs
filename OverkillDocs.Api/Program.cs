@@ -32,6 +32,7 @@ var entityProvider = entityProviderConfig switch
 {
     "sqlite" => EntityProvider.Sqlite,
     "sqlserver" => EntityProvider.SqlServer,
+    "postgres" => EntityProvider.Postgres,
     _ => EntityProvider.Unknown
 };
 
@@ -46,6 +47,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         EntityProvider.SqlServer => options.UseSqlServer(
             builder.Configuration.GetConnectionString("SqlServer"),
             x => x.MigrationsAssembly("OverkillDocs.Migrator.SqlServer")),
+
+        EntityProvider.Postgres => options.UseNpgsql(
+            builder.Configuration.GetConnectionString("Postgres"),
+            x => x.MigrationsAssembly("OverkillDocs.Migrator.Postgres")),
 
         _ => throw new Exception("Provedor de banco de dados não mapeado")
     };
@@ -177,5 +182,6 @@ enum EntityProvider
 {
     Sqlite,
     SqlServer,
+    Postgres,
     Unknown
 }

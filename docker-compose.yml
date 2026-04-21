@@ -10,6 +10,7 @@ services:
     networks:
       - overkill-network
 
+
   api:
     image: overkilldocsapi
     build:
@@ -30,10 +31,12 @@ services:
         condition: service_healthy
         required: false
 
+
   web:
     build: ./OverkillDocs.Web
     networks:
       - overkill-network
+
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -55,6 +58,28 @@ services:
       retries: 6
       start_period: 15s
 
+
+  postgres:
+    image: postgres:alpine
+    profiles:
+      - postgres
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    ports:
+      - "5432:5432"
+    networks:
+      - overkill-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
   migrator:
     build:
       context: .
@@ -69,6 +94,10 @@ services:
       sqlserver:
         condition: service_healthy
         required: false
+      postgres:
+        condition: service_healthy
+        required: false
+
 
   redis:
     image: redis:alpine
@@ -82,11 +111,14 @@ services:
       timeout: 3s
       retries: 5
 
+
 networks:
   overkill-network:
     driver: bridge
+
 
 volumes:
   caddy_data:
   sqlserver_data:
   sqlite_data:
+  postgres_data:

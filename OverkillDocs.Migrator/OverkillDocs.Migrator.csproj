@@ -17,10 +17,12 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.24" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OverkillDocs.Infrastructure\OverkillDocs.Infrastructure.csproj" />
+    <ProjectReference Include="..\OverkillDocs.Migrator.Postgres\OverkillDocs.Migrator.Postgres.csproj" />
     <ProjectReference Include="..\OverkillDocs.Migrator.Sqlite\OverkillDocs.Migrator.Sqlite.csproj" />
     <ProjectReference Include="..\OverkillDocs.Migrator.SqlServer\OverkillDocs.Migrator.SqlServer.csproj" />
   </ItemGroup>
