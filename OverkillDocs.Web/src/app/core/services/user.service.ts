@@ -2,7 +2,6 @@ import { catchError, finalize, map, Observable, of, shareReplay, tap } from 'rxj
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SimpleUser } from '@core/models/user.model';
-import { AlertService } from '@shared/services/alert.service';
 import { API } from '@core/constants/api.constants';
 
 @Injectable()
@@ -12,7 +11,6 @@ export class UserService {
     private cache: Record<string, SimpleUser> = {};
     private requests: Record<string, Observable<SimpleUser | null>> = {};
     private http = inject(HttpClient);
-    private alertService = inject(AlertService);
 
     public loadCurrentUser(reload?: boolean): Observable<boolean> {
         if (this.currentUser() && !reload) return of(true);
@@ -37,10 +35,7 @@ export class UserService {
                 }),
                 shareReplay(1),
                 finalize(() => delete this.requests[url]),
-                catchError(() => {
-                    this.alertService.error('Erro ao carregar usuário');
-                    return of(null);
-                }),
+                catchError(() => of(null)),
             );
         }
 

@@ -17,7 +17,7 @@ type TabSection = 'editor' | 'chat';
     imports: [SHARED, ChatViewComponent, HubMonitorComponent, MainHeaderComponent],
     templateUrl: './document-layout.component.html',
     styleUrl: './document-layout.component.scss',
-    providers: [UserService, ChatHubService],
+    providers: [UserService],
 })
 export class DocumentLayoutComponent {
     private breakpointObserver = inject(BreakpointObserver);
