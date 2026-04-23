@@ -1,0 +1,18 @@
+﻿using Bogus;
+using OverkillDocs.Core.DTOs.Account;
+using OverkillDocs.Tests.Integration.Helpers;
+
+namespace OverkillDocs.Tests.Integration.Fakers
+{
+    public sealed partial class AuthRequestDtoFaker : Faker<AuthRequestDto>
+    {
+        public AuthRequestDtoFaker()
+        {
+            CustomInstantiator(f => new AuthRequestDto(
+                Username: StringHelper.SanitizeUsername(f.Internet.UserName()),
+                Password: f.Internet.Password(length: 10),
+                UserAgent: f.Internet.UserAgent()
+            ));
+        }
+    }
+}

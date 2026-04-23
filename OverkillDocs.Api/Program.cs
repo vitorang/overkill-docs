@@ -185,3 +185,5 @@ enum EntityProvider
     Postgres,
     Unknown
 }
+
+public partial class Program { }

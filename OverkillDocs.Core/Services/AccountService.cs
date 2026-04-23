@@ -107,8 +107,7 @@ namespace OverkillDocs.Core.Services
             {
                 Name = request.Username,
                 Username = request.Username,
-                PasswordHash = passwordService.CalculeHash(request.Password),
-                Avatar = string.Empty
+                PasswordHash = passwordService.CalculeHash(request.Password)
             };
 
             await userRepository.Add(user, ct: ct);
