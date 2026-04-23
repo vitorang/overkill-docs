@@ -24,10 +24,10 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 var response = await httpClient.PostAsJsonAsync(url, data);
 
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-                await ExecuteInScope<IUserRepository>(async userRepository =>
+                await ExecuteInScope<AppDbContext>(async dbContext =>
                 {
-                    var user = await userRepository.FindByUsername(data.Username, ct: default);
-                    user.Should().BeNull();
+                    var users = await dbContext.Users.ToArrayAsync();
+                    users.Should().BeEmpty();
                 });
             }
         }
@@ -44,10 +44,13 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
 
                 response.StatusCode.Should().Be(HttpStatusCode.OK);
                 result?.Token.Should().NotBeNullOrEmpty();
-                await ExecuteInScope<IUserRepository>(async userRepository =>
+                await ExecuteInScope<AppDbContext>(async dbContext =>
                 {
-                    var user = await userRepository.FindByUsername(data.Username, ct: default);
-                    user.Should().NotBeNull();
+                    var user = await dbContext.Users.SingleAsync();
+                    user.Username.Should().Be(data.Username);
+
+                    var session = await dbContext.UserSessions.SingleAsync();
+                    session.UserId.Should().Be(user.Id);
                 });
             }
         }
