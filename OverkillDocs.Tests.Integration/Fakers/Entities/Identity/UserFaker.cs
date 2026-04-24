@@ -2,7 +2,7 @@
 using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Tests.Integration.Helpers;
 
-namespace OverkillDocs.Tests.Integration.Fakers
+namespace OverkillDocs.Tests.Integration.Fakers.Entities.Identity
 {
     public sealed partial class UserFaker : Faker<User>
     {
