@@ -13,7 +13,7 @@ namespace OverkillDocs.Tests.Integration.Fakers
                 Id = 0,
                 Username = StringHelper.SanitizeUsername(f.Internet.UserName()),
                 Name = f.Name.FirstName().Truncate(15),
-                PasswordHash = string.Empty
+                PasswordHash = f.Internet.Password(),
             });
         }
     }

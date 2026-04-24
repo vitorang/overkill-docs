@@ -10,7 +10,7 @@ namespace OverkillDocs.Tests.Integration.Fakers
         {
             CustomInstantiator(f => new AuthRequestDto(
                 Username: StringHelper.SanitizeUsername(f.Internet.UserName()),
-                Password: f.Internet.Password(length: 10),
+                Password: f.Internet.Password(),
                 UserAgent: f.Internet.UserAgent()
             ));
         }

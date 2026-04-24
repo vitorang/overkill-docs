@@ -6,6 +6,7 @@ using OverkillDocs.Tests.Integration.Fakers;
 using OverkillDocs.Tests.Integration.Fixtures;
 using System.Net;
 using System.Net.Http.Json;
+using Xunit.Abstractions;
 
 namespace OverkillDocs.Tests.Integration.Tests.Account
 {
@@ -13,12 +14,13 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
     {
         private static readonly string url = "/api/account/register";
 
-        public class Success(TestFactory factory) : TestBase(factory)
+        public class Success(TestFactory factory, ITestOutputHelper outputHelper) : TestBase(factory, outputHelper)
         {
             [Fact]
             public async Task ValidData_CreatesUserAndSession()
             {
                 var data = new AuthRequestDtoFaker().Generate();
+                LogData(data);
 
                 var response = await httpClient.PostAsJsonAsync(url, data);
                 var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
@@ -36,12 +38,13 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
             }
         }
 
-        public class Failure(TestFactory factory) : TestBase(factory)
+        public class Failure(TestFactory factory, ITestOutputHelper outputHelper) : TestBase(factory, outputHelper)
         {
             [Fact]
             public async Task InvalidData_ReturnsBadRequest()
             {
                 var data = new AuthRequestDtoFaker().Generate() with { Password = string.Empty };
+                LogData(data);
 
                 var response = await httpClient.PostAsJsonAsync(url, data);
 
@@ -58,6 +61,7 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
             {
                 var user = new UserFaker().Generate();
                 var data = new AuthRequestDtoFaker().Generate() with { Username = user.Username };
+                LogData(user, data);
                 await ExecuteInScope<AppDbContext>(async dbContext =>
                 {
                     dbContext.Users.Add(user);
@@ -70,7 +74,7 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 await ExecuteInScope<AppDbContext>(async dbContext =>
                 {
                     var users = await dbContext.Users.ToArrayAsync();
-                    users.Should().HaveCount(1);
+                    users.Should().ContainSingle();
                 });
             }
         }
