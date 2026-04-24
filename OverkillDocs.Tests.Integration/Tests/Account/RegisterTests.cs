@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using OverkillDocs.Core.DTOs.Account;
-using OverkillDocs.Core.Interfaces.Repositories;
 using OverkillDocs.Infrastructure.Data;
 using OverkillDocs.Tests.Integration.Fakers;
 using OverkillDocs.Tests.Integration.Fixtures;
@@ -10,32 +9,14 @@ using System.Net.Http.Json;
 
 namespace OverkillDocs.Tests.Integration.Tests.Account
 {
-    public class Register
+    public class RegisterTests
     {
         private static readonly string url = "/api/account/register";
 
-        public class WhenDataIsInvalid(TestFactory factory) : TestBase(factory)
+        public class Success(TestFactory factory) : TestBase(factory)
         {
             [Fact]
-            public async Task ShouldReturnBadRequest()
-            {
-                var data = new AuthRequestDtoFaker().Generate() with { Password = string.Empty };
-
-                var response = await httpClient.PostAsJsonAsync(url, data);
-
-                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-                await ExecuteInScope<AppDbContext>(async dbContext =>
-                {
-                    var users = await dbContext.Users.ToArrayAsync();
-                    users.Should().BeEmpty();
-                });
-            }
-        }
-
-        public class WhenDataIsValid(TestFactory factory) : TestBase(factory)
-        {
-            [Fact]
-            public async Task ShouldReturnAuthResponse()
+            public async Task ValidData_CreatesUserAndSession()
             {
                 var data = new AuthRequestDtoFaker().Generate();
 
@@ -55,10 +36,25 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
             }
         }
 
-        public class WhenUserExists(TestFactory factory) : TestBase(factory)
+        public class Failure(TestFactory factory) : TestBase(factory)
         {
             [Fact]
-            public async Task ShouldReturnConflict()
+            public async Task InvalidData_ReturnsBadRequest()
+            {
+                var data = new AuthRequestDtoFaker().Generate() with { Password = string.Empty };
+
+                var response = await httpClient.PostAsJsonAsync(url, data);
+
+                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+                await ExecuteInScope<AppDbContext>(async dbContext =>
+                {
+                    var users = await dbContext.Users.ToArrayAsync();
+                    users.Should().BeEmpty();
+                });
+            }
+
+            [Fact]
+            public async Task UserExists_ReturnsConflict()
             {
                 var user = new UserFaker().Generate();
                 var data = new AuthRequestDtoFaker().Generate() with { Username = user.Username };
