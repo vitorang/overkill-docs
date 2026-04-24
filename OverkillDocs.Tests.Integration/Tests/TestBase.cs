@@ -1,4 +1,5 @@
-﻿using OverkillDocs.Tests.Integration.Fixtures;
+﻿using OverkillDocs.Infrastructure.Data;
+using OverkillDocs.Tests.Integration.Fixtures;
 using System.Text.Json;
 using Xunit.Abstractions;
 
@@ -12,6 +13,15 @@ namespace OverkillDocs.Tests.Integration.Tests
 
         protected async Task ExecuteInScope<T>(Func<T, Task> action) where T : notnull
             => await factory.ExecuteInScope(action);
+
+        protected async Task ExecuteAndCommit(Action<AppDbContext> action)
+        {
+            await ExecuteInScope<AppDbContext>(async db =>
+            {
+                action(db);
+                await db.SaveChangesAsync();
+            });
+        }
 
         public virtual async Task InitializeAsync()
         {

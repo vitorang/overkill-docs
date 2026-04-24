@@ -31,11 +31,7 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                     user.PasswordHash = passwordService.CalculeHash(password)
                 );
 
-                await ExecuteInScope<AppDbContext>(async dbContext =>
-                {
-                    dbContext.Users.Add(user);
-                    await dbContext.SaveChangesAsync();
-                });
+                await ExecuteAndCommit(db => db.Users.Add(user));
             }
 
             [Fact]
@@ -74,11 +70,7 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                    user.PasswordHash = passwordService.CalculeHash(password)
                 );
 
-                await ExecuteInScope<AppDbContext>(async dbContext =>
-                {
-                    dbContext.Users.Add(user);
-                    await dbContext.SaveChangesAsync();
-                });
+                await ExecuteAndCommit(db=> db.Users.Add(user));
             }
 
             [Fact]

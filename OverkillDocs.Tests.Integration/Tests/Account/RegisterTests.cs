@@ -64,11 +64,7 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 var user = new UserFaker().Generate();
                 var data = new AuthRequestDtoFaker().Generate() with { Username = user.Username };
                 LogData(user, data);
-                await ExecuteInScope<AppDbContext>(async dbContext =>
-                {
-                    dbContext.Users.Add(user);
-                    await dbContext.SaveChangesAsync();
-                });
+                await ExecuteAndCommit(db => db.Users.Add(user));
 
                 var response = await httpClient.PostAsJsonAsync(url, data);
 
