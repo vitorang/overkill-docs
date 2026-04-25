@@ -1,4 +1,5 @@
 ﻿using HashidsNet;
+using OverkillDocs.Core.Constants;
 using OverkillDocs.Core.DTOs.Account;
 using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Core.Exceptions;
@@ -26,7 +27,7 @@ namespace OverkillDocs.Core.Services
             await userSessionRepository.ExecuteDeleteAllSessions(user.Id, ct: ct);
 
             var oldUser = user.Clone();
-            user.Name = user.Username = $"Anonymized {user.Id}";
+            user.Name = user.Username = $"{AccountConstants.AnonymizedPrefix}{user.Id}";
             user.Avatar = string.Empty;
             user.PasswordHash = string.Empty;
             user.IsActive = false;

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OverkillDocs.Core.Constants;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace OverkillDocs.Core.Attributes
@@ -14,6 +15,9 @@ namespace OverkillDocs.Core.Attributes
 
                 if (!UsernameRegex().IsMatch(strValue))
                     return new ValidationResult("Use apenas letras minúsculas e números");
+
+                if (strValue.StartsWith(AccountConstants.AnonymizedPrefix))
+                    return new ValidationResult("Nome inválido.");
 
                 return ValidationResult.Success;
             }
