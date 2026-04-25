@@ -8,5 +8,6 @@
         public Task Remove(T value);
         public Task RemoveAll(IEnumerable<T> values);
         public Task RemoveById(string id);
+        public string IdFrom(T value);
     }
 }

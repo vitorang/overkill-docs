@@ -13,7 +13,7 @@ namespace OverkillDocs.Infrastructure.Cache.Memory
         {
             var key = KeyFrom(id);
             T? value = default;
-            
+
             var strValue = cache.Get<string?>(key);
             if (!string.IsNullOrEmpty(strValue))
                 value = JsonSerializer.Deserialize<T?>(strValue);

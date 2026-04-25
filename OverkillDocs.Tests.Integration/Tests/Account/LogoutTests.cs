@@ -1,11 +1,14 @@
 ﻿using FluentAssertions;
 using HashidsNet;
 using Microsoft.EntityFrameworkCore;
+using OverkillDocs.Infrastructure.Interfaces;
 using OverkillDocs.Tests.Integration.Fakers.Entities.Identity;
+using OverkillDocs.Tests.Integration.Fakers.Security;
 using OverkillDocs.Tests.Integration.Fixtures;
 using System.Net;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
+using static OverkillDocs.Core.Security.UserContext;
 
 namespace OverkillDocs.Tests.Integration.Tests.Account
 {
@@ -30,7 +33,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                     db.Users.Add(user);
                     db.UserSessions.Add(session);
                 });
-                LogData(user, session);
+                var identity = new UserIdentityFaker(user, session.Token).Generate();
+                await Require<IObjectCache<UserIdentity>>().Set(identity);
+                LogData(user, session, identity);
 
                 var response = await httpClient.PostAsJsonAsync(url, new { });
 
@@ -41,13 +46,18 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
             [Fact]
             public async Task AuthenticatedUser_RemovesSession()
             {
+                var cache = Require<IObjectCache<UserIdentity>>();
                 var user = new UserFaker().Generate();
                 var session = await LoginAs(user);
-                LogData(user, session);
+                var identity = new UserIdentityFaker(user, session.Token).Generate();
+                await cache.Set(identity);
+                LogData(user, session, identity);
 
                 var response = await httpClient.PostAsJsonAsync(url, new { });
 
                 response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+                var cachedSession = await cache.Get(cache.IdFrom(identity));
+                cachedSession.Should().BeNull();
                 await Execute(async db =>
                 {
                     var sessions = await db.UserSessions.ToArrayAsync();
@@ -83,6 +93,7 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
         {
             private int otherSessionId = 0;
             private string otherSessionHashId = string.Empty;
+            private string otherIdentityId = string.Empty;
 
             public override async Task InitializeAsync()
             {
@@ -90,6 +101,7 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
 
                 var user = new UserFaker().Generate();
                 var session = new UserSessionFaker(user).Generate();
+                var identity = new UserIdentityFaker(user, session.Token).Generate();
 
                 await ExecuteAndCommit(db =>
                 {
@@ -97,9 +109,13 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                     db.UserSessions.Add(session);
                 });
 
+                var cache = Require<IObjectCache<UserIdentity>>();
+                await Require<IObjectCache<UserIdentity>>().Set(identity);
+
                 otherSessionId = session.Id;
                 otherSessionHashId = Require<IHashids>().Encode(otherSessionId);
-                LogData(user, session, otherSessionHashId);
+                otherIdentityId = cache.IdFrom(identity);
+                LogData(user, session, identity, otherSessionHashId);
             }
 
             [Fact]
@@ -138,6 +154,8 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
             private async Task AssertNoOtherSessionRemoved(HttpResponseMessage response, HttpStatusCode expectedCode)
             {
                 response.StatusCode.Should().Be(expectedCode);
+                var cachedObject = await Require<IObjectCache<UserIdentity>>().Get(otherIdentityId);
+                cachedObject.Should().NotBeNull();
                 await Execute(async db => await db.UserSessions.SingleAsync(e => e.Id == otherSessionId));
             }
         }
