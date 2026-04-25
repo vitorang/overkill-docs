@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Infrastructure.Data;
 using OverkillDocs.Infrastructure.Interfaces;
@@ -19,6 +20,9 @@ namespace OverkillDocs.Tests.Integration.Tests
         public virtual async Task InitializeAsync()
         {
             await factory.ResetDatabaseAsync();
+
+            if (Require<IMemoryCache>() is MemoryCache cache)
+                cache.Clear();
         }
 
         public virtual Task DisposeAsync() => Task.CompletedTask;

@@ -1,23 +1,25 @@
-﻿using OverkillDocs.Infrastructure.Interfaces;
+﻿using Microsoft.Extensions.Caching.Memory;
+using OverkillDocs.Infrastructure.Interfaces;
 using System.Collections.Immutable;
+using System.Text.Json;
 
 namespace OverkillDocs.Infrastructure.Cache.Memory
 {
-    public class MemoryListCache<T> : ListCache<T>, IListCache<T>
+    public class MemoryListCache<T>(IMemoryCache cache) : ListCache<T>, IListCache<T>
     {
-        private static readonly List<T> cache = [];
-        private static DateTime lastAccessAt = DateTime.Now;
-        private static readonly object sync = new();
+        private readonly object sync = new();
+        private static readonly MemoryCacheEntryOptions options = new MemoryCacheEntryOptions()
+            .SetSlidingExpiration(expirationTime);
 
         public Task Append(T value)
         {
             lock (sync)
             {
-                RefreshCache();
-
-                cache.Add(value);
-                if (cache.Count > sizeLimit)
-                    cache.RemoveRange(0, cache.Count - sizeLimit);
+                var list = GetList();
+                list.Add(value);
+                if (list.Count > sizeLimit)
+                    list.RemoveRange(0, list.Count - sizeLimit);
+                cache.Set(key, JsonSerializer.Serialize(list), options);
             }
 
             return Task.CompletedTask;
@@ -27,18 +29,14 @@ namespace OverkillDocs.Infrastructure.Cache.Memory
         {
             lock (sync)
             {
-                RefreshCache();
-                return Task.FromResult(cache.ToImmutableArray());
+                return Task.FromResult(GetList().ToImmutableArray());
             }
         }
 
-        private static void RefreshCache()
+        private List<T> GetList()
         {
-            var now = DateTime.Now;
-            if (now - lastAccessAt >= expirationTime)
-                cache.Clear();
-
-            lastAccessAt = now;
+            var json = cache.Get<string>(key) ?? "[]";
+            return JsonSerializer.Deserialize<List<T>>(json)!;
         }
     }
 }

@@ -7,7 +7,6 @@ namespace OverkillDocs.Infrastructure.Cache.Redis
 {
     public class RedisListCache<T>(IConnectionMultiplexer redis) : ListCache<T>, IListCache<T>
     {
-        private static readonly string key = typeof(T).Name;
         private readonly IDatabase database = redis.GetDatabase();
         private static readonly JsonSerializerOptions jsonOptions = new()
         {
