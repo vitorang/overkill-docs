@@ -10,7 +10,7 @@ using System.Net.Http.Json;
 using Xunit.Abstractions;
 using static OverkillDocs.Core.Security.UserContext;
 
-namespace OverkillDocs.Tests.Integration.Tests.Account
+namespace OverkillDocs.Tests.Integration.Tests.AccountController
 {
     public class LogoutTests
     {

@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
 
-namespace OverkillDocs.Tests.Integration.Tests.Account
+namespace OverkillDocs.Tests.Integration.Tests.AccountController
 {
     public class ChangePasswordTests
     {
