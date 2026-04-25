@@ -24,8 +24,8 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 var passwordChange = new PasswordChangeDtoFaker().Generate();
                 var user = new UserFaker().Generate();
                 user.PasswordHash = passwordService.CalculeHash(passwordChange.CurrentPassword);
-                LogData(user, passwordChange);
                 await LoginAs(user);
+                LogData(user, passwordChange);
 
                 var response = await httpClient.PostAsJsonAsync(url, passwordChange);
                 response.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -50,8 +50,8 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 var passwordChange = new PasswordChangeDtoFaker().Generate() with { NewPassword = "-" };
                 var user = new UserFaker().Generate();
                 user.PasswordHash = passwordService.CalculeHash(passwordChange.CurrentPassword);
-                LogData(user, passwordChange);
                 await LoginAs(user);
+                LogData(user, passwordChange);
 
                 var response = await httpClient.PostAsJsonAsync(url, passwordChange);
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -73,8 +73,8 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 var user = new UserFaker().Generate();
                 user.PasswordHash = passwordService.CalculeHash(passwordChange.CurrentPassword);
                 var wrongPassword = passwordChange with { CurrentPassword = passwordChange.CurrentPassword + "-" };
-                LogData(user, passwordChange, wrongPassword);
                 await LoginAs(user);
+                LogData(user, passwordChange, wrongPassword);
 
                 var response = await httpClient.PostAsJsonAsync(url, wrongPassword);
                 response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
