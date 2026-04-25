@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Infrastructure.Data;
-using OverkillDocs.Infrastructure.Interfaces;
 using OverkillDocs.Tests.Integration.Fakers.Entities.Identity;
 using OverkillDocs.Tests.Integration.Fixtures;
 using System.Net.Http.Headers;
@@ -27,7 +26,7 @@ namespace OverkillDocs.Tests.Integration.Tests
 
         public virtual Task DisposeAsync() => Task.CompletedTask;
 
-        public async Task ExecuteInScope<T>(Func<T, Task> action)
+        private async Task Execute<T>(Func<T, Task> action)
             where T : notnull
         {
             using var scope = factory.Services.CreateScope();
@@ -37,7 +36,7 @@ namespace OverkillDocs.Tests.Integration.Tests
 
         protected async Task Execute(Func<AppDbContext, Task> action)
         {
-            await ExecuteInScope<AppDbContext>(async db =>
+            await Execute<AppDbContext>(async db =>
             {
                 await action(db);
                 await db.SaveChangesAsync();
@@ -46,7 +45,7 @@ namespace OverkillDocs.Tests.Integration.Tests
 
         protected async Task ExecuteAndCommit(Action<AppDbContext> action)
         {
-            await ExecuteInScope<AppDbContext>(async db =>
+            await Execute<AppDbContext>(async db =>
             {
                 action(db);
                 await db.SaveChangesAsync();

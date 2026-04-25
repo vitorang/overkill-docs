@@ -1,10 +1,8 @@
-﻿using Azure;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using OverkillDocs.Core.DTOs.Account;
 using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Core.Interfaces.Services;
-using OverkillDocs.Infrastructure.Data;
 using OverkillDocs.Tests.Integration.Fakers.DTOs.Account;
 using OverkillDocs.Tests.Integration.Fakers.Entities.Identity;
 using OverkillDocs.Tests.Integration.Fixtures;
@@ -27,10 +25,8 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
             {
                 await base.InitializeAsync();
 
-                await ExecuteInScope<IPasswordService>(async passwordService =>
-                    user.PasswordHash = passwordService.CalculeHash(password)
-                );
-
+                var passwordService = Require<IPasswordService>();
+                user.PasswordHash = passwordService.CalculeHash(password);
                 await ExecuteAndCommit(db => db.Users.Add(user));
             }
 
@@ -48,9 +44,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 response.StatusCode.Should().Be(HttpStatusCode.OK);
                 result?.Token.Should().NotBeNullOrEmpty();
 
-                await ExecuteInScope<AppDbContext>(async dbContext =>
+                await Execute(async db =>
                 {
-                    var session = await dbContext.UserSessions.SingleAsync();
+                    var session = await db.UserSessions.SingleAsync();
                     session.UserId.Should().Be(user.Id);
                     session.Token.Should().Be(result!.Token);
                 });
@@ -66,11 +62,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
             {
                 await base.InitializeAsync();
 
-                await ExecuteInScope<IPasswordService>(async passwordService =>
-                   user.PasswordHash = passwordService.CalculeHash(password)
-                );
-
-                await ExecuteAndCommit(db=> db.Users.Add(user));
+                var passwordService = Require<IPasswordService>();
+                user.PasswordHash = passwordService.CalculeHash(password);
+                await ExecuteAndCommit(db => db.Users.Add(user));
             }
 
             [Fact]
@@ -110,9 +104,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
             {
                 response.StatusCode.Should().Be(expectedStatusCode);
 
-                await ExecuteInScope<AppDbContext>(async dbContext =>
+                await Execute(async db =>
                 {
-                    var sessions = await dbContext.UserSessions.ToArrayAsync();
+                    var sessions = await db.UserSessions.ToArrayAsync();
                     sessions.Should().BeEmpty();
                 });
             }

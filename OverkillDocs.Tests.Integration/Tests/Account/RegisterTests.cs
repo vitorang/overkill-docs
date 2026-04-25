@@ -1,8 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using OverkillDocs.Core.DTOs.Account;
-using OverkillDocs.Infrastructure.Data;
-using OverkillDocs.Tests.Integration.Fakers;
 using OverkillDocs.Tests.Integration.Fakers.DTOs.Account;
 using OverkillDocs.Tests.Integration.Fakers.Entities.Identity;
 using OverkillDocs.Tests.Integration.Fixtures;
@@ -29,12 +27,12 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
 
                 response.StatusCode.Should().Be(HttpStatusCode.OK);
                 result?.Token.Should().NotBeNullOrEmpty();
-                await ExecuteInScope<AppDbContext>(async dbContext =>
+                await Execute(async db =>
                 {
-                    var user = await dbContext.Users.SingleAsync();
+                    var user = await db.Users.SingleAsync();
                     user.Username.Should().Be(data.Username);
 
-                    var session = await dbContext.UserSessions.SingleAsync();
+                    var session = await db.UserSessions.SingleAsync();
                     session.UserId.Should().Be(user.Id);
                 });
             }
@@ -51,9 +49,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 var response = await httpClient.PostAsJsonAsync(url, data);
 
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-                await ExecuteInScope<AppDbContext>(async dbContext =>
+                await Execute(async db =>
                 {
-                    var users = await dbContext.Users.ToArrayAsync();
+                    var users = await db.Users.ToArrayAsync();
                     users.Should().BeEmpty();
                 });
             }
@@ -69,9 +67,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 var response = await httpClient.PostAsJsonAsync(url, data);
 
                 response.StatusCode.Should().Be(HttpStatusCode.Conflict);
-                await ExecuteInScope<AppDbContext>(async dbContext =>
+                await Execute(async db =>
                 {
-                    var users = await dbContext.Users.ToArrayAsync();
+                    var users = await db.Users.ToArrayAsync();
                     users.Should().ContainSingle();
                 });
             }
