@@ -45,7 +45,6 @@ namespace OverkillDocs.Api.Controllers
             return NoContent();
         }
 
-        [AllowAnonymous]
         [HttpPost("Logout/{hashId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Logout(string hashId, CancellationToken ct)

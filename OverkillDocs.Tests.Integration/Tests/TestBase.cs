@@ -1,5 +1,10 @@
-﻿using OverkillDocs.Infrastructure.Data;
+﻿using Microsoft.Extensions.DependencyInjection;
+using OverkillDocs.Core.Entities.Identity;
+using OverkillDocs.Infrastructure.Data;
+using OverkillDocs.Infrastructure.Interfaces;
+using OverkillDocs.Tests.Integration.Fakers.Entities.Identity;
 using OverkillDocs.Tests.Integration.Fixtures;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using Xunit.Abstractions;
 
@@ -11,8 +16,29 @@ namespace OverkillDocs.Tests.Integration.Tests
 
         protected readonly HttpClient httpClient = factory.CreateClient();
 
-        protected async Task ExecuteInScope<T>(Func<T, Task> action) where T : notnull
-            => await factory.ExecuteInScope(action);
+        public virtual async Task InitializeAsync()
+        {
+            await factory.ResetDatabaseAsync();
+        }
+
+        public virtual Task DisposeAsync() => Task.CompletedTask;
+
+        public async Task ExecuteInScope<T>(Func<T, Task> action)
+            where T : notnull
+        {
+            using var scope = factory.Services.CreateScope();
+            var service = scope.ServiceProvider.GetRequiredService<T>();
+            await action(service);
+        }
+
+        protected async Task Execute(Func<AppDbContext, Task> action)
+        {
+            await ExecuteInScope<AppDbContext>(async db =>
+            {
+                await action(db);
+                await db.SaveChangesAsync();
+            });
+        }
 
         protected async Task ExecuteAndCommit(Action<AppDbContext> action)
         {
@@ -23,14 +49,7 @@ namespace OverkillDocs.Tests.Integration.Tests
             });
         }
 
-        public virtual async Task InitializeAsync()
-        {
-            await factory.ResetDatabaseAsync();
-        }
-
-        public virtual Task DisposeAsync() => Task.CompletedTask;
-
-        public void LogData(params object?[] items)
+        protected void LogData(params object?[] items)
         {
             int index = 0;
             foreach (var item in items)
@@ -41,6 +60,32 @@ namespace OverkillDocs.Tests.Integration.Tests
                 outputHelper.WriteLine($"#{index}: {typeName}\n{json}\n");
                 index++;
             }
+        }
+
+        protected async Task<UserSession> LoginAs(User user)
+        {
+            if (user.Id == 0)
+                await ExecuteAndCommit(db => db.Users.Add(user));
+
+            var session = new UserSessionFaker(user).Generate();
+            await ExecuteAndCommit(db =>
+            {
+                db.Users.Attach(user);
+                db.UserSessions.Add(session);
+            });
+
+            httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", session.Token);
+
+            return session;
+        }
+
+        protected T Require<T>() where T : notnull
+        {
+            if (typeof(T) == typeof(AppDbContext))
+                throw new InvalidOperationException("Require<AppDbContext>() não é suportado. Use Execute() ou ExecuteAndCommit().");
+
+            return factory.Services.GetRequiredService<T>();
         }
     }
 }

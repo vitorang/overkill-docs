@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using OverkillDocs.Infrastructure.Data;
@@ -45,6 +46,12 @@ namespace OverkillDocs.Tests.Integration.Fixtures
             builder.UseEnvironment("Test");
             builder.UseSetting("ConnectionStrings:Postgres", dbContainer.GetConnectionString());
 
+            builder.ConfigureAppConfiguration((context, configBuilder) =>
+            {
+                var config = configBuilder.Build();
+                ValidateSettings(config);
+            });
+
             builder.ConfigureTestServices(services =>
             {
                 var descriptor = services.SingleOrDefault(
@@ -71,12 +78,15 @@ namespace OverkillDocs.Tests.Integration.Fixtures
             await dbContainer.StopAsync();
         }
 
-        public async Task ExecuteInScope<T>(Func<T, Task> action)
-            where T : notnull
+        private static void ValidateSettings(IConfigurationRoot config)
         {
-            using var scope = Services.CreateScope();
-            var service = scope.ServiceProvider.GetRequiredService<T>();
-            await action(service);
+            var useRedis = config.GetValue<bool>("FeatureFlags:UseRedis");
+            if (useRedis)
+                throw new InvalidOperationException("Somente FeatureFlags:UseRedis=False é suportado.");
+
+            var database = config.GetValue<string>("FeatureFlags:Database");
+            if (database != "postgres")
+                throw new InvalidOperationException("Somente FeatureFlags:Database=postgres é suportado.");
         }
     }
 }
