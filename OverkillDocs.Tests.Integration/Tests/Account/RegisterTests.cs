@@ -23,9 +23,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 LogData(data);
 
                 var response = await httpClient.PostAsJsonAsync(url, data);
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
                 var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
 
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
                 result?.Token.Should().NotBeNullOrEmpty();
                 await Execute(async db =>
                 {
@@ -47,8 +47,8 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 LogData(data);
 
                 var response = await httpClient.PostAsJsonAsync(url, data);
-
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
                 await Execute(async db =>
                 {
                     var users = await db.Users.ToArrayAsync();
@@ -65,8 +65,8 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 await ExecuteAndCommit(db => db.Users.Add(user));
 
                 var response = await httpClient.PostAsJsonAsync(url, data);
-
                 response.StatusCode.Should().Be(HttpStatusCode.Conflict);
+
                 await Execute(async db =>
                 {
                     var users = await db.Users.ToArrayAsync();

@@ -26,9 +26,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 LogData(user, session);
 
                 var response = await httpClient.GetAsync(url);
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
                 var profile = await response.Content.ReadFromJsonAsync<ProfileDto>();
 
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
                 profile?.Username.Should().Be(user.Username);
             }
         }
@@ -51,9 +51,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 LogData(user, session, profile);
 
                 var response = await httpClient.PostAsJsonAsync(url, profile);
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
                 var updatedProfile = await response.Content.ReadFromJsonAsync<ProfileDto>();
 
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
                 updatedProfile.Should().BeEquivalentTo(profile);
                 var cachedUser = await cache.Get(cache.IdFrom(user));
                 cachedUser.Should().BeNull();
@@ -80,8 +80,8 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 LogData(user, session, profile);
 
                 var response = await httpClient.PostAsJsonAsync(url, profile);
-
                 response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+
                 var cachedUser = await cache.Get(cache.IdFrom(user));
                 cachedUser?.Username.Should().Be(user.Username);
                 await Execute(async db => (await db.Users.FirstAsync()).Username.Should().Be(user.Username));

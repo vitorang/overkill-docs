@@ -38,8 +38,8 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 LogData(user, session, identity);
 
                 var response = await httpClient.PostAsJsonAsync(url, new { });
-
                 response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
                 await Execute(async db => await db.UserSessions.SingleAsync());
             }
 
@@ -54,8 +54,8 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 LogData(user, session, identity);
 
                 var response = await httpClient.PostAsJsonAsync(url, new { });
-
                 response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
                 var cachedSession = await cache.Get(cache.IdFrom(identity));
                 cachedSession.Should().BeNull();
                 await Execute(async db =>
@@ -79,6 +79,7 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
 
                 var response = await httpClient.PostAsJsonAsync(
                     SessionUrl(hashIds.Encode(oldSession.Id)), new { });
+                response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
                 await Execute(async db =>
                 {
@@ -122,8 +123,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
             public async Task AnonymousUser_ResultsUnauthorized()
             {
                 var response = await httpClient.PostAsJsonAsync(SessionUrl(otherSessionHashId), new { });
+                response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 
-                await AssertNoOtherSessionRemoved(response, HttpStatusCode.Unauthorized);
+                await AssertNoOtherSessionRemoved();
             }
 
             [Fact]
@@ -134,8 +136,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 LogData(user, session);
 
                 var response = await httpClient.PostAsJsonAsync(SessionUrl(otherSessionHashId), new { });
+                response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
 
-                await AssertNoOtherSessionRemoved(response, HttpStatusCode.Forbidden);
+                await AssertNoOtherSessionRemoved();
             }
 
             [Fact]
@@ -147,13 +150,14 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
 
                 var hashId = Require<IHashids>().Encode(0);
                 var response = await httpClient.PostAsJsonAsync(SessionUrl(hashId), new { });
+                response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-                await AssertNoOtherSessionRemoved(response, HttpStatusCode.NotFound);
+                await AssertNoOtherSessionRemoved();
             }
 
-            private async Task AssertNoOtherSessionRemoved(HttpResponseMessage response, HttpStatusCode expectedCode)
+            private async Task AssertNoOtherSessionRemoved()
             {
-                response.StatusCode.Should().Be(expectedCode);
+                
                 var cachedObject = await Require<IObjectCache<UserIdentity>>().Get(otherIdentityId);
                 cachedObject.Should().NotBeNull();
                 await Execute(async db => await db.UserSessions.SingleAsync(e => e.Id == otherSessionId));

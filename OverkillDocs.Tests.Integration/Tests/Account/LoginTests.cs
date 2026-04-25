@@ -39,9 +39,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 LogData(user, data);
 
                 var response = await httpClient.PostAsJsonAsync(url, data);
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
                 var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
 
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
                 result?.Token.Should().NotBeNullOrEmpty();
 
                 await Execute(async db =>
@@ -74,8 +74,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 LogData(user, data);
 
                 var response = await httpClient.PostAsJsonAsync(url, data);
+                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-                await AssertNoSessionCreated(response, HttpStatusCode.BadRequest);
+                await AssertNoSessionCreated();
             }
 
             [Fact]
@@ -85,8 +86,9 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 LogData(data);
 
                 var response = await httpClient.PostAsJsonAsync(url, data);
+                response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-                await AssertNoSessionCreated(response, HttpStatusCode.NotFound);
+                await AssertNoSessionCreated();
             }
 
             [Fact]
@@ -96,14 +98,13 @@ namespace OverkillDocs.Tests.Integration.Tests.Account
                 LogData(data);
 
                 var response = await httpClient.PostAsJsonAsync(url, data);
+                response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-                await AssertNoSessionCreated(response, HttpStatusCode.NotFound);
+                await AssertNoSessionCreated();
             }
 
-            private async Task AssertNoSessionCreated(HttpResponseMessage response, HttpStatusCode expectedStatusCode)
+            private async Task AssertNoSessionCreated()
             {
-                response.StatusCode.Should().Be(expectedStatusCode);
-
                 await Execute(async db =>
                 {
                     var sessions = await db.UserSessions.ToArrayAsync();
