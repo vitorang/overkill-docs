@@ -13,5 +13,4 @@ public sealed class PasswordChangeDtoFaker : Faker<PasswordChangeDto>
             f.Internet.Password()
         ));
     }
-
 }

@@ -1,6 +1,6 @@
 namespace OverkillDocs.Core.DTOs.Account;
 
-public record UserSessionDto(
+public sealed record UserSessionDto(
     string HashId,
     string UserAgent,
     bool IsCurrent

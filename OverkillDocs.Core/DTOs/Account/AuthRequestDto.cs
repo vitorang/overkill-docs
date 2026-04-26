@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OverkillDocs.Core.DTOs.Account;
 
-public record AuthRequestDto(
+public sealed record AuthRequestDto(
     [Required(ErrorMessage = "Usuário obrigatório")]
     [Username]
     string Username,

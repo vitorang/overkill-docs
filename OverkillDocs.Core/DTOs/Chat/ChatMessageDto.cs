@@ -1,6 +1,6 @@
 namespace OverkillDocs.Core.DTOs.Chat;
 
-public record ChatMessageDto(
+public sealed record ChatMessageDto(
     string Id,
     string Content,
     string UserHashId,

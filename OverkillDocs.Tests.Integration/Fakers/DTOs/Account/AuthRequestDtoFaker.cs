@@ -4,7 +4,7 @@ using OverkillDocs.Tests.Integration.Helpers;
 
 namespace OverkillDocs.Tests.Integration.Fakers.DTOs.Account;
 
-public sealed partial class AuthRequestDtoFaker : Faker<AuthRequestDto>
+public sealed class AuthRequestDtoFaker : Faker<AuthRequestDto>
 {
     public AuthRequestDtoFaker()
     {

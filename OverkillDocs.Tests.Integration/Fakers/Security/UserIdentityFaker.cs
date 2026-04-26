@@ -4,7 +4,7 @@ using static OverkillDocs.Core.Security.UserContext;
 
 namespace OverkillDocs.Tests.Integration.Fakers.Security;
 
-public class UserIdentityFaker : Faker<UserIdentity>
+public sealed class UserIdentityFaker : Faker<UserIdentity>
 {
     public UserIdentityFaker(User user, string sessionToken)
     {

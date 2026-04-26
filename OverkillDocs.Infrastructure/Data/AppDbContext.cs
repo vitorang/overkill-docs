@@ -4,7 +4,7 @@ using OverkillDocs.Core.Entities.Identity;
 
 namespace OverkillDocs.Infrastructure.Data;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<Document> Documents { get; set; }
     public DbSet<DocumentFragment> DocumentFragments { get; set; }

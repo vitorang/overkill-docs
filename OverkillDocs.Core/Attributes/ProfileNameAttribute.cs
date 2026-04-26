@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OverkillDocs.Core.Attributes;
 
-public class ProfileNameAttribute : ValidationAttribute
+public sealed class ProfileNameAttribute : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {

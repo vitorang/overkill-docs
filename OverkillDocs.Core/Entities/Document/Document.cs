@@ -2,7 +2,7 @@ using OverkillDocs.Core.Entities.Identity;
 
 namespace OverkillDocs.Core.Entities.Document;
 
-public class Document
+public sealed class Document
 {
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;

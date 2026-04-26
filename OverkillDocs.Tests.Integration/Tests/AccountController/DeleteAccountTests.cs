@@ -2,12 +2,12 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using OverkillDocs.Core.Constants;
 using OverkillDocs.Core.Interfaces.Services;
+using OverkillDocs.Tests.Integration.Fakers.DTOs.Account;
 using OverkillDocs.Tests.Integration.Fakers.Entities.Identity;
 using OverkillDocs.Tests.Integration.Fixtures;
 using System.Net;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
-using static OverkillDocs.Tests.Integration.Fakers.DTOs.Account.AuthRequestDtoFaker;
 
 namespace OverkillDocs.Tests.Integration.Tests.AccountController;
 

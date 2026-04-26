@@ -2,7 +2,7 @@ using OverkillDocs.Core.Attributes;
 
 namespace OverkillDocs.Core.DTOs.Account;
 
-public record ProfileDto(
+public sealed record ProfileDto(
     [ProfileName]
     string Name,
     string Username,

@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace OverkillDocs.Core.Attributes;
 
-public partial class UsernameAttribute : ValidationAttribute
+public sealed partial class UsernameAttribute : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {

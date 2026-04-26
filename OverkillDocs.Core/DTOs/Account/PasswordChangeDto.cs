@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OverkillDocs.Core.DTOs.Account;
 
-public record PasswordChangeDto(
+public sealed record PasswordChangeDto(
     [Required(ErrorMessage = "Senha obrigatória")]
     [DataType(DataType.Password)]
     string CurrentPassword,

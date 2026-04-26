@@ -3,13 +3,10 @@ using OverkillDocs.Core.DTOs.Account;
 
 namespace OverkillDocs.Tests.Integration.Fakers.DTOs.Account;
 
-public sealed partial class AuthRequestDtoFaker : Faker<AuthRequestDto>
+public sealed class AccountDeletionDtoFaker : Faker<AccountDeletionDto>
 {
-    public sealed partial class AccountDeletionDtoFaker : Faker<AccountDeletionDto>
+    public AccountDeletionDtoFaker()
     {
-        public AccountDeletionDtoFaker()
-        {
-            CustomInstantiator(f => new AccountDeletionDto(f.Internet.Password()));
-        }
+        CustomInstantiator(f => new AccountDeletionDto(f.Internet.Password()));
     }
 }

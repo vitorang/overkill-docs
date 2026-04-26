@@ -1,6 +1,6 @@
 namespace OverkillDocs.Core.Entities.Chat;
 
-public record ChatMessage(
+public sealed record ChatMessage(
     string Id,
     string Content,
     int UserId,

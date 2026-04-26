@@ -3,7 +3,7 @@ using OverkillDocs.Core.Enums;
 
 namespace OverkillDocs.Core.Entities.Document;
 
-public class DocumentFragment
+public sealed class DocumentFragment
 {
     public int Id { get; set; }
     public string Content { get; set; } = string.Empty;

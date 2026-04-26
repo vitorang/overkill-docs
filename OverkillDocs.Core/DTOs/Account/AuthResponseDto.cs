@@ -1,5 +1,5 @@
 namespace OverkillDocs.Core.DTOs.Account;
 
-public record AuthResponseDto(
+public sealed record AuthResponseDto(
     string Token
 );

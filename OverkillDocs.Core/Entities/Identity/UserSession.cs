@@ -1,6 +1,6 @@
 namespace OverkillDocs.Core.Entities.Identity;
 
-public class UserSession
+public sealed class UserSession
 {
     public int Id { get; set; }
 
