@@ -19,7 +19,7 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Run Tests
-        run: dotnet test --verbosity normal
+        run: dotnet test OverkillDocs.sln --configuration Release --verbosity normal
 
   build:
     runs-on: ubuntu-latest
