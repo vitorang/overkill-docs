@@ -2,25 +2,39 @@ name: OverkillDocs Docker CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Run Tests
+        run: dotnet test --verbosity normal
 
   build:
     runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Build the Docker image
-      run: |
-        SHA=$(echo ${{ github.sha }} | cut -c1-7)
-        VERSION="v${{ github.run_number }}"
-        docker build . --file Dockerfile.prod --tag "overkill-docs:${VERSION}-${SHA}" --tag "overkill-docs:latest"
+      - name: Build the Docker image
+        run: |
+          SHA=$(echo ${{ github.sha }} | cut -c1-7)
+          VERSION="v${{ github.run_number }}"
+          docker build . --file Dockerfile.prod --tag "overkill-docs:${VERSION}-${SHA}" --tag "overkill-docs:latest"
 
-    - name: Render Deploy
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: curl -f ${{ secrets.RENDER_DEPLOY_HOOK }}
+      - name: Render Deploy
+        run: curl -f ${{ secrets.RENDER_DEPLOY_HOOK }}

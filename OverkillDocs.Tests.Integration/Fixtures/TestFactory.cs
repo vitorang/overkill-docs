@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
+using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Infrastructure.Data;
 using Respawn;
 using System.Data.Common;
@@ -14,10 +15,14 @@ namespace OverkillDocs.Tests.Integration.Fixtures
 {
     public class TestFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
+        private static readonly string DbName = Environment.GetEnvironmentVariable("TEST_DB_NAME") ?? "OverkillDocsTestDb";
+        private static readonly string DbUser = Environment.GetEnvironmentVariable("TEST_DB_USER") ?? "sa";
+        private static readonly string DbPass = Environment.GetEnvironmentVariable("TEST_DB_PASS") ?? "P@ssword123";
+
         private readonly PostgreSqlContainer dbContainer = new PostgreSqlBuilder("postgres:alpine")
-            .WithDatabase("OverkillDocsTestDb")
-            .WithUsername("sa")
-            .WithPassword("P@ssword123")
+            .WithDatabase(DbName)
+            .WithUsername(DbUser)
+            .WithPassword(DbPass)
             .Build();
 
         private Respawner respawner = default!;
