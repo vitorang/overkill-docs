@@ -1,7 +1,7 @@
 ﻿using HashidsNet;
+using OverkillDocs.Core.Constants;
 using OverkillDocs.Core.DTOs.Account;
 using OverkillDocs.Core.Entities.Identity;
-using OverkillDocs.Core.Entities.Security;
 using OverkillDocs.Core.Exceptions;
 using OverkillDocs.Core.Extensions;
 using OverkillDocs.Core.Interfaces;
@@ -27,7 +27,7 @@ namespace OverkillDocs.Core.Services
             await userSessionRepository.ExecuteDeleteAllSessions(user.Id, ct: ct);
 
             var oldUser = user.Clone();
-            user.Name = user.Username = $"Anonymized {user.Id}";
+            user.Name = user.Username = $"{AccountConstants.AnonymizedPrefix}{user.Id}";
             user.Avatar = string.Empty;
             user.PasswordHash = string.Empty;
             user.IsActive = false;
@@ -40,7 +40,7 @@ namespace OverkillDocs.Core.Services
         {
             var user = await CurrentAuthenticatedUser(passwordChange.CurrentPassword, ct);
             user.PasswordHash = passwordService.CalculeHash(passwordChange.NewPassword);
-            
+
             await userRepository.InvalidateCache(user);
             await unitOfWork.CommitAsync(ct);
         }
@@ -81,7 +81,7 @@ namespace OverkillDocs.Core.Services
             {
                 int sessionId = hashids.Decode(sessionHashId).First();
                 var session = await userSessionRepository.GetById(sessionId, ct);
-                
+
                 if (session == null)
                     throw new NotFoundException($"Sessão não encontrada.");
 
@@ -107,8 +107,7 @@ namespace OverkillDocs.Core.Services
             {
                 Name = request.Username,
                 Username = request.Username,
-                PasswordHash = passwordService.CalculeHash(request.Password),
-                Avatar = string.Empty
+                PasswordHash = passwordService.CalculeHash(request.Password)
             };
 
             await userRepository.Add(user, ct: ct);

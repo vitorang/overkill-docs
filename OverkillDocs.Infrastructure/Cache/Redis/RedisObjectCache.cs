@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using OverkillDocs.Infrastructure.Interfaces;
+﻿using OverkillDocs.Infrastructure.Interfaces;
 using StackExchange.Redis;
 using System.Text.Json;
 
@@ -11,7 +10,7 @@ namespace OverkillDocs.Infrastructure.Cache.Redis
         private static readonly SemaphoreSlim semaphore = new(1, 1);
         private static readonly JsonSerializerOptions jsonOptions = new()
         {
-            PropertyNameCaseInsensitive = true 
+            PropertyNameCaseInsensitive = true
         };
 
         public Task<T?> Get(int id, Func<Task<T?>>? onCacheMiss = null) => Get(id.ToString(), onCacheMiss);

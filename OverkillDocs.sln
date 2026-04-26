@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Migrator.Sqlit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Migrator.Postgres", "OverkillDocs.Migrator.Postgres\OverkillDocs.Migrator.Postgres.csproj", "{BCAEF070-EDDC-415E-965B-2B935C40BEC8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Tests.Integration", "OverkillDocs.Tests.Integration\OverkillDocs.Tests.Integration.csproj", "{AC6C52E2-C7A0-492D-A238-4090F7783F2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{BCAEF070-EDDC-415E-965B-2B935C40BEC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCAEF070-EDDC-415E-965B-2B935C40BEC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCAEF070-EDDC-415E-965B-2B935C40BEC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC6C52E2-C7A0-492D-A238-4090F7783F2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC6C52E2-C7A0-492D-A238-4090F7783F2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC6C52E2-C7A0-492D-A238-4090F7783F2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC6C52E2-C7A0-492D-A238-4090F7783F2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

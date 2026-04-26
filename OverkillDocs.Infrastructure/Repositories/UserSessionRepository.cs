@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OverkillDocs.Core.Entities.Security;
+using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Core.Interfaces.Repositories;
 using OverkillDocs.Infrastructure.Data;
 using OverkillDocs.Infrastructure.Interfaces;

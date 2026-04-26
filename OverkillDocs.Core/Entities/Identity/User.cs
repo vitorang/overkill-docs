@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public required string Username { get; set; }
         public required string Name { get; set; }
-        public required string Avatar { get; set; } = string.Empty;
+        public string Avatar { get; set; } = string.Empty;
         public required string PasswordHash { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; init; } = DateTime.UtcNow;

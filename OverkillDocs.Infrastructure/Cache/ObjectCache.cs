@@ -24,6 +24,11 @@ namespace OverkillDocs.Infrastructure.Cache
             return $"{name}:{id}";
         }
 
+        public string IdFrom(T value)
+        {
+            return KeyOf(value).Split(':', 2).Last();
+        }
+
         protected static string KeyFrom(int id) => KeyFrom(id.ToString());
     }
 }

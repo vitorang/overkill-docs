@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using OverkillDocs.Infrastructure.Interfaces;
+using System.Text.Json;
 
 namespace OverkillDocs.Infrastructure.Cache.Memory
 {
@@ -12,13 +12,18 @@ namespace OverkillDocs.Infrastructure.Cache.Memory
         public async Task<T?> Get(string id, Func<Task<T?>>? onCacheMiss = null)
         {
             var key = KeyFrom(id);
-            var value = cache.Get<T>(key);
+            T? value = default;
+
+            var strValue = cache.Get<string?>(key);
+            if (!string.IsNullOrEmpty(strValue))
+                value = JsonSerializer.Deserialize<T?>(strValue);
 
             if (value == null && onCacheMiss != null)
+            {
                 value = await onCacheMiss();
-
-            if (value != null)
-                cache.Set(key, value, options);
+                if (value != null)
+                    await Set(value);
+            }
 
             return value;
         }
@@ -28,7 +33,7 @@ namespace OverkillDocs.Infrastructure.Cache.Memory
         public Task Set(T value)
         {
             var key = KeyOf(value);
-            cache.Set(key, value, options);
+            cache.Set(key, JsonSerializer.Serialize(value), options);
             return Task.CompletedTask;
         }
 

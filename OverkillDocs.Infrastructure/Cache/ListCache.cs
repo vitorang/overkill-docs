@@ -5,6 +5,8 @@ namespace OverkillDocs.Infrastructure.Cache
 {
     public abstract class ListCache<T>
     {
+        protected static readonly string key = $"{typeof(T).Name}-list";
+
         protected static readonly TimeSpan expirationTime = typeof(T) switch
         {
             Type t when t == typeof(ChatMessage) => CacheConstants.ChatExpiration,
