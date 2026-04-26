@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace OverkillDocs.Core.Security;
 
-public class UserContext(IHttpContextAccessor accessor)
+public sealed class UserContext(IHttpContextAccessor accessor)
 {
     private static readonly UserIdentity Anonymous = new(0, "Anonymous", string.Empty);
 
@@ -47,5 +47,5 @@ public class UserContext(IHttpContextAccessor accessor)
         return context.Request.Query["auth_token"].FirstOrDefault() ?? string.Empty;
     }
 
-    public record UserIdentity(int UserId, string Username, string Token);
+    public sealed record UserIdentity(int UserId, string Username, string Token);
 }

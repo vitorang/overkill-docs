@@ -1,18 +1,17 @@
-﻿using Bogus;
+using Bogus;
 using OverkillDocs.Core.Entities.Identity;
 using static OverkillDocs.Core.Security.UserContext;
 
-namespace OverkillDocs.Tests.Integration.Fakers.Security
+namespace OverkillDocs.Tests.Integration.Fakers.Security;
+
+public sealed class UserIdentityFaker : Faker<UserIdentity>
 {
-    public class UserIdentityFaker : Faker<UserIdentity>
+    public UserIdentityFaker(User user, string sessionToken)
     {
-        public UserIdentityFaker(User user, string sessionToken)
-        {
-            CustomInstantiator(f => new UserIdentity(
-                UserId: user.Id,
-                Username: user.Username,
-                Token: sessionToken
-            ));
-        }
+        CustomInstantiator(f => new UserIdentity(
+            UserId: user.Id,
+            Username: user.Username,
+            Token: sessionToken
+        ));
     }
 }

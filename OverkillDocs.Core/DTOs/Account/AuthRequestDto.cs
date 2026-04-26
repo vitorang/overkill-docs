@@ -1,19 +1,18 @@
-﻿using OverkillDocs.Core.Attributes;
+using OverkillDocs.Core.Attributes;
 using System.ComponentModel.DataAnnotations;
 
-namespace OverkillDocs.Core.DTOs.Account
-{
-    public record AuthRequestDto(
-        [Required(ErrorMessage = "Usuário obrigatório")]
-        [Username]
-        string Username,
+namespace OverkillDocs.Core.DTOs.Account;
 
-        [Required(ErrorMessage = "Senha obrigatória")]
-        [Password]
-        [DataType(DataType.Password)]
-        string Password,
-        
-        [Required(ErrorMessage = "User-Agent é obrigatório")]
-        string UserAgent
-    );
-}
+public sealed record AuthRequestDto(
+    [Required(ErrorMessage = "Usuário obrigatório")]
+    [Username]
+    string Username,
+
+    [Required(ErrorMessage = "Senha obrigatória")]
+    [Password]
+    [DataType(DataType.Password)]
+    string Password,
+
+    [Required(ErrorMessage = "User-Agent é obrigatório")]
+    string UserAgent
+);

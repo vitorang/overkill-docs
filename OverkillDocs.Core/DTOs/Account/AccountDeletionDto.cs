@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace OverkillDocs.Core.DTOs.Account
-{
-    public record AccountDeletionDto(
-        [Required]
-        [DataType(DataType.Password)]
-        string Password
-    );
-}
+namespace OverkillDocs.Core.DTOs.Account;
+
+public sealed record AccountDeletionDto(
+    [Required]
+    [DataType(DataType.Password)]
+    string Password
+);

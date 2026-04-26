@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
@@ -11,87 +11,86 @@ using Respawn;
 using System.Data.Common;
 using Testcontainers.PostgreSql;
 
-namespace OverkillDocs.Tests.Integration.Fixtures
+namespace OverkillDocs.Tests.Integration.Fixtures;
+
+public class TestFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    public class TestFactory : WebApplicationFactory<Program>, IAsyncLifetime
+    private static readonly string DbName = Environment.GetEnvironmentVariable("TEST_DB_NAME") ?? "OverkillDocsTestDb";
+    private static readonly string DbUser = Environment.GetEnvironmentVariable("TEST_DB_USER") ?? "sa";
+    private static readonly string DbPass = Environment.GetEnvironmentVariable("TEST_DB_PASS") ?? "P@ssword123";
+
+    private readonly PostgreSqlContainer dbContainer = new PostgreSqlBuilder("postgres:alpine")
+        .WithDatabase(DbName)
+        .WithUsername(DbUser)
+        .WithPassword(DbPass)
+        .Build();
+
+    private Respawner respawner = default!;
+    private DbConnection dbConnection = default!;
+
+    public async Task InitializeAsync()
     {
-        private static readonly string DbName = Environment.GetEnvironmentVariable("TEST_DB_NAME") ?? "OverkillDocsTestDb";
-        private static readonly string DbUser = Environment.GetEnvironmentVariable("TEST_DB_USER") ?? "sa";
-        private static readonly string DbPass = Environment.GetEnvironmentVariable("TEST_DB_PASS") ?? "P@ssword123";
+        await dbContainer.StartAsync();
 
-        private readonly PostgreSqlContainer dbContainer = new PostgreSqlBuilder("postgres:alpine")
-            .WithDatabase(DbName)
-            .WithUsername(DbUser)
-            .WithPassword(DbPass)
-            .Build();
+        dbConnection = new NpgsqlConnection(dbContainer.GetConnectionString());
+        await dbConnection.OpenAsync();
 
-        private Respawner respawner = default!;
-        private DbConnection dbConnection = default!;
+        using var scope = Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await dbContext.Database.EnsureCreatedAsync();
 
-        public async Task InitializeAsync()
+        respawner = await Respawner.CreateAsync(dbConnection, new RespawnerOptions
         {
-            await dbContainer.StartAsync();
+            DbAdapter = DbAdapter.Postgres,
+            SchemasToInclude = ["public"]
+        });
+    }
 
-            dbConnection = new NpgsqlConnection(dbContainer.GetConnectionString());
-            await dbConnection.OpenAsync();
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.UseEnvironment("Test");
+        builder.UseSetting("ConnectionStrings:Postgres", dbContainer.GetConnectionString());
 
-            using var scope = Services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            await dbContext.Database.EnsureCreatedAsync();
+        builder.ConfigureAppConfiguration((context, configBuilder) =>
+        {
+            var config = configBuilder.Build();
+            ValidateSettings(config);
+        });
 
-            respawner = await Respawner.CreateAsync(dbConnection, new RespawnerOptions
+        builder.ConfigureTestServices(services =>
+        {
+            var descriptor = services.SingleOrDefault(
+                d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
+
+            if (descriptor != null)
+                services.Remove(descriptor);
+
+            services.AddDbContext<AppDbContext>(options =>
             {
-                DbAdapter = DbAdapter.Postgres,
-                SchemasToInclude = ["public"]
+                options.UseNpgsql(dbContainer.GetConnectionString());
             });
-        }
+        });
+    }
 
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder.UseEnvironment("Test");
-            builder.UseSetting("ConnectionStrings:Postgres", dbContainer.GetConnectionString());
+    public async Task ResetDatabaseAsync()
+    {
+        await respawner.ResetAsync(dbConnection);
+    }
 
-            builder.ConfigureAppConfiguration((context, configBuilder) =>
-            {
-                var config = configBuilder.Build();
-                ValidateSettings(config);
-            });
+    public new async Task DisposeAsync()
+    {
+        await dbConnection.CloseAsync();
+        await dbContainer.StopAsync();
+    }
 
-            builder.ConfigureTestServices(services =>
-            {
-                var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
+    private static void ValidateSettings(IConfigurationRoot config)
+    {
+        var useRedis = config.GetValue<bool>("FeatureFlags:UseRedis");
+        if (useRedis)
+            throw new InvalidOperationException("Somente FeatureFlags:UseRedis=False é suportado.");
 
-                if (descriptor != null)
-                    services.Remove(descriptor);
-
-                services.AddDbContext<AppDbContext>(options =>
-                {
-                    options.UseNpgsql(dbContainer.GetConnectionString());
-                });
-            });
-        }
-
-        public async Task ResetDatabaseAsync()
-        {
-            await respawner.ResetAsync(dbConnection);
-        }
-
-        public new async Task DisposeAsync()
-        {
-            await dbConnection.CloseAsync();
-            await dbContainer.StopAsync();
-        }
-
-        private static void ValidateSettings(IConfigurationRoot config)
-        {
-            var useRedis = config.GetValue<bool>("FeatureFlags:UseRedis");
-            if (useRedis)
-                throw new InvalidOperationException("Somente FeatureFlags:UseRedis=False é suportado.");
-
-            var database = config.GetValue<string>("FeatureFlags:Database");
-            if (database != "postgres")
-                throw new InvalidOperationException("Somente FeatureFlags:Database=postgres é suportado.");
-        }
+        var database = config.GetValue<string>("FeatureFlags:Database");
+        if (database != "postgres")
+            throw new InvalidOperationException("Somente FeatureFlags:Database=postgres é suportado.");
     }
 }

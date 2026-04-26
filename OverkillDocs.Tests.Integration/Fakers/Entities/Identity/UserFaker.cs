@@ -1,20 +1,19 @@
-﻿using Bogus;
+using Bogus;
 using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Tests.Integration.Helpers;
 
-namespace OverkillDocs.Tests.Integration.Fakers.Entities.Identity
+namespace OverkillDocs.Tests.Integration.Fakers.Entities.Identity;
+
+public sealed partial class UserFaker : Faker<User>
 {
-    public sealed partial class UserFaker : Faker<User>
+    public UserFaker()
     {
-        public UserFaker()
+        CustomInstantiator(f => new User
         {
-            CustomInstantiator(f => new User
-            {
-                Id = 0,
-                Username = StringHelper.SanitizeUsername(f.Internet.UserName()),
-                Name = f.Name.FirstName().Truncate(15),
-                PasswordHash = f.Internet.Password(),
-            });
-        }
+            Id = 0,
+            Username = StringHelper.SanitizeUsername(f.Internet.UserName()),
+            Name = f.Name.FirstName().Truncate(15),
+            PasswordHash = f.Internet.Password(),
+        });
     }
 }
