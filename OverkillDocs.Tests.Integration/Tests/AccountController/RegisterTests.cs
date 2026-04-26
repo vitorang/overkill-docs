@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using OverkillDocs.Core.DTOs.Account;
 using OverkillDocs.Tests.Integration.Fakers.DTOs.Account;
@@ -8,71 +8,70 @@ using System.Net;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
 
-namespace OverkillDocs.Tests.Integration.Tests.AccountController
+namespace OverkillDocs.Tests.Integration.Tests.AccountController;
+
+public class RegisterTests
 {
-    public class RegisterTests
+    private static readonly string url = "/api/account/register";
+
+    public class Success(TestFactory factory, ITestOutputHelper outputHelper) : TestBase(factory, outputHelper)
     {
-        private static readonly string url = "/api/account/register";
-
-        public class Success(TestFactory factory, ITestOutputHelper outputHelper) : TestBase(factory, outputHelper)
+        [Fact]
+        public async Task ValidData_CreatesUserAndSession()
         {
-            [Fact]
-            public async Task ValidData_CreatesUserAndSession()
+            var data = new AuthRequestDtoFaker().Generate();
+            LogData(data);
+
+            var response = await httpClient.PostAsJsonAsync(url, data);
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+
+            result?.Token.Should().NotBeNullOrEmpty();
+            await Execute(async db =>
             {
-                var data = new AuthRequestDtoFaker().Generate();
-                LogData(data);
+                var user = await db.Users.SingleAsync();
+                user.Username.Should().Be(data.Username);
 
-                var response = await httpClient.PostAsJsonAsync(url, data);
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
-                var result = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+                var session = await db.UserSessions.SingleAsync();
+                session.UserId.Should().Be(user.Id);
+            });
+        }
+    }
 
-                result?.Token.Should().NotBeNullOrEmpty();
-                await Execute(async db =>
-                {
-                    var user = await db.Users.SingleAsync();
-                    user.Username.Should().Be(data.Username);
+    public class Failure(TestFactory factory, ITestOutputHelper outputHelper) : TestBase(factory, outputHelper)
+    {
+        [Fact]
+        public async Task InvalidData_ReturnsBadRequest()
+        {
+            var data = new AuthRequestDtoFaker().Generate() with { Password = string.Empty };
+            LogData(data);
 
-                    var session = await db.UserSessions.SingleAsync();
-                    session.UserId.Should().Be(user.Id);
-                });
-            }
+            var response = await httpClient.PostAsJsonAsync(url, data);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+            await Execute(async db =>
+            {
+                var users = await db.Users.ToArrayAsync();
+                users.Should().BeEmpty();
+            });
         }
 
-        public class Failure(TestFactory factory, ITestOutputHelper outputHelper) : TestBase(factory, outputHelper)
+        [Fact]
+        public async Task UserExists_ReturnsConflict()
         {
-            [Fact]
-            public async Task InvalidData_ReturnsBadRequest()
+            var user = new UserFaker().Generate();
+            var data = new AuthRequestDtoFaker().Generate() with { Username = user.Username };
+            LogData(user, data);
+            await ExecuteAndCommit(db => db.Users.Add(user));
+
+            var response = await httpClient.PostAsJsonAsync(url, data);
+            response.StatusCode.Should().Be(HttpStatusCode.Conflict);
+
+            await Execute(async db =>
             {
-                var data = new AuthRequestDtoFaker().Generate() with { Password = string.Empty };
-                LogData(data);
-
-                var response = await httpClient.PostAsJsonAsync(url, data);
-                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-
-                await Execute(async db =>
-                {
-                    var users = await db.Users.ToArrayAsync();
-                    users.Should().BeEmpty();
-                });
-            }
-
-            [Fact]
-            public async Task UserExists_ReturnsConflict()
-            {
-                var user = new UserFaker().Generate();
-                var data = new AuthRequestDtoFaker().Generate() with { Username = user.Username };
-                LogData(user, data);
-                await ExecuteAndCommit(db => db.Users.Add(user));
-
-                var response = await httpClient.PostAsJsonAsync(url, data);
-                response.StatusCode.Should().Be(HttpStatusCode.Conflict);
-
-                await Execute(async db =>
-                {
-                    var users = await db.Users.ToArrayAsync();
-                    users.Should().ContainSingle();
-                });
-            }
+                var users = await db.Users.ToArrayAsync();
+                users.Should().ContainSingle();
+            });
         }
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace OverkillDocs.Core.Enums
+namespace OverkillDocs.Core.Enums;
+
+public enum DocumentFragmentType
 {
-    public enum DocumentFragmentType
-    {
-        PlainText = 1
-    }
+    PlainText = 1
 }

@@ -1,19 +1,18 @@
-﻿using HashidsNet;
+using HashidsNet;
 using Microsoft.AspNetCore.SignalR;
 using OverkillDocs.Core.Interfaces.Services;
 using OverkillDocs.Core.Security;
 
-namespace OverkillDocs.Api.Hubs
+namespace OverkillDocs.Api.Hubs;
+
+public partial class MainHub(
+    UserContext userContext,
+    IHashids hashids,
+    IChatService chatService
+) : Hub
 {
-    public partial class MainHub(
-        UserContext userContext,
-        IHashids hashids,
-        IChatService chatService
-    ) : Hub
+    public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        public override async Task OnDisconnectedAsync(Exception? exception)
-        {
-            await base.OnDisconnectedAsync(exception);
-        }
+        await base.OnDisconnectedAsync(exception);
     }
 }

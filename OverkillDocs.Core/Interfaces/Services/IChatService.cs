@@ -1,11 +1,10 @@
-﻿using OverkillDocs.Core.DTOs.Chat;
+using OverkillDocs.Core.DTOs.Chat;
 using System.Collections.Immutable;
 
-namespace OverkillDocs.Core.Interfaces.Services
+namespace OverkillDocs.Core.Interfaces.Services;
+
+public interface IChatService
 {
-    public interface IChatService
-    {
-        Task AddRecent(ChatMessageDto messageDto);
-        Task<ImmutableList<ChatMessageDto>> GetRecent();
-    }
+    Task AddRecent(ChatMessageDto messageDto);
+    Task<ImmutableList<ChatMessageDto>> GetRecent();
 }

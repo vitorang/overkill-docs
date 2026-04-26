@@ -1,6 +1,5 @@
-﻿namespace OverkillDocs.Core.DTOs.Account
-{
-    public record AuthResponseDto(
-        string Token
-    );
-}
+namespace OverkillDocs.Core.DTOs.Account;
+
+public record AuthResponseDto(
+    string Token
+);

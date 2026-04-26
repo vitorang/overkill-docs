@@ -1,7 +1,6 @@
-﻿namespace OverkillDocs.Core.Interfaces
+namespace OverkillDocs.Core.Interfaces;
+
+public interface IUnitOfWork
 {
-    public interface IUnitOfWork
-    {
-        Task<int> CommitAsync(CancellationToken ct);
-    }
+    Task<int> CommitAsync(CancellationToken ct);
 }

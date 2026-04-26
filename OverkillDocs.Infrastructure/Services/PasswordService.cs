@@ -1,20 +1,19 @@
-﻿using OverkillDocs.Core.Interfaces.Services;
+using OverkillDocs.Core.Interfaces.Services;
 using BC = BCrypt.Net.BCrypt;
 
-namespace OverkillDocs.Infrastructure.Services
+namespace OverkillDocs.Infrastructure.Services;
+
+public class PasswordService : IPasswordService
 {
-    public class PasswordService : IPasswordService
+    private const int WorkFactor = 4;
+
+    public string CalculeHash(string password)
     {
-        private const int WorkFactor = 4;
+        return BC.HashPassword(password, WorkFactor);
+    }
 
-        public string CalculeHash(string password)
-        {
-            return BC.HashPassword(password, WorkFactor);
-        }
-
-        public bool VerifyPassword(string password, string passwordHash)
-        {
-            return BC.Verify(password, passwordHash);
-        }
+    public bool VerifyPassword(string password, string passwordHash)
+    {
+        return BC.Verify(password, passwordHash);
     }
 }

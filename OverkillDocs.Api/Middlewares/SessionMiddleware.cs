@@ -1,51 +1,50 @@
-﻿using OverkillDocs.Api.Constants;
+using OverkillDocs.Api.Constants;
 using OverkillDocs.Core.Interfaces.Repositories;
 using System.Security.Claims;
 
-namespace OverkillDocs.Api.Middlewares
+namespace OverkillDocs.Api.Middlewares;
+
+public class SessionMiddleware(RequestDelegate next)
 {
-    public class SessionMiddleware(RequestDelegate next)
+    public async Task InvokeAsync(HttpContext context, IUserSessionRepository sessionRepository)
     {
-        public async Task InvokeAsync(HttpContext context, IUserSessionRepository sessionRepository)
-        {
-            string token = context.Request.Path.StartsWithSegments(HubRoutes.Base)
-                ? GetTokenFromQuery(context)
-                : GetTokenFromHeader(context);
+        string token = context.Request.Path.StartsWithSegments(HubRoutes.Base)
+            ? GetTokenFromQuery(context)
+            : GetTokenFromHeader(context);
 
-            if (!string.IsNullOrWhiteSpace(token))
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            var session = await sessionRepository.FindIdentityByToken(token, context.RequestAborted);
+
+            if (session != null)
             {
-                var session = await sessionRepository.FindIdentityByToken(token, context.RequestAborted);
+                var claims = new[] {
+                    new Claim(ClaimTypes.NameIdentifier, session.UserId.ToString()),
+                    new Claim(ClaimTypes.Name, session.Username)
+                };
 
-                if (session != null)
-                {
-                    var claims = new[] {
-                        new Claim(ClaimTypes.NameIdentifier, session.UserId.ToString()),
-                        new Claim(ClaimTypes.Name, session.Username)
-                    };
-
-                    var identity = new ClaimsIdentity(claims, "ManualAuth");
-                    context.User = new ClaimsPrincipal(identity);
-                }
+                var identity = new ClaimsIdentity(claims, "ManualAuth");
+                context.User = new ClaimsPrincipal(identity);
             }
-
-            await next(context);
         }
 
-        private static string GetTokenFromHeader(HttpContext context)
-        {
-            var authHeader = context.Request.Headers["Authorization"].ToString();
-            if (string.IsNullOrWhiteSpace(authHeader)) return "";
+        await next(context);
+    }
 
-            var authSplit = authHeader.Split(" ");
-            if (authSplit.Length == 2 && authSplit[0] == "Bearer")
-                return authSplit[1];
+    private static string GetTokenFromHeader(HttpContext context)
+    {
+        var authHeader = context.Request.Headers.Authorization.ToString();
+        if (string.IsNullOrWhiteSpace(authHeader)) return "";
 
-            return "";
-        }
+        var authSplit = authHeader.Split(" ");
+        if (authSplit.Length == 2 && authSplit[0] == "Bearer")
+            return authSplit[1];
 
-        private static string GetTokenFromQuery(HttpContext context)
-        {
-            return context.Request.Query["auth_token"].FirstOrDefault() ?? "";
-        }
+        return "";
+    }
+
+    private static string GetTokenFromQuery(HttpContext context)
+    {
+        return context.Request.Query["auth_token"].FirstOrDefault() ?? "";
     }
 }

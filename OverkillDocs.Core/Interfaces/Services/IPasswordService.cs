@@ -1,8 +1,7 @@
-﻿namespace OverkillDocs.Core.Interfaces.Services
+namespace OverkillDocs.Core.Interfaces.Services;
+
+public interface IPasswordService
 {
-    public interface IPasswordService
-    {
-        string CalculeHash(string password);
-        bool VerifyPassword(string password, string passwordHash);
-    }
+    string CalculeHash(string password);
+    bool VerifyPassword(string password, string passwordHash);
 }

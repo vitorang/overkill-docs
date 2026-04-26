@@ -1,8 +1,7 @@
-﻿namespace OverkillDocs.Core.DTOs.Account
-{
-    public record UserSessionDto(
-        string HashId,
-        string UserAgent,
-        bool IsCurrent
-    );
-}
+namespace OverkillDocs.Core.DTOs.Account;
+
+public record UserSessionDto(
+    string HashId,
+    string UserAgent,
+    bool IsCurrent
+);
