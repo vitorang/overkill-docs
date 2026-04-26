@@ -11,7 +11,7 @@ using OverkillDocs.Core.Security;
 
 namespace OverkillDocs.Core.Services;
 
-public class UserService(
+internal sealed class UserService(
     IUserRepository userRepository,
     UserContext userContext,
     IHashids hashids,

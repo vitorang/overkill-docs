@@ -4,7 +4,7 @@ using static OverkillDocs.Core.Security.UserContext;
 
 namespace OverkillDocs.Infrastructure.Cache;
 
-public abstract class ObjectCache<T>
+internal abstract class ObjectCache<T>
 {
     protected static readonly TimeSpan expirationTime = typeof(T) switch
     {
@@ -24,10 +24,12 @@ public abstract class ObjectCache<T>
         return $"{name}:{id}";
     }
 
+#pragma warning disable CA1822 // Marcar membros como estáticos
     public string IdFrom(T value)
     {
         return KeyOf(value).Split(':', 2).Last();
     }
+#pragma warning restore CA1822 // Marcar membros como estáticos
 
     protected static string KeyFrom(int id) => KeyFrom(id.ToString());
 }

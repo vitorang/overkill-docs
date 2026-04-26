@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 
 namespace OverkillDocs.Core.Services;
 
-public class ChatService(IChatRepository chatRepository, IHashids hashids) : IChatService
+internal sealed class ChatService(IChatRepository chatRepository, IHashids hashids) : IChatService
 {
     public async Task AddRecent(ChatMessageDto messageDto)
     {

@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace OverkillDocs.Infrastructure.Cache.Memory;
 
-public partial class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>, IObjectCache<T>
+internal sealed class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>, IObjectCache<T>
 {
     private static readonly MemoryCacheEntryOptions options = new MemoryCacheEntryOptions()
         .SetSlidingExpiration(expirationTime);

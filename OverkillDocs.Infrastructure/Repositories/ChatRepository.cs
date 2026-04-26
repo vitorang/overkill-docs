@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 
 namespace OverkillDocs.Infrastructure.Repositories;
 
-public class ChatRepository(IListCache<ChatMessage> chatMessageCache) : IChatRepository
+internal sealed class ChatRepository(IListCache<ChatMessage> chatMessageCache) : IChatRepository
 {
     public async Task AddRecentMessage(ChatMessage message)
     {

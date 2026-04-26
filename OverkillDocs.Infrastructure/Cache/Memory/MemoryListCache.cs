@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace OverkillDocs.Infrastructure.Cache.Memory;
 
-public class MemoryListCache<T>(IMemoryCache cache) : ListCache<T>, IListCache<T>
+internal sealed class MemoryListCache<T>(IMemoryCache cache) : ListCache<T>, IListCache<T>
 {
     private readonly object sync = new();
     private static readonly MemoryCacheEntryOptions options = new MemoryCacheEntryOptions()

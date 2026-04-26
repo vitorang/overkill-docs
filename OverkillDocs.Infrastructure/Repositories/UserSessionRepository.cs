@@ -8,7 +8,7 @@ using static OverkillDocs.Core.Security.UserContext;
 
 namespace OverkillDocs.Infrastructure.Repositories;
 
-public class UserSessionRepository(AppDbContext context, IObjectCache<UserIdentity> userIdentityCache) : IUserSessionRepository
+internal sealed class UserSessionRepository(AppDbContext context, IObjectCache<UserIdentity> userIdentityCache) : IUserSessionRepository
 {
     public async Task Add(UserSession userSession, CancellationToken ct)
     {

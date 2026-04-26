@@ -3,7 +3,7 @@ using OverkillDocs.Core.Entities.Chat;
 
 namespace OverkillDocs.Infrastructure.Cache;
 
-public abstract class ListCache<T>
+internal abstract class ListCache<T>
 {
     protected static readonly string key = $"{typeof(T).Name}-list";
 

@@ -12,7 +12,7 @@ using System.Collections.Immutable;
 
 namespace OverkillDocs.Core.Services;
 
-public class AccountService(
+internal sealed class AccountService(
     IUserRepository userRepository,
     IUserSessionRepository userSessionRepository,
     IPasswordService passwordService,

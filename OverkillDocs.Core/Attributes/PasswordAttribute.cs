@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OverkillDocs.Core.Attributes;
 
-public partial class PasswordAttribute : ValidationAttribute
+public class PasswordAttribute : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {

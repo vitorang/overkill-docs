@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace OverkillDocs.Infrastructure.Cache.Redis;
 
-public class RedisListCache<T>(IConnectionMultiplexer redis) : ListCache<T>, IListCache<T>
+internal sealed class RedisListCache<T>(IConnectionMultiplexer redis) : ListCache<T>, IListCache<T>
 {
     private readonly IDatabase database = redis.GetDatabase();
     private static readonly JsonSerializerOptions jsonOptions = new()

@@ -3,7 +3,7 @@ using BC = BCrypt.Net.BCrypt;
 
 namespace OverkillDocs.Infrastructure.Services;
 
-public class PasswordService : IPasswordService
+internal sealed class PasswordService : IPasswordService
 {
     private const int WorkFactor = 4;
 

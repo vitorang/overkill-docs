@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace OverkillDocs.Infrastructure.Cache.Redis;
 
-public class RedisObjectCache<T>(IConnectionMultiplexer redis) : ObjectCache<T>, IObjectCache<T>
+internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : ObjectCache<T>, IObjectCache<T>
 {
     private readonly IDatabase database = redis.GetDatabase();
     private static readonly SemaphoreSlim semaphore = new(1, 1);

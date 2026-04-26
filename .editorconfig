@@ -20,4 +20,10 @@ trim_trailing_whitespace = false
 [*.cs]
 csharp_prefer_braces = true
 csharp_style_namespace_declarations = file_scoped:suggestion
-dotnet_diagnostic.IDE0270.severity = none
+csharp_style_prefer_primary_constructors = suggestion
+csharp_style_prefer_sealed_accessors = true:warning
+
+# A verificação de nulidade pode ser simplificada
+dotnet_diagnostic.IDE0270.severity = none 
+# Selar tipos internos
+dotnet_diagnostic.CA1852.severity = warning

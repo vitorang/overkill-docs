@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Hashids.net" Version="1.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Scrutor" Version="7.0.0" />
     <PackageReference Include="Ulid" Version="1.4.1" />
   </ItemGroup>
 
