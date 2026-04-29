@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { API } from '@core/constants/api.constants';
 import { AuthStorageMode } from '@core/constants/auth.constants';
+import { PATHS } from '@core/constants/routes.constant';
 import { AuthService } from '@core/services/auth.service';
 import { AccountDeletion, AuthRequest, AuthResponse } from '@features/account/account.models';
 import { Observable, tap } from 'rxjs';
@@ -10,6 +12,7 @@ import { Observable, tap } from 'rxjs';
 export class AccountService {
     private http = inject(HttpClient);
     private authService = inject(AuthService);
+    private router = inject(Router);
 
     private authRequest<T>(
         observable: Observable<T>,
@@ -35,10 +38,10 @@ export class AccountService {
         );
     }
 
-    logout(): Observable<void> {
-        return this.authRequest(this.http.post<void>(API.ACCOUNT.LOGOUT, {}), () =>
+    logout(): void {
+        this.authRequest(this.http.post<void>(API.ACCOUNT.LOGOUT, {}), () =>
             this.authService.deleteToken(),
-        );
+        ).subscribe(() => this.router.navigateByUrl(PATHS.ACCOUNT.LOGIN));
     }
 
     logoutById(sessionHashId: string): Observable<void> {

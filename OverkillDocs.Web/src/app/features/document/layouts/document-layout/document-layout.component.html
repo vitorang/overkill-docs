@@ -1,25 +1,33 @@
-<okd-main-header>
-    @if (isMobile()) {
-        <button
-            mat-icon-button
-            (click)="toggleSection()"
-            matBadge="&ZeroWidthSpace;"
-            [matBadgeHidden]="!hasUnreadMessage()"
-        >
-            <mat-icon>{{
-                activeSection() === 'editor' ? 'chat_bubble_outline' : 'edit_note'
-            }}</mat-icon>
-        </button>
-    }
-</okd-main-header>
+<okd-reconnection-overlay>
+    <div class="layout">
+        <okd-main-header>
+            @if (isMobile()) {
+                <button
+                    mat-icon-button
+                    (click)="toggleSection()"
+                    matBadge="&ZeroWidthSpace;"
+                    [matBadgeHidden]="!hasUnreadMessage()"
+                >
+                    <mat-icon>{{
+                        activeSection() === 'editor' ? 'chat_bubble_outline' : 'edit_note'
+                    }}</mat-icon>
+                </button>
+            }
+        </okd-main-header>
 
-<div class="main-content">
-    <section class="editor" [class.hidden-mobile]="isMobile() && activeSection() !== 'editor'">
-        <okd-hub-monitor />
-        <!-- <router-outlet /> -->
-    </section>
+        <div class="main-content">
+            <section
+                class="editor"
+                [class.hidden-mobile]="isMobile() && activeSection() !== 'editor'"
+            >
+                <okd-hub-monitor />
+                <!-- <router-outlet /> -->
+            </section>
 
-    <section class="chat" [class.hidden-mobile]="isMobile() && activeSection() !== 'chat'">
-        <okd-chat-view />
-    </section>
-</div>
+            <section class="chat" [class.hidden-mobile]="isMobile() && activeSection() !== 'chat'">
+                <okd-chat-view />
+            </section>
+        </div>
+        <div></div>
+    </div>
+</okd-reconnection-overlay>

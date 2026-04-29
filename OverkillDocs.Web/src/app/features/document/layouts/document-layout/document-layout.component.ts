@@ -9,12 +9,19 @@ import { BreakpointQueries } from '@shared/constants/breakpoints.constant';
 import { HubMonitorComponent } from '@features/debug/components/hub-monitor/hub-monitor.component';
 import { MainHeaderComponent } from '@shared/components/main-header/main-header.component';
 import { UserService } from '@core/services/user.service';
+import { ReconnectionOverlayComponent } from '@shared/components/reconnection-overlay/reconnection-overlay.component';
 
 type TabSection = 'editor' | 'chat';
 
 @Component({
     selector: 'okd-document-layout',
-    imports: [SHARED, ChatViewComponent, HubMonitorComponent, MainHeaderComponent],
+    imports: [
+        SHARED,
+        ChatViewComponent,
+        HubMonitorComponent,
+        MainHeaderComponent,
+        ReconnectionOverlayComponent,
+    ],
     templateUrl: './document-layout.component.html',
     styleUrl: './document-layout.component.scss',
     providers: [UserService],

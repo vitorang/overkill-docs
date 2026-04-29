@@ -1,0 +1,22 @@
+<div class="child-content" [class.is-locked]="!connected()">
+    <ng-content />
+</div>
+
+@if (!connected()) {
+    <div class="overlay-content">
+        @if (connecting()) {
+            <h1>(；￣д￣)</h1>
+            <h3>Reconectando...</h3>
+        } @else {
+            <h1>(╯°□°)╯︵ ┻━┻</h1>
+            <h3>Você foi desconectado</h3>
+        }
+
+        <div class="button-group">
+            <button mat-flat-button (click)="reconnect()" [disabled]="connecting()">
+                Reconectar
+            </button>
+            <button mat-stroked-button (click)="logout()">Sair</button>
+        </div>
+    </div>
+}
