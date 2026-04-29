@@ -26,7 +26,6 @@ internal class LoginPage(IPage page)
         await Component.WaitForAsync();
 
         await ToggleRegisterButton.ClickAsync();
-        await Task.Delay(100);
 
         await UsernameInput.FillAsync(dto.Username);
         await PasswordInput.FillAsync(dto.Password);
