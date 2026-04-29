@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OverkillDocs.Infrastructure\OverkillDocs.Infrastructure.csproj" />
     <ProjectReference Include="..\OverkillDocs.Tests.Common\OverkillDocs.Tests.Common.csproj" />
   </ItemGroup>
 
