@@ -2,7 +2,7 @@ using Bogus;
 using OverkillDocs.Core.Entities.Identity;
 using static OverkillDocs.Core.Security.UserContext;
 
-namespace OverkillDocs.Tests.Integration.Fakers.Security;
+namespace OverkillDocs.Tests.Common.Fakers.Security;
 
 public sealed class UserIdentityFaker : Faker<UserIdentity>
 {
