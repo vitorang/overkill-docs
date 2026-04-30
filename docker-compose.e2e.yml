@@ -1,0 +1,50 @@
+name: overkilldocs-e2e
+
+services:
+  postgres:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - overkill-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+  redis:
+    image: redis:alpine
+    networks:
+      - overkill-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    env_file:
+      - .env.e2e
+    ports:
+      - "8082:8080"
+    networks:
+      - overkill-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+
+networks:
+  overkill-network:
+    driver: bridge
+

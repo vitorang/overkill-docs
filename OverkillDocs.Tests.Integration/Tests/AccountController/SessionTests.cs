@@ -3,7 +3,7 @@ using HashidsNet;
 using Microsoft.EntityFrameworkCore;
 using OverkillDocs.Core.DTOs.Account;
 using OverkillDocs.Core.Entities.Identity;
-using OverkillDocs.Tests.Integration.Fakers.Entities.Identity;
+using OverkillDocs.Tests.Common.Fakers.Entities.Identity;
 using OverkillDocs.Tests.Integration.Fixtures;
 using System.Collections.Immutable;
 using System.Net;

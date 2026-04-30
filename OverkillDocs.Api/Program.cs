@@ -59,6 +59,7 @@ builder.Services.AddOkdCore();
 builder.Services.AddOkdInfrastructure();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
+builder.Services.AddHealthChecks();
 
 builder.Services.AddSingleton<IHashids>(_ =>
 {
@@ -129,6 +130,7 @@ app.UseSwaggerUI(c =>
 #region SPA e roteamento
 app.UseDefaultFiles();
 app.UseStaticFiles();
+app.MapHealthChecks("/health");
 
 app.Map("/api/{*path}", (string path) => Results.NotFound());
 app.MapFallbackToFile("index.html");

@@ -18,8 +18,36 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Run Tests
-        run: dotnet test OverkillDocs.sln --configuration Release --verbosity normal
+      - name: Start E2E Infrastructure
+        run: |
+          docker compose -f docker-compose.e2e.yml --env-file .env.e2e up -d --build
+
+      - name: Install Playwright Browsers
+        run: |
+          dotnet build OverkillDocs.sln --configuration Release
+          npx playwright install --with-deps
+
+      - name: Run Integration Tests
+        run: dotnet test OverkillDocs.Tests.Integration/OverkillDocs.Tests.Integration.csproj --configuration Release --no-build --verbosity normal
+
+      - name: Run E2E Tests
+        run: dotnet test OverkillDocs.Tests.E2E/OverkillDocs.Tests.E2E.csproj --configuration Release --no-build --verbosity normal
+
+      - name: Upload Playwright Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: e2e-results
+          path: '**/test-results/'
+          retention-days: 1
+
+      - name: List files for debug
+        if: failure()
+        run: ls -R test-results/
+
+      - name: Stop E2E Infrastructure
+        if: always()
+        run: docker compose -f docker-compose.e2e.yml down -v
 
   build:
     runs-on: ubuntu-latest

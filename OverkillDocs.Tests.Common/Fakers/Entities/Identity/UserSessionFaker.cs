@@ -1,7 +1,7 @@
 using Bogus;
 using OverkillDocs.Core.Entities.Identity;
 
-namespace OverkillDocs.Tests.Integration.Fakers.Entities.Identity;
+namespace OverkillDocs.Tests.Common.Fakers.Entities.Identity;
 
 public class UserSessionFaker : Faker<UserSession>
 {

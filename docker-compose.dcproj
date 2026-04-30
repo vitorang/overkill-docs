@@ -12,8 +12,10 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include=".env" />
+    <None Include=".env.e2e" />
     <None Include=".env.example" />
     <None Include=".env.prod" />
+    <None Include="docker-compose.e2e.yml" />
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>

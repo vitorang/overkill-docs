@@ -8,9 +8,17 @@
             [(ngModel)]="message"
             [maxLength]="maxLength"
             (keydown.enter)="onPressEnter($event)"
+            data-testid="message-input"
+            [disabled]="!connected()"
         ></textarea>
     </mat-form-field>
-    <button mat-mini-fab class="send-button" (click)="sendMessage()">
+    <button
+        mat-mini-fab
+        class="send-button"
+        (click)="sendMessage()"
+        data-testid="send-button"
+        [disabled]="!connected()"
+    >
         <mat-icon class="icon">send</mat-icon>
     </button>
 </section>

@@ -1,10 +1,12 @@
 @use 'mixins/breakpoints' as *;
 
 :host {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+    .layout {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 
     .main-content {
         display: flex;

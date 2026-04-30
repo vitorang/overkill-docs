@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Migrator.Postg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Tests.Integration", "OverkillDocs.Tests.Integration\OverkillDocs.Tests.Integration.csproj", "{AC6C52E2-C7A0-492D-A238-4090F7783F2D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Tests.E2E", "OverkillDocs.Tests.E2E\OverkillDocs.Tests.E2E.csproj", "{36781DF0-3202-459C-9197-5DC082255829}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverkillDocs.Tests.Common", "OverkillDocs.Tests.Common\OverkillDocs.Tests.Common.csproj", "{54E0AB49-7F77-4468-94A0-B68146EE2C22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +77,14 @@ Global
 		{AC6C52E2-C7A0-492D-A238-4090F7783F2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC6C52E2-C7A0-492D-A238-4090F7783F2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC6C52E2-C7A0-492D-A238-4090F7783F2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36781DF0-3202-459C-9197-5DC082255829}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36781DF0-3202-459C-9197-5DC082255829}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36781DF0-3202-459C-9197-5DC082255829}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36781DF0-3202-459C-9197-5DC082255829}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54E0AB49-7F77-4468-94A0-B68146EE2C22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54E0AB49-7F77-4468-94A0-B68146EE2C22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54E0AB49-7F77-4468-94A0-B68146EE2C22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54E0AB49-7F77-4468-94A0-B68146EE2C22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

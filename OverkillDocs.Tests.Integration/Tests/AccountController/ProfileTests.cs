@@ -4,7 +4,7 @@ using OverkillDocs.Core.DTOs.Account;
 using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Core.Extensions;
 using OverkillDocs.Infrastructure.Interfaces;
-using OverkillDocs.Tests.Integration.Fakers.Entities.Identity;
+using OverkillDocs.Tests.Common.Fakers.Entities.Identity;
 using OverkillDocs.Tests.Integration.Fixtures;
 using System.Net;
 using System.Net.Http.Json;

@@ -17,9 +17,7 @@ export class MainHeaderComponent {
     private router = inject(Router);
 
     protected logout(): void {
-        this.accountService
-            .logout()
-            .subscribe(() => this.router.navigateByUrl(PATHS.ACCOUNT.LOGIN));
+        this.accountService.logout();
     }
 
     protected goToSettings(): void {

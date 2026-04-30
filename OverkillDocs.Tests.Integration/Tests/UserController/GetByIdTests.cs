@@ -1,7 +1,7 @@
 using FluentAssertions;
 using HashidsNet;
 using OverkillDocs.Core.DTOs.User;
-using OverkillDocs.Tests.Integration.Fakers.Entities.Identity;
+using OverkillDocs.Tests.Common.Fakers.Entities.Identity;
 using OverkillDocs.Tests.Integration.Fixtures;
 using System.Net;
 using System.Net.Http.Json;

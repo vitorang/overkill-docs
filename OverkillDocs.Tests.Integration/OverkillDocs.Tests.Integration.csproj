@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -10,7 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" Version="35.6.5" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="FluentAssertions" Version="8.9.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.26" />
@@ -26,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\OverkillDocs.Api\OverkillDocs.Api.csproj" />
     <ProjectReference Include="..\OverkillDocs.Infrastructure\OverkillDocs.Infrastructure.csproj" />
+    <ProjectReference Include="..\OverkillDocs.Tests.Common\OverkillDocs.Tests.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

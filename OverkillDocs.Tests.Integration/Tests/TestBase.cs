@@ -2,7 +2,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Infrastructure.Data;
-using OverkillDocs.Tests.Integration.Fakers.Entities.Identity;
+using OverkillDocs.Tests.Common.Fakers.Entities.Identity;
 using OverkillDocs.Tests.Integration.Fixtures;
 using System.Net.Http.Headers;
 using System.Text.Json;

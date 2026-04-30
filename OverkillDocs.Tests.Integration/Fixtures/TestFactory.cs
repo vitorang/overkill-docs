@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
-using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Infrastructure.Data;
 using Respawn;
 using System.Data.Common;
