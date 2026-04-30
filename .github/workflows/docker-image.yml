@@ -24,11 +24,14 @@ jobs:
 
       - name: Install Playwright Browsers
         run: |
-          dotnet build OverkillDocs.sln
+          dotnet build OverkillDocs.sln --configuration Release
           dotnet run --project OverkillDocs.Tests.E2E/OverkillDocs.Tests.E2E.csproj -- playwright install --with-deps
 
-      - name: Run Tests
-        run: dotnet test OverkillDocs.sln --configuration Release --no-build --verbosity normal
+      - name: Run Integration Tests
+        run: dotnet test OverkillDocs.Tests.Integration/OverkillDocs.Tests.Integration.csproj --configuration Release --no-build --verbosity normal
+
+      - name: Run E2E Tests
+        run: dotnet test OverkillDocs.Tests.E2E/OverkillDocs.Tests.E2E.csproj --configuration Release --no-build --verbosity normal
 
       - name: Upload Playwright Artifacts
         if: failure()
