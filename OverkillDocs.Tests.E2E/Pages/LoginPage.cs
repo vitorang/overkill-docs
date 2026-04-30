@@ -1,9 +1,6 @@
-using Microsoft.Playwright;
-using OverkillDocs.Core.DTOs.Account;
-
 namespace OverkillDocs.Tests.E2E.Pages;
 
-internal class LoginPage(IPage page)
+internal sealed class LoginPage(IPage page)
 {
     private ILocator Component => page.Locator("okd-auth-form");
 

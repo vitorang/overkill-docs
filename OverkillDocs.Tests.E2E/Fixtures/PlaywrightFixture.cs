@@ -1,5 +1,3 @@
-using Microsoft.Playwright;
-
 namespace OverkillDocs.Tests.E2E.Fixtures;
 
 public class PlaywrightFixture : IAsyncLifetime

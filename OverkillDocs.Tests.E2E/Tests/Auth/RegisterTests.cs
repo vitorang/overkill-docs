@@ -6,7 +6,7 @@ public class RegisterTests(PlaywrightFixture fixture, ITestOutputHelper outputHe
     [Fact]
     public async Task WhenUserRegister_RedirectsToDocuments()
     {
-        var page = await Browser.NewPageAsync();
+        var (_, page) = await NewBrowserSession(authUser: false);
         var loginPage = new LoginPage(page);
         var auth = new AuthRequestDtoFaker().Generate();
         LogData(auth);

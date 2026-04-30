@@ -7,10 +7,9 @@ public class HealthTests(PlaywrightFixture fixture, ITestOutputHelper outputHelp
     [Fact]
     public async Task SystemIsUp_ReturnsHealthy()
     {
-        var page = await Browser.NewPageAsync();
+        var (_, page) = await NewBrowserSession(authUser: false);
 
         var response = await page.GotoAsync(Routes.Health);
-
         response!.Status.Should().Be(200);
 
         await Expect(page.Locator("body")).ToContainTextAsync("Healthy");

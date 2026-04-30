@@ -16,6 +16,7 @@ export class ChatViewComponent {
     protected maxLength = 250;
     protected message = signal('');
     private chatHub = inject(ChatHubService);
+    protected connected = this.chatHub.state.connected;
 
     constructor() {
         this.chatHub.connection

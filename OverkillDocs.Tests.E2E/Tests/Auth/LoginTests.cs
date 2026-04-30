@@ -6,7 +6,7 @@ public class LoginTests(PlaywrightFixture fixture, ITestOutputHelper outputHelpe
     [Fact]
     public async Task WhenUserLogin_RedirectsToDocuments()
     {
-        var page = await Browser.NewPageAsync();
+        var (_, page) = await NewBrowserSession(authUser: false);
         var loginPage = new LoginPage(page);
         var (auth, _) = await CreateUserAuth();
         LogData(auth);

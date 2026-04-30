@@ -13,5 +13,5 @@
     @if (showUser()) {
         <div class="name">{{ user()?.name ?? '...' }}</div>
     }
-    <div class="text">{{ message().content }}</div>
+    <div class="text" data-testid="message-text">{{ message().content }}</div>
 </section>
