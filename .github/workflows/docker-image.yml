@@ -24,7 +24,7 @@ jobs:
 
       - name: Install Playwright Browsers
         run: |
-          dotnet build
+          dotnet build OverkillDocs.sln
           dotnet playwright install --with-deps
 
       - name: Run Tests
