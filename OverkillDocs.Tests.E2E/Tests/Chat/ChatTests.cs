@@ -29,7 +29,7 @@ public class ChatTests(PlaywrightFixture fixture, ITestOutputHelper outputHelper
 
         await mobileDoc.Chat.SendMessage(message2);
         await mobileDoc.Chat.ExpectMessageReceived(message2);
-        await desktopDoc.Chat.ExpectMessageReceived(message2);
+        await desktopDoc.Chat.ExpectMessageReceived("momomo");
     }
 
     [Fact]

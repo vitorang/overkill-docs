@@ -47,7 +47,7 @@ public class LoginTests
             await Execute(async db =>
             {
                 var session = await db.UserSessions.SingleAsync();
-                session.UserId.Should().Be(user.Id);
+                session.UserId.Should().Be(user.Id + 1);
                 session.Token.Should().Be(result!.Token);
             });
         }
