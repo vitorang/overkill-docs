@@ -27,4 +27,12 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+    <Target Name="RemovePlaywrightResults" BeforeTargets="CoreBuild">
+        <ItemGroup>
+            <PastasParaLimpar Include="$(OutputPath)test-results" />
+        </ItemGroup>
+
+        <Message Importance="high" Text="OverkillDocs.Tests.E2E: Apagando registros antigos do Playwright em: @(PastasParaLimpar)" />
+        <RemoveDir Directories="@(PastasParaLimpar)" />
+    </Target>
 </Project>

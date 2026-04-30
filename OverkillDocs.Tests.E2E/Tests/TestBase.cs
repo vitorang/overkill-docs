@@ -17,8 +17,11 @@ public abstract class TestBase(PlaywrightFixture fixture, ITestOutputHelper outp
 
     public readonly RouteCollection Routes = new(fixture.BaseUrl);
     private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
-    private readonly HttpClient httpClient = new();
     private readonly List<IBrowserContext> browserContexts = [];
+    private readonly HttpClient httpClient = new()
+    {
+        BaseAddress = new Uri(fixture.BaseUrl)
+    };
 
     protected void LogData(params object?[] items)
     {
@@ -57,7 +60,8 @@ public abstract class TestBase(PlaywrightFixture fixture, ITestOutputHelper outp
     {
         var options = new BrowserNewContextOptions
         {
-            ViewportSize = new ViewportSize { Width = 1280, Height = 720 }
+            ViewportSize = new ViewportSize { Width = 1280, Height = 720 },
+            RecordVideoDir = TestConstants.TestResultVideosPath,
         };
 
         if (mobile)
@@ -69,6 +73,12 @@ public abstract class TestBase(PlaywrightFixture fixture, ITestOutputHelper outp
 
         var context = await fixture.Browser.NewContextAsync(options);
         browserContexts.Add(context);
+        await context.Tracing.StartAsync(new()
+        {
+            Screenshots = true,
+            Snapshots = true,
+            Sources = true
+        });
 
         if (authUser)
         {
@@ -85,7 +95,20 @@ public abstract class TestBase(PlaywrightFixture fixture, ITestOutputHelper outp
 
     public async Task DisposeAsync()
     {
-        var tasks = browserContexts.Select(c => c.CloseAsync());
-        await Task.WhenAll(tasks);
+        var guid = Ulid.NewUlid().ToString();
+        var count = 1;
+
+        foreach (var context in browserContexts)
+        {
+            await context.Tracing.StopAsync(new()
+            {
+                Path = $"{TestConstants.TestResultsPath}/trace_{guid}_{count}.zip"
+            });
+
+            count++;
+        }
+
+        await Task.WhenAll(browserContexts.Select(c => c.CloseAsync()));
+        browserContexts.Clear();
     }
 }
