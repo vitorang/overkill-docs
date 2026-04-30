@@ -25,7 +25,7 @@ jobs:
       - name: Install Playwright Browsers
         run: |
           dotnet build OverkillDocs.sln
-          dotnet playwright install --with-deps
+          dotnet run --project OverkillDocs.Tests.E2E/OverkillDocs.Tests.E2E.csproj -- playwright install --with-deps
 
       - name: Run Tests
         run: dotnet test OverkillDocs.sln --configuration Release --no-build --verbosity normal
