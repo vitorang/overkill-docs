@@ -41,10 +41,6 @@ jobs:
           path: '**/test-results/'
           retention-days: 1
 
-      - name: List files for debug
-        if: failure()
-        run: ls -R test-results/
-
       - name: Stop E2E Infrastructure
         if: always()
         run: docker compose -f docker-compose.e2e.yml down -v
