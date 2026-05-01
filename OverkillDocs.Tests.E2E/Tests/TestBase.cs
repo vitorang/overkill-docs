@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Reflection;
 using System.Text.Json;
 
 namespace OverkillDocs.Tests.E2E.Tests;
@@ -102,7 +103,7 @@ public abstract class TestBase(PlaywrightFixture fixture, ITestOutputHelper outp
         {
             await context.Tracing.StopAsync(new()
             {
-                Path = $"{TestConstants.TestResultsPath}/trace_{guid}_{count}.zip"
+                Path = $"{TestConstants.TestResultsPath}/{GetTestName()}_{count}_{guid}.zip"
             });
 
             count++;
@@ -110,5 +111,16 @@ public abstract class TestBase(PlaywrightFixture fixture, ITestOutputHelper outp
 
         await Task.WhenAll(browserContexts.Select(c => c.CloseAsync()));
         browserContexts.Clear();
+    }
+
+    private string GetTestName()
+    {
+        var type = outputHelper.GetType();
+        var testMember = type.GetField("test", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        if (testMember?.GetValue(outputHelper) is ITest test)
+            return test.DisplayName.Replace("OverkillDocs.Tests.E2E.Tests.", "");
+
+        return "Test";
     }
 }
