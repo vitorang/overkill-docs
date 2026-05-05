@@ -10,6 +10,8 @@ import { HubMonitorComponent } from '@features/debug/components/hub-monitor/hub-
 import { MainHeaderComponent } from '@shared/components/main-header/main-header.component';
 import { UserService } from '@core/services/user.service';
 import { ReconnectionOverlayComponent } from '@shared/components/reconnection-overlay/reconnection-overlay.component';
+import { RouterOutlet } from '@angular/router';
+import { DebugService } from '@features/debug/services/debug.service';
 
 type TabSection = 'editor' | 'chat';
 
@@ -21,6 +23,7 @@ type TabSection = 'editor' | 'chat';
         HubMonitorComponent,
         MainHeaderComponent,
         ReconnectionOverlayComponent,
+        RouterOutlet,
     ],
     templateUrl: './document-layout.component.html',
     styleUrl: './document-layout.component.scss',
@@ -28,11 +31,13 @@ type TabSection = 'editor' | 'chat';
 })
 export class DocumentLayoutComponent {
     private breakpointObserver = inject(BreakpointObserver);
+    private debugService = inject(DebugService);
     private chatHub = inject(ChatHubService);
 
     protected activeSection = signal<TabSection>('editor');
     protected isMobile = signal(false);
     protected hasUnreadMessage = signal(false);
+    protected debugModeEnabled = this.debugService.debugModeEnabled;
 
     constructor() {
         this.breakpointObserver.observe([BreakpointQueries.smallMedium]).subscribe((result) => {

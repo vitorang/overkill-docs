@@ -5,6 +5,7 @@ import { BrandComponent } from '@shared/components/brand/brand.component';
 import { SHARED } from '@shared/index';
 import { ClearButtonDirective } from '@shared/directives/clear-button.directive';
 import { AccountService } from '@features/account/services/account.service';
+import { DebugService } from '@features/debug/services/debug.service';
 
 @Component({
     selector: 'okd-main-header',
@@ -14,7 +15,10 @@ import { AccountService } from '@features/account/services/account.service';
 })
 export class MainHeaderComponent {
     private accountService = inject(AccountService);
+    private debugService = inject(DebugService);
     private router = inject(Router);
+
+    protected debugModeEnabled = this.debugService.debugModeEnabled;
 
     protected logout(): void {
         this.accountService.logout();
@@ -26,5 +30,9 @@ export class MainHeaderComponent {
 
     protected goToHome(): void {
         this.router.navigateByUrl(PATHS.ROOT);
+    }
+
+    protected toggleDebugMode(): void {
+        this.debugModeEnabled.set(!this.debugModeEnabled());
     }
 }

@@ -18,12 +18,17 @@
         </okd-main-header>
 
         <div class="main-content">
+            @if (debugModeEnabled()) {
+                <section class="hub-monitor hidden-mobile">
+                    <okd-hub-monitor />
+                </section>
+            }
+
             <section
                 class="editor"
                 [class.hidden-mobile]="isMobile() && activeSection() !== 'editor'"
             >
-                <okd-hub-monitor />
-                <!-- <router-outlet /> -->
+                <router-outlet />
             </section>
 
             <section class="chat" [class.hidden-mobile]="isMobile() && activeSection() !== 'chat'">

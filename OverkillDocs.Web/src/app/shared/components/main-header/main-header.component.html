@@ -14,6 +14,14 @@
         <mat-icon>person</mat-icon>
         <span>Minha Conta</span>
     </button>
+    <button mat-menu-item (click)="toggleDebugMode()">
+        @if (debugModeEnabled()) {
+            <mat-icon>check</mat-icon>
+        } @else {
+            <mat-icon>bug_report</mat-icon>
+        }
+        <span>Modo Debug</span>
+    </button>
     <button mat-menu-item (click)="logout()">
         <mat-icon>exit_to_app</mat-icon>
         <span>Sair</span>
