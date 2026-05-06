@@ -1,12 +1,21 @@
 <mat-toolbar color="primary" class="main-toolbar">
-    <button okdClearButton (click)="goToHome()">
-        <okd-brand [compact]="true" />
-    </button>
-    <ng-content></ng-content>
-    <span class="header-spacer"></span>
-    <button mat-icon-button [matMenuTriggerFor]="profileMenu">
-        <mat-icon>more_vert</mat-icon>
-    </button>
+    <div class="align-left">
+        <button mat-button (click)="goToHome()">
+            <okd-brand [compact]="true" />
+        </button>
+        <ng-template [cdkPortalOutlet]="portal()?.left" />
+    </div>
+
+    <div class="align-center">
+        <ng-template [cdkPortalOutlet]="portal()?.center" />
+    </div>
+
+    <div class="align-right">
+        <ng-template [cdkPortalOutlet]="portal()?.right" />
+        <button mat-icon-button [matMenuTriggerFor]="profileMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
 </mat-toolbar>
 
 <mat-menu #profileMenu="matMenu">

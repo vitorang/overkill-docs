@@ -1,4 +1,30 @@
 :host {
+    .main-toolbar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+
+        .align-left {
+            display: flex;
+            flex: 1;
+            justify-content: flex-start;
+        }
+
+        .align-center {
+            display: flex;
+            justify-content: center;
+            flex: 2;
+            min-width: 0;
+        }
+
+        .align-right {
+            display: flex;
+            flex: 1;
+            justify-content: flex-end;
+        }
+    }
+
     .brand {
         padding-right: 8px;
         text-decoration: none;
@@ -6,29 +32,6 @@
         &,
         & > * {
             cursor: pointer;
-        }
-    }
-
-    .header-spacer {
-        flex: 1 1 auto;
-    }
-
-    ::ng-deep button[mat-icon-button] {
-        $buttonSize: 48px;
-        width: $buttonSize;
-        height: $buttonSize;
-        line-height: $buttonSize;
-
-        .mat-icon {
-            $iconSize: 32px;
-            font-size: $iconSize;
-            width: $iconSize;
-            height: $iconSize;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding-left: 2px;
         }
     }
 }

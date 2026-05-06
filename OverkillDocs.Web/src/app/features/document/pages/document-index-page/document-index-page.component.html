@@ -1,1 +1,16 @@
+<ng-template cdkPortal #leftPortal="cdkPortal">
+    <button mat-icon-button>
+        <mat-icon>add</mat-icon>
+    </button>
+    <button mat-button>Criar</button>
+</ng-template>
+
+<ng-template cdkPortal #centerPortal="cdkPortal">
+    <input okdFillInput placeholder="Pesquisar..." maxWidth="400px" />
+</ng-template>
+
+<ng-template cdkPortal #rightPortal="cdkPortal">
+    <okd-toggle-chat-button />
+</ng-template>
+
 <p>document-index-page works!</p>

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
@@ -12,8 +12,7 @@ import { UserService } from '@core/services/user.service';
 import { ReconnectionOverlayComponent } from '@shared/components/reconnection-overlay/reconnection-overlay.component';
 import { RouterOutlet } from '@angular/router';
 import { DebugService } from '@features/debug/services/debug.service';
-
-type TabSection = 'editor' | 'chat';
+import { DocumentLayoutService } from '@features/document/services/document-layout.services';
 
 @Component({
     selector: 'okd-document-layout',
@@ -30,36 +29,19 @@ type TabSection = 'editor' | 'chat';
     providers: [UserService],
 })
 export class DocumentLayoutComponent {
-    private breakpointObserver = inject(BreakpointObserver);
     private debugService = inject(DebugService);
-    private chatHub = inject(ChatHubService);
+    private documentLayoutService = inject(DocumentLayoutService);
+    protected displayEditor = computed(
+        () =>
+            !this.documentLayoutService.isMobile() ||
+            this.documentLayoutService.activeSection() === 'editor',
+    );
 
-    protected activeSection = signal<TabSection>('editor');
-    protected isMobile = signal(false);
-    protected hasUnreadMessage = signal(false);
+    protected displayChat = computed(
+        () =>
+            !this.documentLayoutService.isMobile() ||
+            this.documentLayoutService.activeSection() === 'chat',
+    );
+
     protected debugModeEnabled = this.debugService.debugModeEnabled;
-
-    constructor() {
-        this.breakpointObserver.observe([BreakpointQueries.smallMedium]).subscribe((result) => {
-            const isMobile = result.matches;
-
-            this.isMobile.set(isMobile);
-            if (!isMobile) this.hasUnreadMessage.set(false);
-        });
-
-        this.chatHub.onMessageReceived.pipe(takeUntilDestroyed()).subscribe(() => {
-            this.hasUnreadMessage.set(this.isMobile() && this.activeSection() !== 'chat');
-        });
-
-        toObservable(this.activeSection)
-            .pipe(
-                takeUntilDestroyed(),
-                filter((session) => session === 'chat'),
-            )
-            .subscribe(() => this.hasUnreadMessage.set(false));
-    }
-
-    protected toggleSection(): void {
-        this.activeSection.set(this.activeSection() === 'editor' ? 'chat' : 'editor');
-    }
 }

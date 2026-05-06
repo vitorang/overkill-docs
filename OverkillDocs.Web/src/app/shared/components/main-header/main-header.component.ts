@@ -3,22 +3,24 @@ import { Router } from '@angular/router';
 import { PATHS } from '@core/constants/routes.constant';
 import { BrandComponent } from '@shared/components/brand/brand.component';
 import { SHARED } from '@shared/index';
-import { ClearButtonDirective } from '@shared/directives/clear-button.directive';
 import { AccountService } from '@features/account/services/account.service';
 import { DebugService } from '@features/debug/services/debug.service';
+import { MainHeaderService } from '@shared/services/main-header.service';
 
 @Component({
     selector: 'okd-main-header',
-    imports: [SHARED, BrandComponent, ClearButtonDirective],
+    imports: [SHARED, BrandComponent],
     templateUrl: './main-header.component.html',
     styleUrl: './main-header.component.scss',
 })
 export class MainHeaderComponent {
     private accountService = inject(AccountService);
     private debugService = inject(DebugService);
+    private mainHeaderService = inject(MainHeaderService);
     private router = inject(Router);
 
     protected debugModeEnabled = this.debugService.debugModeEnabled;
+    protected portal = this.mainHeaderService.portal;
 
     protected logout(): void {
         this.accountService.logout();

@@ -1,21 +1,6 @@
 <okd-reconnection-overlay>
     <div class="layout">
-        <okd-main-header>
-            @if (isMobile()) {
-                <button
-                    mat-icon-button
-                    (click)="toggleSection()"
-                    matBadge="&ZeroWidthSpace;"
-                    [matBadgeHidden]="!hasUnreadMessage()"
-                    data-testid="toggle-chat-button"
-                    [attr.data-value]="activeSection()"
-                >
-                    <mat-icon>{{
-                        activeSection() === 'editor' ? 'chat_bubble_outline' : 'edit_note'
-                    }}</mat-icon>
-                </button>
-            }
-        </okd-main-header>
+        <okd-main-header />
 
         <div class="main-content">
             @if (debugModeEnabled()) {
@@ -24,14 +9,11 @@
                 </section>
             }
 
-            <section
-                class="editor"
-                [class.hidden-mobile]="isMobile() && activeSection() !== 'editor'"
-            >
+            <section class="editor" [class.hidden-mobile]="!displayEditor()">
                 <router-outlet />
             </section>
 
-            <section class="chat" [class.hidden-mobile]="isMobile() && activeSection() !== 'chat'">
+            <section class="chat" [class.hidden-mobile]="!displayChat()">
                 <okd-chat-view />
             </section>
         </div>
