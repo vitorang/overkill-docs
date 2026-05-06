@@ -47,14 +47,14 @@
 }
 
 @font-face {
-    font-family: 'Material Icons';
+    font-family: 'Material Symbols Outlined';
     font-style: normal;
     font-weight: 400;
-    src: url('/assets/fonts/material-icons-v145.woff2') format('woff2');
+    src: url('/assets/fonts/MaterialSymbolsOutlined_36pt-Regular.ttf') format('truetype');
 }
 
-.material-icons {
-    font-family: 'Material Icons';
+mat-icon {
+    font-family: 'Material Symbols Outlined';
     font-weight: normal;
     font-style: normal;
     font-size: 24px;
