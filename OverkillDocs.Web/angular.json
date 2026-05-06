@@ -9,7 +9,8 @@
                 "@schematics/angular:component": {
                     "standalone": true,
                     "style": "scss",
-                    "type": "component"
+                    "type": "component",
+                    "skipTests": true
                 },
                 "@schematics/angular:directive": {
                     "standalone": true,
