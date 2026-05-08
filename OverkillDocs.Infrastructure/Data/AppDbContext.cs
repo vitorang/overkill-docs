@@ -16,11 +16,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<Document>(entity =>
         {
             entity.HasKey(e => e.Id);
-
-            entity.HasOne(e => e.CreatedBy)
-                  .WithMany()
-                  .HasForeignKey(e => e.CreatedById)
-                  .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<DocumentFragment>(entity =>

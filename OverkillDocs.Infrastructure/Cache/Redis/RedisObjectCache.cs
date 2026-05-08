@@ -7,7 +7,7 @@ namespace OverkillDocs.Infrastructure.Cache.Redis;
 internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : ObjectCache<T>, IObjectCache<T>
 {
     private readonly IDatabase database = redis.GetDatabase();
-    private static readonly SemaphoreSlim semaphore = new(1, 1);
+    private readonly SemaphoreSlim semaphore = new(1, 1);
     private static readonly JsonSerializerOptions jsonOptions = new()
     {
         PropertyNameCaseInsensitive = true
@@ -90,5 +90,21 @@ internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : Object
 
         batch.Execute();
         await Task.WhenAll(tasks);
+    }
+
+    public async Task Clear()
+    {
+        var endpoints = redis.GetEndPoints();
+        var pattern = KeyFrom("*");
+
+        foreach (var endpoint in endpoints)
+        {
+            var server = redis.GetServer(endpoint);
+
+            foreach (var batch in server.Keys(database: database.Database, pattern: pattern).Chunk(250))
+            {
+                await database.KeyDeleteAsync(batch);
+            }
+        }
     }
 }

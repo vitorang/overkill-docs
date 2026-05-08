@@ -41,8 +41,8 @@ internal sealed class AccountService(
         var user = await CurrentAuthenticatedUser(passwordChange.CurrentPassword, ct);
         user.PasswordHash = passwordService.CalculeHash(passwordChange.NewPassword);
 
-        await userRepository.InvalidateCache(user);
         await unitOfWork.CommitAsync(ct);
+        await userRepository.InvalidateCache(user);
     }
 
     public async Task<ImmutableArray<UserSessionDto>> ListSessions(CancellationToken ct)

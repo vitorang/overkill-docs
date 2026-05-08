@@ -50,7 +50,7 @@ public class ProfileTests
             await cache.Set(user);
             LogData(user, session, profile);
 
-            var response = await httpClient.PostAsJsonAsync(url, profile);
+            var response = await httpClient.PutAsJsonAsync(url, profile);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var updatedProfile = await response.Content.ReadFromJsonAsync<ProfileDto>();
 
@@ -80,7 +80,7 @@ public class ProfileTests
             await cache.Set(user);
             LogData(user, session, profile);
 
-            var response = await httpClient.PostAsJsonAsync(url, profile);
+            var response = await httpClient.PutAsJsonAsync(url, profile);
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
 
             var cachedUser = await cache.Get(cache.IdFrom(user));

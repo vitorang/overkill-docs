@@ -6,8 +6,18 @@ namespace OverkillDocs.Infrastructure.Cache.Memory;
 
 internal sealed class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>, IObjectCache<T>
 {
-    private static readonly MemoryCacheEntryOptions options = new MemoryCacheEntryOptions()
-        .SetSlidingExpiration(expirationTime);
+    private readonly object _lock = new();
+    private CancellationTokenSource cts = new();
+    private MemoryCacheEntryOptions GetOptions()
+    {
+        var options = new MemoryCacheEntryOptions()
+        {
+            SlidingExpiration = expirationTime,
+        };
+
+        options.ExpirationTokens.Add(new Microsoft.Extensions.Primitives.CancellationChangeToken(cts.Token));
+        return options;
+    }
 
     public async Task<T?> Get(string id, Func<Task<T?>>? onCacheMiss = null)
     {
@@ -33,7 +43,9 @@ internal sealed class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>,
     public Task Set(T value)
     {
         var key = KeyOf(value);
-        cache.Set(key, JsonSerializer.Serialize(value), options);
+        var json = JsonSerializer.Serialize(value);
+
+        cache.Set(key, json, GetOptions());
         return Task.CompletedTask;
     }
 
@@ -55,6 +67,17 @@ internal sealed class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>,
     {
         foreach (var value in values)
             cache.Remove(KeyOf(value));
+        return Task.CompletedTask;
+    }
+
+    public Task Clear()
+    {
+        lock (_lock)
+        {
+            cts.Cancel();
+            cts.Dispose();
+            cts = new();
+        }
         return Task.CompletedTask;
     }
 }

@@ -78,7 +78,7 @@ public class AccountController(IAccountService accountService, IUserService user
         return Ok(result);
     }
 
-    [HttpPost("profile")]
+    [HttpPut("profile")]
     [ProducesResponseType(typeof(ProfileDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<ProfileDto>> Profile([FromBody] ProfileDto profileDto, CancellationToken ct)
     {

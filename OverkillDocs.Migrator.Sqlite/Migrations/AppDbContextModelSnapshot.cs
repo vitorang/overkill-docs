@@ -26,22 +26,17 @@ namespace OverkillDocs.Migrator.Sqlite.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
 
                     b.ToTable("Documents");
                 });
@@ -125,7 +120,7 @@ namespace OverkillDocs.Migrator.Sqlite.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.Security.UserSession", b =>
+            modelBuilder.Entity("OverkillDocs.Core.Entities.Identity.UserSession", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -161,17 +156,6 @@ namespace OverkillDocs.Migrator.Sqlite.Migrations
                     b.ToTable("UserSessions");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.Document.Document", b =>
-                {
-                    b.HasOne("OverkillDocs.Core.Entities.Identity.User", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-                });
-
             modelBuilder.Entity("OverkillDocs.Core.Entities.Document.DocumentFragment", b =>
                 {
                     b.HasOne("OverkillDocs.Core.Entities.Document.Document", "Document")
@@ -191,7 +175,7 @@ namespace OverkillDocs.Migrator.Sqlite.Migrations
                     b.Navigation("EditedBy");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.Security.UserSession", b =>
+            modelBuilder.Entity("OverkillDocs.Core.Entities.Identity.UserSession", b =>
                 {
                     b.HasOne("OverkillDocs.Core.Entities.Identity.User", "User")
                         .WithMany()

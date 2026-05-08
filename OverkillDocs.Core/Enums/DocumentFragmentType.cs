@@ -2,5 +2,5 @@ namespace OverkillDocs.Core.Enums;
 
 public enum DocumentFragmentType
 {
-    PlainText = 1
+    Html = 1
 }

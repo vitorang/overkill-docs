@@ -1,17 +1,14 @@
-using OverkillDocs.Core.Entities.Identity;
+using OverkillDocs.Core.Enums;
 
 namespace OverkillDocs.Core.Entities.Document;
 
 public sealed class Document
 {
     public int Id { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public bool IsActive { get; set; } = true;
+    public required string Title { get; set; }
+    public required DocumentType Type { get; init; }
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
-    public int CreatedById { get; set; }
-    public required User CreatedBy { get; set; }
 
     public ICollection<DocumentFragment> Fragments { get; set; } = [];
 }
