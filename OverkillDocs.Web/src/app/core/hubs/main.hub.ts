@@ -4,7 +4,8 @@ import { defer, filter, finalize, Observable, shareReplay, Subject } from 'rxjs'
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { AuthService } from '@core/services/auth.service';
 import { API } from '@core/constants/api.constants';
-import { ChatHubService } from '@features/chat/services/chat-hub.service';
+import { ChatHub } from '@features/chat/hubs/chat.hub';
+import { DocumentIndexHub } from '@features/document/hubs/document-index.hub';
 
 export interface ResponseListener {
     name: string;
@@ -37,7 +38,7 @@ export interface IMainHub {
 }
 
 @Injectable({ providedIn: 'root' })
-export class HubService {
+export class MainHub {
     private connectionState = signal<HubState>('DISCONNECTED');
     private state = {
         connected: computed(() => this.connectionState() === 'CONNECTED'),
@@ -140,7 +141,8 @@ export class HubService {
             });
         };
 
-        [...inject(ChatHubService).responseListeners].forEach((listener) => addListener(listener));
+        inject(ChatHub).responseListeners.forEach((listener) => addListener(listener));
+        inject(DocumentIndexHub).responseListeners.forEach((listener) => addListener(listener));
     };
 
     private disposeConnection = () => {

@@ -3,10 +3,10 @@ import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ProblemDetails } from '@core/models/problem-details.model';
-import { ApiHandler } from '@core/utils/api-handler.utils';
+import { apiHandler, ApiHandler } from '@core/utils/api-handler.utils';
 import { FormUtils } from '@core/utils/form.utils';
 import { DocumentModel, DocumentModelType } from '@features/document/models/document.model';
-import { DocumentService } from '@features/document/services/document.service';
+import { DocumentIndexService } from '@features/document/services/document-index.service';
 import { SHARED } from '@shared/index';
 import { AlertService } from '@shared/services/alert.service';
 
@@ -25,8 +25,8 @@ export class DocumentEditDialogComponent implements OnInit {
     private data = inject<DocumentModel | null>(MAT_DIALOG_DATA);
 
     private alertService = inject(AlertService);
-    private documentService = inject(DocumentService);
-    protected documentHandler = new ApiHandler(inject(DestroyRef));
+    private documentService = inject(DocumentIndexService);
+    protected documentHandler = apiHandler();
 
     protected isEditing = computed(() => !!this.data?.hashId);
     protected readonly DocumentType = DocumentModelType;

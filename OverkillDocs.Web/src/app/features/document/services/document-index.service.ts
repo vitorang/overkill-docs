@@ -3,28 +3,54 @@ import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { API } from '@core/constants/api.constants';
 import { faker } from '@faker-js/faker';
+import { DocumentIndexHub } from '@features/document/hubs/document-index.hub';
 import { DocumentModel, DocumentModelType } from '@features/document/models/document.model';
 import { AlertService } from '@shared/services/alert.service';
-import { forkJoin, Observable } from 'rxjs';
+import { asyncScheduler, filter, forkJoin, Observable, throttleTime } from 'rxjs';
 
 @Injectable()
-export class DocumentService {
+export class DocumentIndexService {
+    private documentIndexHub = inject(DocumentIndexHub);
     private http = inject(HttpClient);
     private alertService = inject(AlertService);
     private destroyRef = inject(DestroyRef);
     readonly documents = signal<DocumentModel[]>([]);
 
     constructor() {
-        this.load();
+        this.documentIndexHub.connection
+            .pipe(
+                takeUntilDestroyed(),
+                filter((connected) => connected),
+            )
+            .subscribe(() => {
+                this.documentIndexHub.join();
+                this.load();
+            });
+
+        this.documentIndexHub.onChanged
+            .pipe(
+                throttleTime(250, asyncScheduler, { leading: false, trailing: true }),
+                takeUntilDestroyed(),
+            )
+            .subscribe(() => {
+                this.load();
+            });
     }
 
     private load(): void {
         this.list()
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
-                next: (value) => this.documents.set(value),
+                next: (value) => this.onDocumentsReceived(value),
                 error: () => this.alertService.error('Erro ao carregar documentos'),
             });
+    }
+
+    private onDocumentsReceived(value: DocumentModel[]) {
+        value.sort((a, b) =>
+            a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' }),
+        );
+        this.documents.set(value);
     }
 
     private list(): Observable<DocumentModel[]> {

@@ -15,6 +15,7 @@
         </button>
     }
 </mat-action-list>
+<mat-divider />
 
 @if (documents().length === 0) {
     <div class="alert-empty">
@@ -23,7 +24,7 @@
     </div>
 } @else {
     <div class="list">
-        <mat-list>
+        <mat-action-list>
             @for (doc of documents(); track doc.hashId) {
                 <a
                     mat-list-item
@@ -31,9 +32,9 @@
                     routerLinkActive="active"
                     [routerLinkActiveOptions]="{ exact: true }"
                 >
-                    <span matListItemLine>{{ doc.title }}</span>
+                    <span matListItemTitle>{{ doc.title }}</span>
                 </a>
             }
-        </mat-list>
+        </mat-action-list>
     </div>
 }

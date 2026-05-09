@@ -1,5 +1,5 @@
 import { Component, effect, inject } from '@angular/core';
-import { HubService } from '@core/services/hub.service';
+import { MainHub } from '@core/hubs/main.hub';
 import { AccountService } from '@features/account/services/account.service';
 import { SHARED } from '@shared/index';
 
@@ -13,7 +13,7 @@ import { SHARED } from '@shared/index';
     },
 })
 export class ReconnectionOverlayComponent {
-    private mainHub = inject(HubService).mainHub;
+    private mainHub = inject(MainHub).mainHub;
     private accountService = inject(AccountService);
     protected connected = this.mainHub.state.connected;
     protected connecting = this.mainHub.state.connecting;

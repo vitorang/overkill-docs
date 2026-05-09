@@ -1,10 +1,10 @@
 import { Subject } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
-import { HubService, IHubState, IRawMessage } from '@core/services/hub.service';
+import { MainHub, IHubState, IRawMessage } from '@core/hubs/main.hub';
 
 @Injectable({ providedIn: 'root' })
 export class DebugHubService {
-    private mainHub = inject(HubService).mainHub;
+    private mainHub = inject(MainHub).mainHub;
 
     get state(): IHubState {
         return this.mainHub.state;

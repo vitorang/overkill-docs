@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { ChatHubService } from '@features/chat/services/chat-hub.service';
+import { ChatHub } from '@features/chat/hubs/chat.hub';
 import { DocumentLayoutService } from '@features/document/services/document-layout.services';
 import { SHARED } from '@shared/index';
 import { filter } from 'rxjs';
@@ -13,7 +13,7 @@ import { filter } from 'rxjs';
 })
 export class ToggleChatButtonComponent {
     private documentLayoutService = inject(DocumentLayoutService);
-    private chatHub = inject(ChatHubService);
+    private chatHub = inject(ChatHub);
     protected hasUnreadMessage = signal(false);
 
     protected activeSection = this.documentLayoutService.activeSection.asReadonly();

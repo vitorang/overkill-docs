@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { HubState, IRawMessage } from '@core/services/hub.service';
+import { HubState, IRawMessage } from '@core/hubs/main.hub';
 import { DebugHubService } from '@features/debug/services/debug-hub.service';
 import { SHARED } from '@shared/index';
 

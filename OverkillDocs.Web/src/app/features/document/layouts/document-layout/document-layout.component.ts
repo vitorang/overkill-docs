@@ -1,11 +1,6 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { filter } from 'rxjs';
+import { Component, computed, inject } from '@angular/core';
 import { SHARED } from '@shared/index';
 import { ChatViewComponent } from '@features/chat/components/chat-view/chat-view.component';
-import { ChatHubService } from '@features/chat/services/chat-hub.service';
-import { BreakpointQueries } from '@shared/constants/breakpoints.constant';
 import { HubMonitorComponent } from '@features/debug/components/hub-monitor/hub-monitor.component';
 import { MainHeaderComponent } from '@shared/components/main-header/main-header.component';
 import { UserService } from '@core/services/user.service';
@@ -13,7 +8,7 @@ import { ReconnectionOverlayComponent } from '@shared/components/reconnection-ov
 import { RouterOutlet } from '@angular/router';
 import { DebugService } from '@features/debug/services/debug.service';
 import { DocumentLayoutService } from '@features/document/services/document-layout.services';
-import { DocumentListComponent } from '@features/document/components/document-list/document-list.component';
+import { DocumentIndexComponent } from '@features/document/components/document-index/document-index.component';
 import { ToggleChatButtonComponent } from '@features/document/components/toggle-chat-button/toggle-chat-button.component';
 
 @Component({
@@ -24,7 +19,7 @@ import { ToggleChatButtonComponent } from '@features/document/components/toggle-
         HubMonitorComponent,
         ReconnectionOverlayComponent,
         RouterOutlet,
-        DocumentListComponent,
+        DocumentIndexComponent,
         MainHeaderComponent,
         ToggleChatButtonComponent,
     ],
