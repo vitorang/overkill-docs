@@ -13,6 +13,8 @@ import { ReconnectionOverlayComponent } from '@shared/components/reconnection-ov
 import { RouterOutlet } from '@angular/router';
 import { DebugService } from '@features/debug/services/debug.service';
 import { DocumentLayoutService } from '@features/document/services/document-layout.services';
+import { DocumentListComponent } from '@features/document/components/document-list/document-list.component';
+import { ToggleChatButtonComponent } from '@features/document/components/toggle-chat-button/toggle-chat-button.component';
 
 @Component({
     selector: 'okd-document-layout',
@@ -20,9 +22,11 @@ import { DocumentLayoutService } from '@features/document/services/document-layo
         SHARED,
         ChatViewComponent,
         HubMonitorComponent,
-        MainHeaderComponent,
         ReconnectionOverlayComponent,
         RouterOutlet,
+        DocumentListComponent,
+        MainHeaderComponent,
+        ToggleChatButtonComponent,
     ],
     templateUrl: './document-layout.component.html',
     styleUrl: './document-layout.component.scss',

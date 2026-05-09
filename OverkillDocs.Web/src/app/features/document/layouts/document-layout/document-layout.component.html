@@ -1,13 +1,25 @@
+<ng-template cdkPortal #leftPortal="cdkPortal">
+    <button mat-button>Criar</button>
+    <!-- @if (debugModeEnabled()) {
+        <button mat-button (click)="generateMany()">Gerar vários</button>
+    } -->
+</ng-template>
+
+<ng-template cdkPortal #centerPortal="cdkPortal">
+    <input okdFillInput placeholder="Pesquisar..." maxWidth="400px" />
+</ng-template>
+
+<ng-template cdkPortal #rightPortal="cdkPortal">
+    <okd-toggle-chat-button />
+</ng-template>
+
 <okd-reconnection-overlay>
     <div class="layout">
         <okd-main-header />
-
-        <div class="main-content">
-            @if (debugModeEnabled()) {
-                <section class="hub-monitor hidden-mobile">
-                    <okd-hub-monitor />
-                </section>
-            }
+        <div class="sections">
+            <section class="documents">
+                <okd-document-list />
+            </section>
 
             <section class="editor" [class.hidden-mobile]="!displayEditor()">
                 <router-outlet />
@@ -15,8 +27,10 @@
 
             <section class="chat" [class.hidden-mobile]="!displayChat()">
                 <okd-chat-view />
+                @if (debugModeEnabled()) {
+                    <okd-hub-monitor />
+                }
             </section>
         </div>
-        <div></div>
     </div>
 </okd-reconnection-overlay>

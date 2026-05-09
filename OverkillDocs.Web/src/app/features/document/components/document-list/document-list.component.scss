@@ -1,0 +1,35 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+
+    .alert-empty {
+        flex: 1;
+
+        display: flex;
+        opacity: 0.6;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 0;
+
+        .icon {
+            $iconSize: 72px;
+            font-size: $iconSize;
+            width: $iconSize;
+            height: $iconSize;
+            line-height: $iconSize;
+        }
+    }
+
+    .list {
+        height: 100%;
+        overflow-y: auto;
+
+        .active {
+            background-color: var(--mat-sys-secondary-container);
+            color: var(--mat-sys-on-secondary-container);
+        }
+    }
+}

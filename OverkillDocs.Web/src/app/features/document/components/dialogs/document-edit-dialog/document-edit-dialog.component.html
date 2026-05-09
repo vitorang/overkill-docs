@@ -1,0 +1,32 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <mat-dialog-content>
+        <mat-form-field appearance="outline">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="title" data-testid="title-input" cdkFocusInitial />
+
+            @if (titleError) {
+                <mat-error>{{ titleError }}</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Tipo</mat-label>
+            <mat-select formControlName="type" data-testid="type-select">
+                <mat-option [value]="DocumentType.Article">Artigo</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div class="button-group-space-between"></div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button
+            mat-flat-button
+            type="submit"
+            [disabled]="formGroup.invalid || documentHandler.loading()"
+            data-testid="submit-button"
+        >
+            Confirmar
+        </button>
+    </mat-dialog-actions>
+</form>

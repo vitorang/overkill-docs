@@ -33,7 +33,7 @@ public class DocumentsController(IDocumentService documentService) : ControllerB
         return Ok(result);
     }
 
-    [HttpDelete]
+    [HttpDelete("{hashId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult<SimpleUserDto>> Delete(string hashId, CancellationToken ct)
     {

@@ -15,7 +15,6 @@ export const API = {
     DOCUMENTS: {
         ROOT: `${url}/documents`,
         BY_ID: (hashId: string) => `${url}/documents/${hashId}`,
-        SEARCH: `${url}/documents/search`,
         FRAGMENT: {
             INDEX: (documentHashId: string) => `${url}/documents/${documentHashId}/fragments`,
             BY_ID: (documentHashId: string, fragmentHashId: string) =>
