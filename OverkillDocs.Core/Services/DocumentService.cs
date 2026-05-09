@@ -1,6 +1,5 @@
 using HashidsNet;
 using OverkillDocs.Core.DTOs.Document;
-using OverkillDocs.Core.DTOs.Shared;
 using OverkillDocs.Core.Entities.Document;
 using OverkillDocs.Core.Exceptions;
 using OverkillDocs.Core.Extensions;
@@ -47,17 +46,10 @@ internal sealed class DocumentService(
         return document.ToDto(hashids);
     }
 
-    public async Task<SearchResultDto<DocumentDto>> Search(string text, int page, CancellationToken ct)
+    public async Task<DocumentDto[]> List(CancellationToken ct)
     {
-        var search = await documentRepository.Search(text, page, ct);
-
-        return new(
-            Text: search.Text,
-            Page: search.Page,
-            Total: search.Total,
-            HasMore: search.HasMore,
-            Items: [.. search.Items.Select(e => e.ToDto(hashids))]
-        );
+        var documents = await documentRepository.List(ct);
+        return [.. documents.Select(e => e.ToDto(hashids))];
     }
 
     public async Task<DocumentDto> Update(DocumentDto documentDto, CancellationToken ct)

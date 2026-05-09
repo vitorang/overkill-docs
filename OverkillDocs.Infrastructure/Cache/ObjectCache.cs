@@ -1,6 +1,6 @@
 using OverkillDocs.Core.Constants;
-using OverkillDocs.Core.Entities.Document;
 using OverkillDocs.Core.Entities.Identity;
+using OverkillDocs.Infrastructure.Collections;
 using static OverkillDocs.Core.Security.UserContext;
 
 namespace OverkillDocs.Infrastructure.Cache;
@@ -14,7 +14,7 @@ internal abstract class ObjectCache<T>
 
     protected static string KeyOf(T value) => value switch
     {
-        DocumentSearchResult v => KeyFrom($"page_{v.Page} {v.Text}"),
+        DocumentCollection => KeyFrom("0"),
         UserIdentity v => KeyFrom(v.Token),
         User v => KeyFrom(v.Id),
         _ => throw new InvalidOperationException("Tipo não mapeado para criação de chave")

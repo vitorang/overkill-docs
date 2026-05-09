@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using OverkillDocs.Core.Attributes;
 using OverkillDocs.Core.DTOs.Document;
-using OverkillDocs.Core.DTOs.Shared;
 using OverkillDocs.Core.DTOs.User;
 using OverkillDocs.Core.Interfaces.Services;
 
@@ -11,19 +9,11 @@ namespace OverkillDocs.Api.Controllers;
 [ApiController]
 public class DocumentsController(IDocumentService documentService) : ControllerBase
 {
-    [HttpGet("search")]
-    [ProducesResponseType(typeof(SearchResultDto<DocumentDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<SimpleUserDto>> Search([SearchText] string text = "", int page = 1, CancellationToken ct = default)
+    [HttpGet]
+    [ProducesResponseType(typeof(DocumentDto[]), StatusCodes.Status200OK)]
+    public async Task<ActionResult<SimpleUserDto>> Search(CancellationToken ct)
     {
-        var result = await documentService.Search(text, page, ct);
-        return Ok(result);
-    }
-
-    [HttpGet("{hashId}")]
-    [ProducesResponseType(typeof(DocumentDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<SimpleUserDto>> Get(string hashId, CancellationToken ct)
-    {
-        var result = await documentService.Get(hashId, ct);
+        var result = await documentService.List(ct);
         return Ok(result);
     }
 

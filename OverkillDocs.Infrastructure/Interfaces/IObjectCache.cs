@@ -2,7 +2,6 @@ namespace OverkillDocs.Infrastructure.Interfaces;
 
 public interface IObjectCache<T>
 {
-    public Task Clear();
     public Task<T?> Get(int id, Func<Task<T?>>? onCacheMiss = null);
     public Task<T?> Get(string id, Func<Task<T?>>? onCacheMiss = null);
     public Task Set(T value);

@@ -91,20 +91,4 @@ internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : Object
         batch.Execute();
         await Task.WhenAll(tasks);
     }
-
-    public async Task Clear()
-    {
-        var endpoints = redis.GetEndPoints();
-        var pattern = KeyFrom("*");
-
-        foreach (var endpoint in endpoints)
-        {
-            var server = redis.GetServer(endpoint);
-
-            foreach (var batch in server.Keys(database: database.Database, pattern: pattern).Chunk(250))
-            {
-                await database.KeyDeleteAsync(batch);
-            }
-        }
-    }
 }
