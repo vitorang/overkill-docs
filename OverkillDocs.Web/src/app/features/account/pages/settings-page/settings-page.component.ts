@@ -10,7 +10,8 @@ import { AccountService } from '@features/account/services/account.service';
 import { Profile, UserSession } from '@features/account/account.models';
 import { AccountSettingsService } from '@features/account/services/account-settings.service';
 import { RequestOverlayComponent } from '@shared/components/request-overlay/request-overlay.component';
-import { MainHeaderComponent } from '@shared/components/main-header/main-header.component';
+import { BrandComponent } from '@shared/components/brand/brand.component';
+import { PATHS } from '@core/constants/routes.constant';
 
 @Component({
     selector: 'okd-settings-page',
@@ -19,7 +20,7 @@ import { MainHeaderComponent } from '@shared/components/main-header/main-header.
         ProfileFormComponent,
         PasswordChangeFormComponent,
         RequestOverlayComponent,
-        MainHeaderComponent,
+        BrandComponent,
     ],
     templateUrl: './settings-page.component.html',
     styleUrl: './settings-page.component.scss',
@@ -29,6 +30,7 @@ export class SettingsPageComponent implements OnInit {
     private accountService = inject(AccountService);
     private accountSettingsService = inject(AccountSettingsService);
     private dialog = inject(MatDialog);
+    protected homeUrl = PATHS.ROOT;
 
     protected profileHandler = apiHandler();
     protected profile = signal<Profile>({
@@ -39,9 +41,8 @@ export class SettingsPageComponent implements OnInit {
     });
 
     protected sessionsHandler = apiHandler();
-    protected sessions = signal<UserSession[]>([]);
-
     protected logoutHandler = apiHandler();
+    protected sessions = signal<UserSession[]>([]);
 
     ngOnInit(): void {
         this.loadProfile();
@@ -60,7 +61,11 @@ export class SettingsPageComponent implements OnInit {
         );
     }
 
-    protected logout(session: UserSession): void {
+    protected logout(): void {
+        this.accountService.logout();
+    }
+
+    protected logoutSession(session: UserSession): void {
         const refreshSessions = (): void => {
             this.logoutHandler.execute(this.accountSettingsService.listSessions(), (result) =>
                 this.sessions.set(result),
