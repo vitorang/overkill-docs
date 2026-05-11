@@ -1,9 +1,15 @@
 @use 'mixins/breakpoints' as *;
+@use 'mixins/navigation' as nav;
 
 :host {
     display: flex;
     flex-direction: column;
     height: 100vh;
+
+    mat-toolbar {
+        @include nav.theme;
+        @include nav.border-bottom;
+    }
 
     .toolbar-content {
         display: flex;

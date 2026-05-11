@@ -15,6 +15,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { PortalModule } from '@angular/cdk/portal';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 export const SHARED = [
     CommonModule,
@@ -31,6 +32,7 @@ export const SHARED = [
     MatOptionModule,
     MatProgressSpinnerModule,
     MatSelectModule,
+    MatSidenavModule,
     MatToolbarModule,
     PortalModule,
     ReactiveFormsModule,

@@ -1,36 +1,52 @@
-<ng-template cdkPortal #leftPortal="cdkPortal">
-    <button mat-button>Criar</button>
-    <!-- @if (debugModeEnabled()) {
-        <button mat-button (click)="generateMany()">Gerar vários</button>
-    } -->
-</ng-template>
-
-<ng-template cdkPortal #centerPortal="cdkPortal">
-    <input okdFillInput placeholder="Pesquisar..." maxWidth="400px" />
-</ng-template>
-
-<ng-template cdkPortal #rightPortal="cdkPortal">
-    <okd-toggle-chat-button />
-</ng-template>
-
 <okd-reconnection-overlay>
-    <div class="layout">
-        <okd-main-header />
-        <div class="sections">
-            <section class="documents">
-                <okd-document-index />
-            </section>
+    <div class="main-wrapper">
+        <nav class="icon-rail">
+            <okd-brand [compact]="true" />
+            <button
+                mat-icon-button
+                title="Documentos"
+                (click)="toggleActivePanel('documents')"
+                [class.active]="activePanel() === 'documents'"
+            >
+                <mat-icon>notes</mat-icon>
+            </button>
+            <button
+                mat-icon-button
+                title="Chat"
+                (click)="toggleActivePanel('chat')"
+                [class.active]="activePanel() === 'chat'"
+                matBadge="&ZeroWidthSpace;"
+                matBadgeSize="small"
+                [matBadgeHidden]="!hasUnreadMessage()"
+            >
+                <mat-icon>chat_bubble</mat-icon>
+            </button>
+            <button
+                mat-icon-button
+                title="Debug"
+                (click)="toggleActivePanel('debug')"
+                [class.active]="activePanel() === 'debug'"
+            >
+                <mat-icon>bug_report</mat-icon>
+            </button>
+            <div class="spacer"></div>
+            <a mat-icon-button [routerLink]="accountSettingsPath" title="Configurar perfil">
+                <mat-icon>person_edit</mat-icon>
+            </a>
+            <button mat-icon-button (click)="logout()" title="Sair">
+                <mat-icon>logout</mat-icon>
+            </button>
+        </nav>
 
-            <section class="editor" [class.hidden-mobile]="!displayEditor()">
+        <mat-sidenav-container>
+            <mat-sidenav [mode]="isMobile() ? 'over' : 'side'" [opened]="activePanel()">
+                <okd-document-index [hidden]="activePanel() !== 'documents'" />
+                <okd-chat-view [hidden]="activePanel() !== 'chat'" />
+                <okd-debug-viewer [hidden]="activePanel() !== 'debug'" />
+            </mat-sidenav>
+            <mat-sidenav-content>
                 <router-outlet />
-            </section>
-
-            <section class="chat" [class.hidden-mobile]="!displayChat()">
-                <okd-chat-view />
-                @if (debugModeEnabled()) {
-                    <okd-hub-monitor />
-                }
-            </section>
-        </div>
+            </mat-sidenav-content>
+        </mat-sidenav-container>
     </div>
 </okd-reconnection-overlay>

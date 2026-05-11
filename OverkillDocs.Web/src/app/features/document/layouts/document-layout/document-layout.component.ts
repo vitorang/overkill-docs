@@ -1,46 +1,66 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { SHARED } from '@shared/index';
 import { ChatViewComponent } from '@features/chat/components/chat-view/chat-view.component';
-import { HubMonitorComponent } from '@features/debug/components/hub-monitor/hub-monitor.component';
-import { MainHeaderComponent } from '@shared/components/main-header/main-header.component';
 import { UserService } from '@core/services/user.service';
 import { ReconnectionOverlayComponent } from '@shared/components/reconnection-overlay/reconnection-overlay.component';
 import { RouterOutlet } from '@angular/router';
-import { DebugService } from '@features/debug/services/debug.service';
-import { DocumentLayoutService } from '@features/document/services/document-layout.services';
 import { DocumentIndexComponent } from '@features/document/components/document-index/document-index.component';
-import { ToggleChatButtonComponent } from '@features/document/components/toggle-chat-button/toggle-chat-button.component';
+import { PATHS } from '@core/constants/routes.constant';
+import { DebugViewerComponent } from '@features/debug/components/debug-viewer/debug-viewer.component';
+import { BrandComponent } from '@shared/components/brand/brand.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { BreakpointQueries } from '@shared/constants/breakpoints.constant';
+import { map } from 'rxjs';
+import { AccountService } from '@features/account/services/account.service';
+import { ChatHub } from '@features/chat/hubs/chat.hub';
+
+type SidePanel = 'documents' | 'chat' | 'debug';
 
 @Component({
     selector: 'okd-document-layout',
     imports: [
         SHARED,
         ChatViewComponent,
-        HubMonitorComponent,
         ReconnectionOverlayComponent,
         RouterOutlet,
         DocumentIndexComponent,
-        MainHeaderComponent,
-        ToggleChatButtonComponent,
+        DebugViewerComponent,
+        BrandComponent,
     ],
     templateUrl: './document-layout.component.html',
     styleUrl: './document-layout.component.scss',
     providers: [UserService],
 })
 export class DocumentLayoutComponent {
-    private debugService = inject(DebugService);
-    private documentLayoutService = inject(DocumentLayoutService);
-    protected displayEditor = computed(
-        () =>
-            !this.documentLayoutService.isMobile() ||
-            this.documentLayoutService.activeSection() === 'editor',
+    private breakpointObserver = inject(BreakpointObserver);
+    private accountService = inject(AccountService);
+    private chatHub = inject(ChatHub);
+
+    protected isMobile = toSignal(
+        this.breakpointObserver
+            .observe([BreakpointQueries.smallMedium])
+            .pipe(map((result) => result.matches)),
+        { initialValue: false },
     );
 
-    protected displayChat = computed(
-        () =>
-            !this.documentLayoutService.isMobile() ||
-            this.documentLayoutService.activeSection() === 'chat',
-    );
+    protected activePanel = signal<SidePanel | null>(null);
+    protected hasUnreadMessage = signal(false);
+    protected accountSettingsPath = PATHS.ACCOUNT.SETTINGS;
 
-    protected debugModeEnabled = this.debugService.debugModeEnabled;
+    constructor() {
+        this.chatHub.onMessageReceived.pipe(takeUntilDestroyed()).subscribe(() => {
+            if (this.activePanel() !== 'chat') this.hasUnreadMessage.set(true);
+        });
+    }
+
+    protected toggleActivePanel(panel: SidePanel): void {
+        if (panel === 'chat') this.hasUnreadMessage.set(false);
+
+        this.activePanel.set(panel !== this.activePanel() ? panel : null);
+    }
+
+    protected logout(): void {
+        this.accountService.logout();
+    }
 }
