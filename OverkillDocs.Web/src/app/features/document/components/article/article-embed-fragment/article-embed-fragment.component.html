@@ -1,0 +1,12 @@
+@if (url() === null) {
+    <p>Endereço não suportado</p>
+} @else {
+    <iframe
+        [src]="url()"
+        [class.vertical]="isVertical()"
+        frameborder="0"
+        allow="picture-in-picture"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+    ></iframe>
+}

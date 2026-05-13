@@ -1,0 +1,47 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+
+    .max-width {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    mat-toolbar {
+        .toolbar-content {
+            display: flex;
+            flex-direction: row;
+
+            .title {
+                align-self: center;
+                flex: 1;
+                min-width: 0;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                text-align: center;
+            }
+        }
+    }
+
+    .main-content {
+        flex: 1;
+        height: 100%;
+        overflow-y: auto;
+
+        article {
+            padding: 1rem;
+
+            > * {
+                display: block;
+            }
+
+            > *:not(:last-child) {
+                margin-bottom: 1rem;
+                min-height: 0;
+            }
+        }
+    }
+}

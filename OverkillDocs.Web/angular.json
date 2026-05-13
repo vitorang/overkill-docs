@@ -38,7 +38,8 @@
                             }
                         ],
                         "styles": [
-                            "src/styles/styles.scss"
+                            "src/styles/styles.scss",
+                            "node_modules/easymde/dist/easymde.min.css"
                         ],
                         "stylePreprocessorOptions": {
                             "includePaths": [

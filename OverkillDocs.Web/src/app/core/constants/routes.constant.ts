@@ -12,13 +12,13 @@ export const SEGMENTS = {
 
 const S = SEGMENTS;
 export const PATHS = {
-    ROOT: '/',
+    ROOT: '',
     ACCOUNT: {
         LOGIN: `/${S.ACCOUNT.ROOT}/${S.ACCOUNT.LOGIN}`,
         SETTINGS: `/${S.ACCOUNT.ROOT}/${S.ACCOUNT.SETTINGS}`,
     },
     DOCUMENT: {
-        INDEX: `${S.DOCUMENT.ROOT}`,
-        EDITOR: `${S.DOCUMENT.ROOT}/${S.DOCUMENT.EDITOR}`,
+        INDEX: `/${S.DOCUMENT.ROOT}`,
+        EDITOR: `/${S.DOCUMENT.ROOT}/${S.DOCUMENT.EDITOR}`,
     },
 } as const;
