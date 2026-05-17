@@ -66,9 +66,6 @@ namespace OverkillDocs.Migrator.Postgres.Migrations
                     b.Property<int>("DocumentId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("EditedById")
-                        .HasColumnType("integer");
-
                     b.Property<double>("Order")
                         .HasColumnType("double precision");
 
@@ -81,8 +78,6 @@ namespace OverkillDocs.Migrator.Postgres.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DocumentId");
-
-                    b.HasIndex("EditedById");
 
                     b.ToTable("DocumentFragments");
                 });
@@ -177,15 +172,7 @@ namespace OverkillDocs.Migrator.Postgres.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OverkillDocs.Core.Entities.Identity.User", "EditedBy")
-                        .WithMany()
-                        .HasForeignKey("EditedById")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Document");
-
-                    b.Navigation("EditedBy");
                 });
 
             modelBuilder.Entity("OverkillDocs.Core.Entities.Identity.UserSession", b =>

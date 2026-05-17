@@ -4,7 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { API } from '@core/constants/api.constants';
 import { faker } from '@faker-js/faker';
 import { DocumentIndexHub } from '@features/document/hubs/document-index.hub';
-import { DocumentModel, DocumentModelType } from '@features/document/models/document.model';
+import { DocumentSummary, DocumentType } from '@features/document/models/document.models';
 import { AlertService } from '@shared/services/alert.service';
 import { asyncScheduler, filter, forkJoin, Observable, throttleTime } from 'rxjs';
 
@@ -14,7 +14,7 @@ export class DocumentIndexService {
     private http = inject(HttpClient);
     private alertService = inject(AlertService);
     private destroyRef = inject(DestroyRef);
-    readonly documents = signal<DocumentModel[]>([]);
+    readonly documents = signal<DocumentSummary[]>([]);
 
     constructor() {
         this.documentIndexHub.connection
@@ -46,27 +46,27 @@ export class DocumentIndexService {
             });
     }
 
-    private onDocumentsReceived(value: DocumentModel[]) {
+    private onDocumentsReceived(value: DocumentSummary[]) {
         value.sort((a, b) =>
             a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' }),
         );
         this.documents.set(value);
     }
 
-    private list(): Observable<DocumentModel[]> {
-        return this.http.get<DocumentModel[]>(API.DOCUMENTS.ROOT);
+    private list(): Observable<DocumentSummary[]> {
+        return this.http.get<DocumentSummary[]>(API.DOCUMENTS.ROOT);
     }
 
-    create(document: DocumentModel): Observable<DocumentModel> {
-        return this.http.post<DocumentModel>(API.DOCUMENTS.ROOT, document);
+    create(document: DocumentSummary): Observable<DocumentSummary> {
+        return this.http.post<DocumentSummary>(API.DOCUMENTS.ROOT, document);
     }
 
-    update(document: DocumentModel): Observable<DocumentModel> {
-        return this.http.put<DocumentModel>(API.DOCUMENTS.ROOT, document);
+    update(document: DocumentSummary): Observable<DocumentSummary> {
+        return this.http.put<DocumentSummary>(API.DOCUMENTS.ROOT, document);
     }
 
-    getById(hashId: string): Observable<DocumentModel> {
-        return this.http.get<DocumentModel>(API.DOCUMENTS.BY_ID(hashId));
+    getById(hashId: string): Observable<DocumentSummary> {
+        return this.http.get<DocumentSummary>(API.DOCUMENTS.BY_ID(hashId));
     }
 
     delete(hashId: string): Observable<void> {
@@ -80,7 +80,7 @@ export class DocumentIndexService {
             const observable = this.create({
                 hashId: '',
                 title: `${faker.commerce.productAdjective()} ${faker.commerce.productName()}`,
-                type: DocumentModelType.Article,
+                type: DocumentType.Article,
             });
             requests.push(observable);
         }

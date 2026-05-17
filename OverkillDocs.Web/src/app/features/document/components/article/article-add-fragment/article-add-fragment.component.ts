@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { DocumentFragmentModel } from '@features/document/models/document.model';
+import { DocumentFragment } from '@features/document/models/document.models';
 import { SHARED } from '@shared/index';
 
 @Component({
@@ -9,5 +9,5 @@ import { SHARED } from '@shared/index';
     styleUrl: './article-add-fragment.component.scss',
 })
 export class ArticleAddFragmentComponent {
-    insertAfter = input.required<DocumentFragmentModel | null>();
+    insertAfter = input.required<DocumentFragment | null>();
 }

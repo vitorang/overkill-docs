@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SEGMENTS } from '@core/constants/routes.constant';
 import { DebugService } from '@features/debug/services/debug.service';
 import { DocumentEditDialogComponent } from '@features/document/components/dialogs/document-edit-dialog/document-edit-dialog.component';
-import { DocumentModel } from '@features/document/models/document.model';
+import { DocumentSummary } from '@features/document/models/document.models';
 import { DocumentIndexService } from '@features/document/services/document-index.service';
 import { SHARED } from '@shared/index';
 import { Router } from '@angular/router';
@@ -38,16 +38,16 @@ export class DocumentIndexComponent {
         this.dialog
             .open(DocumentEditDialogComponent, {
                 width: '500px',
-                data: null as DocumentModel | null,
+                data: null as DocumentSummary | null,
                 injector: this.injector,
             })
             .afterClosed()
-            .subscribe((document: DocumentModel | null) => {
+            .subscribe((document: DocumentSummary | null) => {
                 this.createdDocumentId = document?.hashId ?? null;
             });
     }
 
-    private redirectToCreatedDocument(documents: DocumentModel[]) {
+    private redirectToCreatedDocument(documents: DocumentSummary[]) {
         if (this.createdDocumentId === null) return;
 
         const document = documents.find((doc) => doc.hashId === this.createdDocumentId);

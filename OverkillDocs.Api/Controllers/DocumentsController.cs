@@ -13,7 +13,7 @@ namespace OverkillDocs.Api.Controllers;
 public class DocumentsController(IDocumentService documentService, IHubContext<MainHub> hubContext) : ControllerBase
 {
     [HttpGet]
-    [ProducesResponseType(typeof(DocumentDto[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DocumentSummaryDto[]), StatusCodes.Status200OK)]
     public async Task<ActionResult<SimpleUserDto>> List(CancellationToken ct)
     {
         var result = await documentService.List(ct);
@@ -21,8 +21,8 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(DocumentDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<SimpleUserDto>> Create([FromBody] DocumentDto document, CancellationToken ct)
+    [ProducesResponseType(typeof(DocumentSummaryDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<SimpleUserDto>> Create([FromBody] DocumentSummaryDto document, CancellationToken ct)
     {
         var result = await documentService.Create(document, ct);
         await NotifyDocumentIndexChanged(ct);
@@ -30,12 +30,12 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
     }
 
     [HttpPut]
-    [ProducesResponseType(typeof(DocumentDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<SimpleUserDto>> Update([FromBody] DocumentDto document, CancellationToken ct)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<SimpleUserDto>> Update([FromBody] DocumentSummaryDto document, CancellationToken ct)
     {
-        var result = await documentService.Update(document, ct);
+        await documentService.Update(document, ct);
         await NotifyDocumentIndexChanged(ct);
-        return Ok(result);
+        return NoContent();
     }
 
     [HttpDelete("{hashId}")]

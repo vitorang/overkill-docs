@@ -6,12 +6,22 @@ namespace OverkillDocs.Core.Extensions;
 
 public static class DocumentExtensions
 {
-    public static DocumentDto ToDto(this Document document, IHashids hashids)
+    public static DocumentSummaryDto ToSummaryDto(this Document document, IHashids hashids)
     {
         return new(
             HashId: hashids.Encode(document.Id),
             Title: document.Title,
             Type: document.Type
+        );
+    }
+
+    public static DocumentDetailDto ToDetailDto(this Document document, IHashids hashids)
+    {
+        return new(
+            HashId: hashids.Encode(document.Id),
+            Title: document.Title,
+            Type: document.Type,
+            Fragments: [.. document.Fragments.Select(e => e.ToDto(hashids)).OrderBy(e => e.Order)]
         );
     }
 }

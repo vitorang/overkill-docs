@@ -5,13 +5,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ProblemDetails } from '@core/models/problem-details.model';
 import { apiHandler, ApiHandler } from '@core/utils/api-handler.utils';
 import { FormUtils } from '@core/utils/form.utils';
-import { DocumentModel, DocumentModelType } from '@features/document/models/document.model';
+import { DocumentSummary, DocumentType } from '@features/document/models/document.models';
 import { DocumentIndexService } from '@features/document/services/document-index.service';
 import { SHARED } from '@shared/index';
 import { AlertService } from '@shared/services/alert.service';
 
 type DocumentForm = FormGroup<{
-    [K in keyof DocumentModel]: FormControl<DocumentModel[K]>;
+    [K in keyof DocumentSummary]: FormControl<DocumentSummary[K]>;
 }>;
 
 @Component({
@@ -22,27 +22,27 @@ type DocumentForm = FormGroup<{
 })
 export class DocumentEditDialogComponent implements OnInit {
     private dialogRef = inject(MatDialogRef<DocumentEditDialogComponent>);
-    private data = inject<DocumentModel | null>(MAT_DIALOG_DATA);
+    private data = inject<DocumentSummary | null>(MAT_DIALOG_DATA);
 
     private alertService = inject(AlertService);
     private documentService = inject(DocumentIndexService);
     protected documentHandler = apiHandler();
 
     protected isEditing = computed(() => !!this.data?.hashId);
-    protected readonly DocumentType = DocumentModelType;
+    protected readonly DocumentType = DocumentType;
 
     private formBuilder = inject(NonNullableFormBuilder);
     protected formGroup: DocumentForm = this.formBuilder.group({
         hashId: [''],
         title: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
-        type: [{ value: DocumentModelType.Article, disabled: this.isEditing() }],
+        type: [{ value: DocumentType.Article, disabled: this.isEditing() }],
     });
 
     ngOnInit(): void {
-        const emptyDocument: DocumentModel = {
+        const emptyDocument: DocumentSummary = {
             hashId: '',
             title: '',
-            type: DocumentModelType.Article,
+            type: DocumentType.Article,
         };
         this.formGroup.setValue(this.data || emptyDocument);
     }
@@ -50,7 +50,7 @@ export class DocumentEditDialogComponent implements OnInit {
     protected onSubmit(): void {
         if (!this.formGroup.valid || this.documentHandler.loading()) return;
 
-        const document: DocumentModel = this.formGroup.getRawValue();
+        const document: DocumentSummary = this.formGroup.getRawValue();
 
         const observable = this.isEditing()
             ? this.documentService.update(document)

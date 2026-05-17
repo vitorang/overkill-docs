@@ -1,16 +1,13 @@
-import { Component, computed, input } from '@angular/core';
-import {
-    ArticleImageFragment,
-    DocumentFragmentModel,
-} from '@features/document/models/document.model';
+import { Component, input } from '@angular/core';
+import { ArticleImageFragment } from '@features/document/models/article.models';
+import { SHARED } from '@shared/index';
 
 @Component({
     selector: 'okd-article-image-fragment',
-    imports: [],
+    imports: [SHARED],
     templateUrl: './article-image-fragment.component.html',
     styleUrl: './article-image-fragment.component.scss',
 })
 export class ArticleImageFragmentComponent {
-    fragment = input.required<DocumentFragmentModel>();
-    value = computed(() => JSON.parse(this.fragment().value) as ArticleImageFragment);
+    fragment = input.required<ArticleImageFragment>();
 }

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { DocumentModelType } from '@features/document/models/document.model';
+import { DocumentType } from '@features/document/models/document.models';
 import { DocumentViewerService } from '@features/document/services/document-viewer.service';
 import { SHARED } from '@shared/index';
 import { ArticleViewerComponent } from '@features/document/components/article/article-viewer/article-viewer.component';
@@ -14,7 +14,7 @@ import { ArticleViewerComponent } from '@features/document/components/article/ar
 export class DocumentViewerPageComponent implements OnInit {
     private viewerService = inject(DocumentViewerService);
     protected document = this.viewerService.document;
-    protected DocumentType = DocumentModelType;
+    protected DocumentType = DocumentType;
 
     ngOnInit(): void {
         this.viewerService.load();

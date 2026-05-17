@@ -1,20 +1,24 @@
 using HashidsNet;
 using OverkillDocs.Core.DTOs.Document;
+using OverkillDocs.Core.DTOs.Document.Fragment;
 using OverkillDocs.Core.Entities.Document;
 using OverkillDocs.Core.Exceptions;
 using OverkillDocs.Core.Extensions;
 using OverkillDocs.Core.Interfaces;
 using OverkillDocs.Core.Interfaces.Repositories;
 using OverkillDocs.Core.Interfaces.Services;
+using OverkillDocs.Core.Security;
 
 namespace OverkillDocs.Core.Services;
 
 internal sealed class DocumentService(
     IDocumentRepository documentRepository,
+    IDocumentFragmentRepository fragmentRepository,
     IUnitOfWork unitOfWork,
-    IHashids hashids) : IDocumentService
+    IHashids hashids,
+    UserContext userContext) : IDocumentService
 {
-    public async Task<DocumentDto> Create(DocumentDto documentDto, CancellationToken ct)
+    public async Task<DocumentSummaryDto> Create(DocumentSummaryDto documentDto, CancellationToken ct)
     {
         var document = new Document
         {
@@ -26,7 +30,7 @@ internal sealed class DocumentService(
         await unitOfWork.CommitAsync(ct);
         await documentRepository.InvalidateCache();
 
-        return document.ToDto(hashids);
+        return document.ToSummaryDto(hashids);
     }
 
     public async Task Delete(string hashId, CancellationToken ct)
@@ -36,23 +40,22 @@ internal sealed class DocumentService(
         await documentRepository.InvalidateCache();
     }
 
-    public async Task<DocumentDto> Get(string hashId, CancellationToken ct)
+    public async Task<DocumentDetailDto> Get(string hashId, CancellationToken ct)
     {
         var documentId = hashids.Decode(hashId).First();
         var document = await documentRepository.GetById(documentId, ct);
         if (document == null)
             throw new NotFoundException($"Documento não encontrado");
 
-        return document.ToDto(hashids);
+        return document.ToDetailDto(hashids);
     }
 
-    public async Task<DocumentDto[]> List(CancellationToken ct)
+    public async Task<DocumentSummaryDto[]> List(CancellationToken ct)
     {
-        var documents = await documentRepository.List(ct);
-        return [.. documents.Select(e => e.ToDto(hashids))];
+        return await documentRepository.List(ct);
     }
 
-    public async Task<DocumentDto> Update(DocumentDto documentDto, CancellationToken ct)
+    public async Task<DocumentSummaryDto> Update(DocumentSummaryDto documentDto, CancellationToken ct)
     {
         var documentId = hashids.Decode(documentDto.HashId).First();
         var document = await documentRepository.GetById(documentId, ct);
@@ -65,7 +68,48 @@ internal sealed class DocumentService(
 
         await unitOfWork.CommitAsync(ct);
         await documentRepository.InvalidateCache();
+        return document.ToSummaryDto(hashids);
+    }
 
-        return document.ToDto(hashids);
+    public async Task<DocumentFragmentDto> CreateFragment(DocumentFragmentDto fragmentDto, CancellationToken ct)
+    {
+        int documentId = hashids.Decode(fragmentDto.DocumentHashId).First();
+        var document = await documentRepository.GetById(documentId, ct);
+        if (document == null)
+            throw new NotFoundException("Documento não encontrado");
+
+        DocumentFragment fragment = new()
+        {
+            Id = 0,
+            Content = fragmentDto.GetContent(),
+            Order = fragmentDto.Order,
+            Type = fragmentDto.Type,
+            Document = document
+        };
+
+        await fragmentRepository.Add(fragment, ct);
+        await unitOfWork.CommitAsync(ct);
+        return fragment.ToDto(hashids);
+    }
+
+    public async Task UpdateFragment(DocumentFragmentDto fragmentDto, CancellationToken ct)
+    {
+        int fragmentId = hashids.Decode(fragmentDto.HashId).First();
+        if ((await fragmentRepository.GetLocked(fragmentId))?.UserId != userContext.UserId)
+            throw new ConflictException("Usuário não está com posse do fragmento");
+
+        int rowsAffected = await fragmentRepository.ExecuteUpdateContent(fragmentId, fragmentDto.GetContent(), ct);
+        if (rowsAffected == 0)
+            throw new NotFoundException("Fragmento não encontrado");
+    }
+
+    public async Task DeleteFragment(string fragmentHashId, CancellationToken ct)
+    {
+        int fragmentId = hashids.Decode(fragmentHashId).First();
+
+        if ((await fragmentRepository.GetLocked(fragmentId)) != null)
+            throw new ConflictException("Fragmento em uso não pode ser excluído");
+
+        await fragmentRepository.ExecuteDelete([fragmentId], ct);
     }
 }

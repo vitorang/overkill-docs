@@ -1,6 +1,5 @@
 using OverkillDocs.Infrastructure.Interfaces;
 using StackExchange.Redis;
-using System.Text.Json;
 
 namespace OverkillDocs.Infrastructure.Cache.Redis;
 
@@ -8,14 +7,10 @@ internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : Object
 {
     private readonly IDatabase database = redis.GetDatabase();
     private readonly SemaphoreSlim semaphore = new(1, 1);
-    private static readonly JsonSerializerOptions jsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
 
-    public Task<T?> Get(int id, Func<Task<T?>>? onCacheMiss = null) => Get(id.ToString(), onCacheMiss);
+    public Task<T?> Get(int id, Func<Task<T?>>? onCacheMiss) => Get(id.ToString(), onCacheMiss);
 
-    public async Task<T?> Get(string id, Func<Task<T?>>? onCacheMiss = null)
+    public async Task<T?> Get(string id, Func<Task<T?>>? onCacheMiss)
     {
         var key = KeyFrom(id);
         var stringGet = database.StringGetAsync(key);
@@ -26,7 +21,7 @@ internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : Object
         var result = await stringGet;
 
         if (result.HasValue)
-            value = ToEntity(result);
+            value = JsonToEntity(result);
         else if (onCacheMiss != null)
         {
             await semaphore.WaitAsync();
@@ -34,12 +29,12 @@ internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : Object
             {
                 result = await database.StringGetAsync(key);
                 if (result.HasValue)
-                    value = ToEntity(result);
+                    value = JsonToEntity(result);
                 else
                 {
                     value = await onCacheMiss();
                     if (value != null)
-                        await database.StringSetAsync(key, ToJsonString(value!), expirationTime);
+                        await database.StringSetAsync(key, EntityToJson(value!), expirationTime);
                 }
             }
             finally
@@ -51,10 +46,29 @@ internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : Object
         return value;
     }
 
-    public async Task Remove(T value)
+    public async Task Remove(T value, bool ifEquals)
     {
         var key = KeyOf(value);
-        await database.KeyDeleteAsync(key);
+
+        if (ifEquals)
+        {
+            string luaScript = @"
+                if redis.call('get', KEYS[1]) == ARGV[1] then
+                    return redis.call('del', KEYS[1])
+                else
+                    return 0
+                end";
+
+            await database.ScriptEvaluateAsync(
+                luaScript,
+                keys: [(RedisKey)key],
+                values: [(RedisValue)EntityToJson(value)]
+            );
+        }
+        else
+        {
+            await database.KeyDeleteAsync(key);
+        }
     }
 
     public async Task RemoveById(string id)
@@ -66,19 +80,7 @@ internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : Object
     public async Task Set(T value)
     {
         var key = KeyOf(value);
-        await database.StringSetAsync(key, ToJsonString(value), expirationTime);
-    }
-
-    private static string ToJsonString(T value)
-    {
-        return JsonSerializer.Serialize(value, jsonOptions);
-    }
-
-    private static T? ToEntity(string? json)
-    {
-        if (string.IsNullOrEmpty(json))
-            return default;
-        return JsonSerializer.Deserialize<T>(json, jsonOptions);
+        await database.StringSetAsync(key, EntityToJson(value), expirationTime);
     }
 
     public async Task RemoveAll(IEnumerable<T> values)
@@ -90,5 +92,28 @@ internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : Object
 
         batch.Execute();
         await Task.WhenAll(tasks);
+    }
+
+    public async Task<bool> CreateOrRenew(T value)
+    {
+        var key = KeyOf(value);
+        var jsonValue = EntityToJson(value);
+
+        string luaScript = @"
+        local currentValue = redis.call('get', KEYS[1])
+        if not currentValue or currentValue == ARGV[1] then
+            redis.call('set', KEYS[1], ARGV[1], 'EX', ARGV[2])
+            return 1
+        else
+            return 0
+        end";
+
+        var result = await database.ScriptEvaluateAsync(
+            luaScript,
+            keys: [(RedisKey)key],
+            values: [(RedisValue)jsonValue, (int)expirationTime.TotalSeconds]
+        );
+
+        return (int)result == 1;
     }
 }

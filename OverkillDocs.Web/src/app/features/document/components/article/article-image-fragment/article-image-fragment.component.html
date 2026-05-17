@@ -1,1 +1,7 @@
-<img [src]="value().url" [alt]="value().alt" />
+@if (fragment().url) {
+    <img [src]="fragment().url" [alt]="fragment().alt" />
+} @else {
+    <mat-card>
+        <mat-card-content>Imagem com registro incompleto</mat-card-content>
+    </mat-card>
+}

@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Caching.Memory;
 using OverkillDocs.Infrastructure.Interfaces;
-using System.Text.Json;
 
 namespace OverkillDocs.Infrastructure.Cache.Memory;
 
@@ -8,14 +7,14 @@ internal sealed class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>,
 {
     private readonly MemoryCacheEntryOptions options = new() { SlidingExpiration = expirationTime, };
 
-    public async Task<T?> Get(string id, Func<Task<T?>>? onCacheMiss = null)
+    public async Task<T?> Get(string id, Func<Task<T?>>? onCacheMiss)
     {
         var key = KeyFrom(id);
         T? value = default;
 
         var strValue = cache.Get<string?>(key);
         if (!string.IsNullOrEmpty(strValue))
-            value = JsonSerializer.Deserialize<T?>(strValue);
+            value = JsonToEntity(strValue);
 
         if (value == null && onCacheMiss != null)
         {
@@ -27,21 +26,24 @@ internal sealed class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>,
         return value;
     }
 
-    public Task<T?> Get(int id, Func<Task<T?>>? onCacheMiss = null) => Get(id.ToString(), onCacheMiss);
+    public Task<T?> Get(int id, Func<Task<T?>>? onCacheMiss) => Get(id.ToString(), onCacheMiss);
 
     public Task Set(T value)
     {
         var key = KeyOf(value);
-        var json = JsonSerializer.Serialize(value);
+        var json = EntityToJson(value);
 
         cache.Set(key, json, options);
         return Task.CompletedTask;
     }
 
-    public Task Remove(T value)
+    public Task Remove(T value, bool ifEquals)
     {
         var key = KeyOf(value);
-        cache.Remove(key);
+
+        if (!ifEquals || EntityToJson(value) == cache.Get<string?>(key))
+            cache.Remove(key);
+
         return Task.CompletedTask;
     }
 
@@ -57,5 +59,20 @@ internal sealed class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>,
         foreach (var value in values)
             cache.Remove(KeyOf(value));
         return Task.CompletedTask;
+    }
+
+    public async Task<bool> CreateOrRenew(T value)
+    {
+        var key = KeyOf(value);
+        var oldValue = cache.Get<string?>(key);
+        var newValue = EntityToJson(value);
+
+        if (oldValue == null || oldValue == newValue)
+        {
+            await Set(value);
+            return true;
+        }
+
+        return false;
     }
 }

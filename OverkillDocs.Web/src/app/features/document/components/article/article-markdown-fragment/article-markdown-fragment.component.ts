@@ -1,8 +1,8 @@
 import { Component, input, computed, inject } from '@angular/core';
-import { DocumentFragmentModel } from '@features/document/models/document.model';
 import MarkdownIt from 'markdown-it';
 import DOMPurify from 'dompurify';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ArticleMarkdownFragment } from '@features/document/models/article.models';
 
 @Component({
     selector: 'okd-article-markdown-fragment',
@@ -11,7 +11,7 @@ import { DomSanitizer } from '@angular/platform-browser';
     styleUrl: './article-markdown-fragment.component.scss',
 })
 export class ArticleMarkdownFragmentComponent {
-    fragment = input.required<DocumentFragmentModel>();
+    fragment = input.required<ArticleMarkdownFragment>();
 
     private sanitizer = inject(DomSanitizer);
 
@@ -45,7 +45,7 @@ export class ArticleMarkdownFragmentComponent {
     })();
 
     protected htmlContent = computed(() => {
-        let html = this.markdownIt.render(this.fragment().value);
+        let html = this.markdownIt.render(this.fragment().text);
 
         html = DOMPurify.sanitize(html, {
             ADD_ATTR: ['target'],

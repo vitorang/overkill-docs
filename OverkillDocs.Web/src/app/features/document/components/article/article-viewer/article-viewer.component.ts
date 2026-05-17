@@ -3,7 +3,7 @@ import { SHARED } from '@shared/index';
 import { ArticleMarkdownFragmentComponent } from '../article-markdown-fragment/article-markdown-fragment.component';
 import { ArticleImageFragmentComponent } from '../article-image-fragment/article-image-fragment.component';
 import { ArticleEmbedFragmentComponent } from '../article-embed-fragment/article-embed-fragment.component';
-import { DocumentFragmentType } from '@features/document/models/document.model';
+import { DocumentFragmentType } from '@features/document/models/document.models';
 import { DocumentViewerService } from '@features/document/services/document-viewer.service';
 import { ArticleAddFragmentComponent } from '../article-add-fragment/article-add-fragment.component';
 

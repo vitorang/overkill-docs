@@ -1,4 +1,3 @@
-using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Core.Enums;
 
 namespace OverkillDocs.Core.Entities.Document;
@@ -15,7 +14,4 @@ public sealed class DocumentFragment
 
     public int DocumentId { get; set; }
     public required Document Document { get; set; }
-
-    public int EditedById { get; set; }
-    public required User EditedBy { get; set; }
 }

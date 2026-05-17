@@ -1,20 +1,21 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { DocumentFragmentModel } from '@features/document/models/document.model';
+import { ArticleEmbedFragment } from '@features/document/models/article.models';
+import { SHARED } from '@shared/index';
 
 @Component({
     selector: 'okd-article-embed-fragment',
-    imports: [],
+    imports: [SHARED],
     templateUrl: './article-embed-fragment.component.html',
     styleUrl: './article-embed-fragment.component.scss',
 })
 export class ArticleEmbedFragmentComponent {
-    fragment = input.required<DocumentFragmentModel>();
+    fragment = input.required<ArticleEmbedFragment>();
 
     private sanitizer = inject(DomSanitizer);
-    isVertical = computed(() => this.isVerticalContent(this.fragment().value));
-    url = computed((): SafeResourceUrl | null => {
-        const url = this.embedUrlFrom(this.fragment().value);
+    protected isVertical = computed(() => this.isVerticalContent(this.fragment().url));
+    protected url = computed((): SafeResourceUrl | null => {
+        const url = this.embedUrlFrom(this.fragment().url);
         if (url === null) return null;
         return this.sanitizer.bypassSecurityTrustResourceUrl(url);
     });
