@@ -8,7 +8,8 @@ namespace OverkillDocs.Api.Hubs;
 public partial class MainHub(
     UserContext userContext,
     IHashids hashids,
-    IChatService chatService
+    IChatService chatService,
+    IDocumentService documentService
 ) : Hub
 {
     public override async Task OnDisconnectedAsync(Exception? exception)

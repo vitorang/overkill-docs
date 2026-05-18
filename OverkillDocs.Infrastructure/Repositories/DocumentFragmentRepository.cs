@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using OverkillDocs.Core.DTOs.Document;
 using OverkillDocs.Core.Entities.Document;
 using OverkillDocs.Core.Interfaces.Repositories;
+using OverkillDocs.Infrastructure.CachedResults;
 using OverkillDocs.Infrastructure.Data;
 using OverkillDocs.Infrastructure.Interfaces;
 
@@ -8,7 +10,8 @@ namespace OverkillDocs.Infrastructure.Repositories;
 
 internal sealed class DocumentFragmentRepository(
     AppDbContext context,
-    IObjectCache<DocumentFragmentLock> lockRepository
+    IObjectCache<DocumentFragmentLockDto> lockCache,
+    IObjectCache<DocumentFragmentIdsResult> fragmentIdsCache
     ) : IDocumentFragmentRepository
 {
     public async Task Add(DocumentFragment fragment, CancellationToken ct)
@@ -39,18 +42,32 @@ internal sealed class DocumentFragmentRepository(
             .FirstOrDefaultAsync(ct);
     }
 
-    public async Task<DocumentFragmentLock?> GetLocked(int fragmentId)
+    public async Task<DocumentFragmentLockDto?> GetLock(int fragmentId)
     {
-        return await lockRepository.Get(fragmentId);
+        return await lockCache.Get(fragmentId);
     }
 
-    public async Task<bool> Lock(DocumentFragmentLock fragmentLock)
+    public async Task<bool> Lock(DocumentFragmentLockDto fragmentLock)
     {
-        return await lockRepository.CreateOrRenew(fragmentLock);
+        return await lockCache.CreateOrRenew(fragmentLock);
     }
 
-    public async Task Unlock(DocumentFragmentLock fragmentLock)
+    public async Task Unlock(DocumentFragmentLockDto fragmentLock)
     {
-        await lockRepository.Remove(fragmentLock, ifEquals: true);
+        await lockCache.Remove(fragmentLock, ifEquals: true);
+    }
+
+    public async Task<DocumentFragmentLockDto[]> GetActiveLocksFromDocument(int documentId, CancellationToken ct)
+    {
+        async Task<DocumentFragmentIdsResult> onCacheMiss()
+        {
+            return new DocumentFragmentIdsResult(
+                DocumentId: documentId,
+                FragmentIds: await context.DocumentFragments.Select(e => e.Id).ToArrayAsync(ct)
+            );
+        }
+
+        var fragmentResult = await fragmentIdsCache.Get(documentId, onCacheMiss!);
+        return await lockCache.GetAll(fragmentResult!.FragmentIds);
     }
 }

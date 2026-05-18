@@ -7,6 +7,7 @@ internal sealed class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>,
 {
     private readonly MemoryCacheEntryOptions options = new() { SlidingExpiration = expirationTime, };
 
+    public Task<T?> Get(int id, Func<Task<T?>>? onCacheMiss) => Get(id.ToString(), onCacheMiss);
     public async Task<T?> Get(string id, Func<Task<T?>>? onCacheMiss)
     {
         var key = KeyFrom(id);
@@ -26,7 +27,15 @@ internal sealed class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>,
         return value;
     }
 
-    public Task<T?> Get(int id, Func<Task<T?>>? onCacheMiss) => Get(id.ToString(), onCacheMiss);
+    public Task<T[]> GetAll(int[] ids) => GetAll([.. ids.Select(e => e.ToString())]);
+
+    public async Task<T[]> GetAll(string[] ids)
+    {
+        var tasks = ids.Select(id => Get(id, onCacheMiss: null));
+        var results = await Task.WhenAll(tasks);
+
+        return [.. results.Where(e => e != null)!];
+    }
 
     public Task Set(T value)
     {
@@ -46,6 +55,8 @@ internal sealed class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>,
 
         return Task.CompletedTask;
     }
+
+    public Task RemoveById(int id) => RemoveById(id.ToString());
 
     public Task RemoveById(string id)
     {

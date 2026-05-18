@@ -28,7 +28,7 @@ internal sealed class DocumentService(
 
         await documentRepository.Add(document, ct);
         await unitOfWork.CommitAsync(ct);
-        await documentRepository.InvalidateCache();
+        await documentRepository.InvalidateCache(document.Id);
 
         return document.ToSummaryDto(hashids);
     }
@@ -37,7 +37,7 @@ internal sealed class DocumentService(
     {
         var documentId = hashids.Decode(hashId).First();
         await documentRepository.ExecuteDelete(documentId, ct);
-        await documentRepository.InvalidateCache();
+        await documentRepository.InvalidateCache(documentId);
     }
 
     public async Task<DocumentDetailDto> Get(string hashId, CancellationToken ct)
@@ -67,7 +67,7 @@ internal sealed class DocumentService(
         document.UpdatedAt = DateTime.UtcNow;
 
         await unitOfWork.CommitAsync(ct);
-        await documentRepository.InvalidateCache();
+        await documentRepository.InvalidateCache(document.Id);
         return document.ToSummaryDto(hashids);
     }
 
@@ -94,8 +94,9 @@ internal sealed class DocumentService(
 
     public async Task UpdateFragment(DocumentFragmentDto fragmentDto, CancellationToken ct)
     {
+        string userHashId = hashids.Encode(userContext.UserId);
         int fragmentId = hashids.Decode(fragmentDto.HashId).First();
-        if ((await fragmentRepository.GetLocked(fragmentId))?.UserId != userContext.UserId)
+        if ((await fragmentRepository.GetLock(fragmentId))?.UserHashId != userHashId)
             throw new ConflictException("Usuário não está com posse do fragmento");
 
         int rowsAffected = await fragmentRepository.ExecuteUpdateContent(fragmentId, fragmentDto.GetContent(), ct);
@@ -107,9 +108,49 @@ internal sealed class DocumentService(
     {
         int fragmentId = hashids.Decode(fragmentHashId).First();
 
-        if ((await fragmentRepository.GetLocked(fragmentId)) != null)
+        if ((await fragmentRepository.GetLock(fragmentId)) != null)
             throw new ConflictException("Fragmento em uso não pode ser excluído");
 
         await fragmentRepository.ExecuteDelete([fragmentId], ct);
+    }
+
+    public async Task<string> GetDocumentHashIdByFragmentHashId(string fragmentHashId, CancellationToken ct)
+    {
+        int fragmentId = hashids.Decode(fragmentHashId).First();
+        int? documentId = await documentRepository.GetDocumentIdByFragmentId(fragmentId, ct);
+
+        if (documentId == null)
+            throw new NotFoundException("Documento não encontrado");
+
+        return hashids.Encode((int)documentId);
+    }
+
+    public async Task LockFragment(string fragmentHashId, CancellationToken ct)
+    {
+        DocumentFragmentLockDto fragmentLock = new(
+            FragmentHashId: fragmentHashId,
+            UserHashId: hashids.Encode(userContext.UserId)
+        );
+
+        var isLocked = await fragmentRepository.Lock(fragmentLock);
+
+        if (!isLocked)
+            throw new ConflictException("Fragmento está em uso por outro usuário");
+    }
+
+    public async Task UnlockFragment(string fragmentHashId, CancellationToken ct)
+    {
+        DocumentFragmentLockDto fragmentLock = new(
+            FragmentHashId: fragmentHashId,
+            UserHashId: hashids.Encode(userContext.UserId)
+        );
+
+        await fragmentRepository.Unlock(fragmentLock);
+    }
+
+    public async Task<DocumentFragmentLockDto[]> GetActiveLocks(string documentHashId, CancellationToken ct)
+    {
+        int documentId = hashids.Decode(documentHashId).First();
+        return await fragmentRepository.GetActiveLocksFromDocument(documentId, ct);
     }
 }

@@ -46,6 +46,18 @@ internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : Object
         return value;
     }
 
+    public Task<T[]> GetAll(int[] ids) => GetAll([.. ids.Select(e => e.ToString())]);
+
+    public async Task<T[]> GetAll(string[] ids)
+    {
+        RedisKey[] keys = [.. ids.Select(e => (RedisKey)e)];
+        RedisValue[] results = await database.StringGetAsync(keys);
+
+        return [..results
+            .Where(e => !e.IsNullOrEmpty)
+            .Select(e => JsonToEntity(e))!];
+    }
+
     public async Task Remove(T value, bool ifEquals)
     {
         var key = KeyOf(value);
@@ -70,6 +82,8 @@ internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : Object
             await database.KeyDeleteAsync(key);
         }
     }
+
+    public Task RemoveById(int id) => RemoveById(id.ToString());
 
     public async Task RemoveById(string id)
     {

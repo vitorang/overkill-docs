@@ -25,31 +25,35 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
     public async Task<ActionResult<SimpleUserDto>> Create([FromBody] DocumentSummaryDto document, CancellationToken ct)
     {
         var result = await documentService.Create(document, ct);
-        await NotifyDocumentIndexChanged(ct);
+        await NotifyDocumentChanged(document.HashId, ct);
         return Ok(result);
     }
 
     [HttpPut]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<SimpleUserDto>> Update([FromBody] DocumentSummaryDto document, CancellationToken ct)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult> Update([FromBody] DocumentSummaryDto document, CancellationToken ct)
     {
         await documentService.Update(document, ct);
-        await NotifyDocumentIndexChanged(ct);
+        await NotifyDocumentChanged(document.HashId, ct);
         return NoContent();
     }
 
     [HttpDelete("{hashId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult<SimpleUserDto>> Delete(string hashId, CancellationToken ct)
+    public async Task<ActionResult> Delete(string hashId, CancellationToken ct)
     {
         await documentService.Delete(hashId, ct);
-        await NotifyDocumentIndexChanged(ct);
+        await NotifyDocumentChanged(hashId, ct);
         return NoContent();
     }
 
-    private async Task NotifyDocumentIndexChanged(CancellationToken ct)
+    private async Task NotifyDocumentChanged(string hashId, CancellationToken ct)
     {
         await hubContext.Clients.Group(MainHub.documentIndexGroup)
-            .SendAsync(HubEvents.DocumentIndex.Changed, ct);
+            .SendAsync(HubEvents.DocumentIndex.Changed, hashId, ct);
+
+        var groupName = MainHub.DocumentViewGetGroupName(hashId);
+        await hubContext.Clients.Group(groupName)
+            .SendAsync(HubEvents.DocumentView.DocumentChanged, ct);
     }
 }

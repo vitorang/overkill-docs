@@ -14,4 +14,9 @@ public interface IDocumentService
     Task<DocumentFragmentDto> CreateFragment(DocumentFragmentDto fragmentDto, CancellationToken ct);
     Task UpdateFragment(DocumentFragmentDto fragmentDto, CancellationToken ct);
     Task DeleteFragment(string fragmentHashId, CancellationToken ct);
+    Task<string> GetDocumentHashIdByFragmentHashId(string fragmentHashId, CancellationToken ct);
+
+    Task LockFragment(string fragmentHashId, CancellationToken ct);
+    Task UnlockFragment(string fragmentHashId, CancellationToken ct);
+    Task<DocumentFragmentLockDto[]> GetActiveLocks(string documentHashId, CancellationToken ct);
 }

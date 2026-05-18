@@ -9,5 +9,6 @@ public interface IDocumentRepository
     Task<Document?> GetById(int documentId, CancellationToken ct);
     Task Add(Document document, CancellationToken ct);
     Task ExecuteDelete(int documentId, CancellationToken ct);
-    Task InvalidateCache();
+    Task InvalidateCache(int documentId);
+    Task<int?> GetDocumentIdByFragmentId(int fragmentId, CancellationToken ct);
 }

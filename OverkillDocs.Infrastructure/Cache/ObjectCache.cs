@@ -1,5 +1,5 @@
 using OverkillDocs.Core.Constants;
-using OverkillDocs.Core.Entities.Document;
+using OverkillDocs.Core.DTOs.Document;
 using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Infrastructure.CachedResults;
 using System.Text.Json;
@@ -16,14 +16,14 @@ internal abstract class ObjectCache<T>
 
     protected static readonly TimeSpan expirationTime = typeof(T) switch
     {
-        Type t when t == typeof(DocumentFragmentLock) => CacheConstants.DocumentFragmentLockExpiration,
+        Type t when t == typeof(DocumentFragmentLockDto) => CacheConstants.DocumentFragmentLockExpiration,
         _ => CacheConstants.DefaultObjectExpiration,
     };
 
     protected static string KeyOf(T value) => value switch
     {
-        DocumentFragmentLock v => KeyFrom(v.FragmentId),
-        DocumentListResult => KeyFrom("0"),
+        DocumentFragmentLockDto v => KeyFrom(v.FragmentHashId),
+        DocumentSummariesResult => KeyFrom("0"),
         UserIdentity v => KeyFrom(v.Token),
         User v => KeyFrom(v.Id),
         _ => throw new InvalidOperationException("Tipo não mapeado para criação de chave")

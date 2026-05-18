@@ -11,7 +11,8 @@ namespace OverkillDocs.Infrastructure.Repositories;
 
 internal sealed class DocumentRepository(
     AppDbContext context,
-    IObjectCache<DocumentListResult> documentCache,
+    IObjectCache<DocumentSummariesResult> documentSummaryCache,
+    IObjectCache<DocumentFragmentIdsResult> fragmentIdsCache,
     IDocumentFragmentRepository fragmentRepository,
     IHashids hashids) : IDocumentRepository
 {
@@ -38,7 +39,7 @@ internal sealed class DocumentRepository(
 
     public async Task<DocumentSummaryDto[]> List(CancellationToken ct)
     {
-        async Task<DocumentListResult> fetchFromDb()
+        async Task<DocumentSummariesResult> fetchFromDb()
             => new(await context.Documents
             .Select(e => new DocumentSummaryDto(
                 e.Title,
@@ -47,11 +48,20 @@ internal sealed class DocumentRepository(
             ))
             .ToArrayAsync(ct));
 
-        return (await documentCache.Get(string.Empty, fetchFromDb!))!.Documents;
+        return (await documentSummaryCache.Get(string.Empty, fetchFromDb!))!.Documents;
     }
 
-    public async Task InvalidateCache()
+    public async Task InvalidateCache(int documentId)
     {
-        await documentCache.RemoveById(string.Empty);
+        await documentSummaryCache.RemoveById(string.Empty);
+        await fragmentIdsCache.RemoveById(documentId);
+    }
+
+    public async Task<int?> GetDocumentIdByFragmentId(int fragmentId, CancellationToken ct)
+    {
+        return await context.DocumentFragments
+            .Where(e => e.Id == fragmentId)
+            .Select(e => e.DocumentId)
+            .FirstOrDefaultAsync(ct);
     }
 }
