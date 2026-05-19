@@ -1,9 +1,12 @@
 :host {
-    .messages {
-        height: 100%;
-        padding: 0.5em;
+    .scroll-container {
         scrollbar-gutter: stable;
         overflow-y: auto;
+        height: 100%;
+    }
+
+    .messages {
+        padding: 0.5rem;
 
         .separator {
             height: 1em;

@@ -2,6 +2,13 @@
     display: block;
     position: relative;
 
+    &.expand-height {
+        height: 100%;
+        .child-content {
+            height: 100%;
+        }
+    }
+
     .child-content {
         &.is-locked {
             opacity: 0.4;

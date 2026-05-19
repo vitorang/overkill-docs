@@ -21,7 +21,8 @@ public static class DocumentExtensions
             HashId: hashids.Encode(document.Id),
             Title: document.Title,
             Type: document.Type,
-            Fragments: [.. document.Fragments.Select(e => e.ToDto(hashids)).OrderBy(e => e.Order)]
+            Fragments: [.. document.Fragments.Select(e => e.ToDto(hashids)).OrderBy(e => e.Order)],
+            UpdatedAt: document.UpdatedAt
         );
     }
 }

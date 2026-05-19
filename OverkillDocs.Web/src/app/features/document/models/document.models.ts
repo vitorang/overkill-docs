@@ -26,6 +26,7 @@ export interface DocumentDetail {
     title: string;
     type: DocumentType;
     fragments: (ArticleEmbedFragment | ArticleImageFragment | ArticleMarkdownFragment)[];
+    updatedAt: string;
 }
 
 export interface DocumentFragment {

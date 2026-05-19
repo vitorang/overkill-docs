@@ -18,10 +18,7 @@
 <mat-divider />
 
 @if (documents().length === 0) {
-    <div class="alert-empty">
-        <div><mat-icon class="icon">sentiment_frustrated</mat-icon></div>
-        <p>Está vazio, sem documentos</p>
-    </div>
+    <okd-info-box icon="sentiment_frustrated">Sem documentos</okd-info-box>
 } @else {
     <div class="list">
         <mat-action-list>

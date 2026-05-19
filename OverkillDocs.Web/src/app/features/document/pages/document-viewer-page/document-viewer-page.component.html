@@ -1,5 +1,9 @@
-@switch (document().type) {
-    @case (DocumentType.Article) {
-        <okd-article-viewer />
-    }
-}
+<okd-request-overlay [requestHandler]="documentHandler" [expandHeight]="true">
+    <div class="document-wrapper">
+        @switch (document().type) {
+            @case (DocumentType.Article) {
+                <okd-article-viewer />
+            }
+        }
+    </div>
+</okd-request-overlay>

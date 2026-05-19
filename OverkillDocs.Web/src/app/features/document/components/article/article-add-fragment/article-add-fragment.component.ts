@@ -9,5 +9,6 @@ import { SHARED } from '@shared/index';
     styleUrl: './article-add-fragment.component.scss',
 })
 export class ArticleAddFragmentComponent {
+    fragments = input.required<DocumentFragment[]>();
     insertAfter = input.required<DocumentFragment | null>();
 }

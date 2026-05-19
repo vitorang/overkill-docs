@@ -7,10 +7,11 @@ import { DocumentSummary } from '@features/document/models/document.models';
 import { DocumentIndexService } from '@features/document/services/document-index.service';
 import { SHARED } from '@shared/index';
 import { Router } from '@angular/router';
+import { InfoBoxComponent } from '@shared/components/info-box/info-box.component';
 
 @Component({
     selector: 'okd-document-index',
-    imports: [SHARED],
+    imports: [SHARED, InfoBoxComponent],
     templateUrl: './document-index.component.html',
     styleUrl: './document-index.component.scss',
     providers: [DocumentIndexService],

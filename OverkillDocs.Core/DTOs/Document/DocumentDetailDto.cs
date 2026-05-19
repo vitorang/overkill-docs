@@ -9,5 +9,6 @@ public sealed record DocumentDetailDto(
     string Title,
     string HashId,
     DocumentType Type,
-    DocumentFragmentDto[] Fragments
+    DocumentFragmentDto[] Fragments,
+    DateTime UpdatedAt
 );

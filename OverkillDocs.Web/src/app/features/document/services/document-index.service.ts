@@ -46,11 +46,11 @@ export class DocumentIndexService {
             });
     }
 
-    private onDocumentsReceived(value: DocumentSummary[]) {
-        value.sort((a, b) =>
+    private onDocumentsReceived(documents: DocumentSummary[]) {
+        documents.sort((a, b) =>
             a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' }),
         );
-        this.documents.set(value);
+        this.documents.set(documents);
     }
 
     private list(): Observable<DocumentSummary[]> {

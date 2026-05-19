@@ -7,10 +7,15 @@ import { SHARED } from '@shared/index';
     imports: [SHARED],
     templateUrl: './request-overlay.component.html',
     styleUrl: './request-overlay.component.scss',
+    host: {
+        '[class.expand-height]': 'expandHeight()',
+    },
 })
 export class RequestOverlayComponent {
     requestHandler = input.required<ApiHandler>();
+    expandHeight = input(false);
     retry = output();
+
     protected locked = computed(
         () => this.requestHandler().loading() || this.requestHandler().error(),
     );

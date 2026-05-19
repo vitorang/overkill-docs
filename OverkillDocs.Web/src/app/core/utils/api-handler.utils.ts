@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpErrorResponse } from '@angular/common/http';
 import { computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -7,6 +8,11 @@ type RequestState = 'IDLE' | 'LOADING' | 'ERROR';
 
 export class ApiHandler {
     private state = signal<RequestState>('IDLE');
+    private nextRequest: {
+        observable: Observable<unknown>;
+        onSuccess?: (result: any) => void;
+        onError?: (error: HttpErrorResponse) => void;
+    } | null = null;
 
     readonly idle = computed(() => this.state() === 'IDLE');
     readonly loading = computed(() => this.state() === 'LOADING');
@@ -19,7 +25,14 @@ export class ApiHandler {
         onSuccess?: (result: T) => void,
         onError?: (error: HttpErrorResponse) => void,
     ): void {
-        if (this.state() === 'LOADING') throw 'Outra requisição está em execução.';
+        if (this.state() === 'LOADING') {
+            this.nextRequest = {
+                observable,
+                onSuccess,
+                onError,
+            };
+            return;
+        }
 
         const next = (result: T) => {
             this.state.set('IDLE');
@@ -37,9 +50,18 @@ export class ApiHandler {
                 takeUntilDestroyed(this.destroyRef),
                 finalize(() => {
                     if (this.state() === 'LOADING') this.state.set('IDLE');
+                    this.executeNextRequest();
                 }),
             )
             .subscribe({ next, error });
+    }
+
+    private executeNextRequest() {
+        if (!this.nextRequest) return;
+
+        const { observable, onSuccess, onError } = this.nextRequest;
+        this.nextRequest = null;
+        this.execute(observable, onSuccess, onError);
     }
 }
 

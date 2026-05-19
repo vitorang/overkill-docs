@@ -1,15 +1,16 @@
 :host {
     display: flex;
     flex-direction: row;
-    line-height: 1.25em;
+    line-height: 1.25rem;
 
     section.avatar {
-        width: calc(2.5em + 8px);
+        width: 2.5rem;
     }
 
     section.message {
         flex: 1;
         min-width: 0;
+        margin-left: 0.5rem;
 
         .name {
             display: block;

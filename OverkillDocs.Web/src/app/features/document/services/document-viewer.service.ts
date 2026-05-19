@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { API } from '@core/constants/api.constants';
 import { apiHandler } from '@core/utils/api-handler.utils';
 import { faker } from '@faker-js/faker';
 import {
@@ -14,27 +14,56 @@ import {
     DocumentDetail,
     DocumentFragmentType,
 } from '@features/document/models/document.models';
-import { map } from 'rxjs';
+import { filter, map, startWith } from 'rxjs';
 
 @Injectable()
 export class DocumentViewerService {
     private http = inject(HttpClient);
-    private route = inject(ActivatedRoute);
-    public documentId = toSignal(this.route.params.pipe(map((p) => p['id'])));
-    protected documentHandler = apiHandler();
+    public documentHandler = apiHandler();
+    private router = inject(Router);
 
-    document = signal<DocumentDetail>({
-        hashId: this.documentId(),
-        title: '',
-        type: DocumentType.Unknown,
-        fragments: [],
-    });
-
-    load(): void {
-        this.mock();
+    constructor() {
+        this.router.events
+            .pipe(
+                filter((event) => event instanceof NavigationEnd),
+                startWith(null),
+                map(() => this.getIdFromRoute()),
+                filter((documentHashId) => !!documentHashId),
+            )
+            .subscribe((documentHashId) => this.load(documentHashId!));
     }
 
-    mock(): void {
+    document = signal<DocumentDetail>(this.emptyDocument);
+
+    private getIdFromRoute(): string | null {
+        let route = this.router.routerState.snapshot.root;
+        while (route.firstChild) {
+            route = route.firstChild;
+        }
+        return route.paramMap.get('documentHashId');
+    }
+
+    private load(documentHashId: string): void {
+        this.document.set(this.emptyDocument);
+        this.documentHandler.execute(
+            this.http.get<DocumentDetail>(API.DOCUMENTS.BY_ID(documentHashId)),
+            (result) => {
+                if (result.updatedAt > this.document().updatedAt) this.document.set(result);
+            },
+        );
+    }
+
+    private get emptyDocument(): DocumentDetail {
+        return {
+            hashId: '',
+            title: '',
+            type: DocumentType.Unknown,
+            fragments: [],
+            updatedAt: '',
+        };
+    }
+
+    private mock(): void {
         this.document.set({
             ...this.document(),
             type: DocumentType.Article,

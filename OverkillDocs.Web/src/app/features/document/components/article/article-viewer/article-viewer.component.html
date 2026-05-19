@@ -20,38 +20,43 @@
 
 <mat-menu #menu="matMenu" xPosition="before">
     <button mat-menu-item>
-        <mat-icon>edit</mat-icon>
         <span>Renomear</span>
     </button>
 
     <button mat-menu-item>
-        <mat-icon color="warn">delete</mat-icon>
         <span>Excluir</span>
     </button>
 </mat-menu>
 
 <div class="main-content">
-    <article class="max-width">
-        @if (editMode()) {
-            <okd-article-add-fragment [insertAfter]="null" />
-        }
-
-        @for (fragment of document().fragments; track fragment.hashId) {
-            @switch (fragment.type) {
-                @case (FragmentType.Markdown) {
-                    <okd-article-markdown-fragment [fragment]="fragment" />
-                }
-                @case (FragmentType.Image) {
-                    <okd-article-image-fragment [fragment]="fragment" />
-                }
-                @case (FragmentType.Embed) {
-                    <okd-article-embed-fragment [fragment]="fragment" />
-                }
-            }
-
+    @if (!editMode() && document().fragments.length === 0) {
+        <okd-info-box icon="edit_document">Está vazio</okd-info-box>
+    } @else {
+        <article class="max-width">
             @if (editMode()) {
-                <okd-article-add-fragment [insertAfter]="null" />
+                <okd-article-add-fragment [insertAfter]="null" [fragments]="document().fragments" />
             }
-        }
-    </article>
+
+            @for (fragment of document().fragments; track fragment.hashId) {
+                @switch (fragment.type) {
+                    @case (FragmentType.Markdown) {
+                        <okd-article-markdown-fragment [fragment]="fragment" />
+                    }
+                    @case (FragmentType.Image) {
+                        <okd-article-image-fragment [fragment]="fragment" />
+                    }
+                    @case (FragmentType.Embed) {
+                        <okd-article-embed-fragment [fragment]="fragment" />
+                    }
+                }
+
+                @if (editMode()) {
+                    <okd-article-add-fragment
+                        [insertAfter]="null"
+                        [fragments]="document().fragments"
+                    />
+                }
+            }
+        </article>
+    }
 </div>

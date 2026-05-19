@@ -6,7 +6,7 @@ export const SEGMENTS = {
     },
     DOCUMENT: {
         ROOT: 'documents',
-        EDITOR: ':id',
+        EDITOR: ':documentHashId',
     },
 } as const;
 

@@ -38,6 +38,14 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
         return NoContent();
     }
 
+    [HttpGet("{hashId}")]
+    [ProducesResponseType(typeof(DocumentDetailDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<DocumentDetailDto>> Get(string hashId, CancellationToken ct)
+    {
+        var document = await documentService.Get(hashId, ct);
+        return Ok(document);
+    }
+
     [HttpDelete("{hashId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Delete(string hashId, CancellationToken ct)
