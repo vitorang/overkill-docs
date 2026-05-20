@@ -34,26 +34,29 @@
     } @else {
         <article class="max-width">
             @if (editMode()) {
-                <okd-article-add-fragment [insertAfter]="null" [fragments]="document().fragments" />
+                <okd-article-add-fragment
+                    (create)="addFragment($event, null)"
+                    [disabled]="isLoading()"
+                />
             }
 
             @for (fragment of document().fragments; track fragment.hashId) {
                 @switch (fragment.type) {
                     @case (FragmentType.Markdown) {
-                        <okd-article-markdown-fragment [fragment]="fragment" />
+                        <okd-article-markdown-fragment [fragment]="asMarkdown(fragment)" />
                     }
                     @case (FragmentType.Image) {
-                        <okd-article-image-fragment [fragment]="fragment" />
+                        <okd-article-image-fragment [fragment]="asImage(fragment)" />
                     }
                     @case (FragmentType.Embed) {
-                        <okd-article-embed-fragment [fragment]="fragment" />
+                        <okd-article-embed-fragment [fragment]="asEmbed(fragment)" />
                     }
                 }
 
                 @if (editMode()) {
                     <okd-article-add-fragment
-                        [insertAfter]="null"
-                        [fragments]="document().fragments"
+                        (create)="addFragment($event, fragment)"
+                        [disabled]="isLoading()"
                     />
                 }
             }

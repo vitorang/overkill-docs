@@ -6,7 +6,7 @@ using OverkillDocs.Core.DTOs.Document.Fragment;
 using OverkillDocs.Core.Interfaces.Services;
 namespace OverkillDocs.Api.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/document-fragments")]
 [ApiController]
 public class DocumentFragmentsController(IDocumentService documentService, IHubContext<MainHub> hubContext) : ControllerBase
 {
@@ -38,7 +38,7 @@ public class DocumentFragmentsController(IDocumentService documentService, IHubC
         return NoContent();
     }
 
-    [HttpPost("fragments/{hashId}/locked")]
+    [HttpPost("{hashId}/lock")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> LockFragment(string hashId, CancellationToken ct)
     {
@@ -48,7 +48,7 @@ public class DocumentFragmentsController(IDocumentService documentService, IHubC
         return NoContent();
     }
 
-    [HttpDelete("fragments/{hashId}/locked")]
+    [HttpDelete("{hashId}/lock")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> UnlockFragment(string hashId, CancellationToken ct)
     {
@@ -60,24 +60,24 @@ public class DocumentFragmentsController(IDocumentService documentService, IHubC
 
     private async Task NotifyDocumentChanged(string documentHashId, CancellationToken ct)
     {
-        var groupName = MainHub.DocumentViewGetGroupName(documentHashId);
+        var groupName = MainHub.DocumentViewerGetGroupName(documentHashId);
         await hubContext.Clients.Group(groupName)
-            .SendAsync(HubEvents.DocumentView.DocumentChanged, ct);
+            .SendAsync(HubEvents.DocumentViewer.DocumentChanged, documentHashId, ct);
     }
 
     private async Task NotifyFragmentChanged(DocumentFragmentDto fragment, CancellationToken ct)
     {
-        var groupName = MainHub.DocumentViewGetGroupName(fragment.DocumentHashId);
+        var groupName = MainHub.DocumentViewerGetGroupName(fragment.DocumentHashId);
         await hubContext.Clients.Group(groupName)
-            .SendAsync(HubEvents.DocumentView.FragmentChanged, fragment, ct);
+            .SendAsync(HubEvents.DocumentViewer.FragmentChanged, fragment, ct);
     }
 
     private async Task NotifyActiveLocksChanged(string documentHashId, CancellationToken ct)
     {
         var activeLocks = await documentService.GetActiveLocks(documentHashId, ct);
 
-        var groupName = MainHub.DocumentViewGetGroupName(documentHashId);
+        var groupName = MainHub.DocumentViewerGetGroupName(documentHashId);
         await hubContext.Clients.Group(groupName)
-            .SendAsync(HubEvents.DocumentView.ActiveLocksChanged, activeLocks, ct);
+            .SendAsync(HubEvents.DocumentViewer.ActiveLocksChanged, activeLocks, ct);
     }
 }

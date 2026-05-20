@@ -1,7 +1,5 @@
-@if (fragment().url) {
-    <img [src]="fragment().url" [alt]="fragment().alt" />
+@if (showPlaceholder()) {
+    <okd-article-placeholder-fragment [type]="fragment().type" />
 } @else {
-    <mat-card>
-        <mat-card-content>Imagem com registro incompleto</mat-card-content>
-    </mat-card>
+    <img [src]="fragment().url" [alt]="fragment().alt" />
 }

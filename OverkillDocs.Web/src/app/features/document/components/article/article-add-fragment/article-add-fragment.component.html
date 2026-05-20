@@ -1,9 +1,11 @@
-<mat-card>
-    <mat-card-content>
-        <div class="button-group">
-            <button mat-button><mat-icon>add</mat-icon> Texto</button>
-            <button mat-button><mat-icon>add</mat-icon> Imagem</button>
-            <button mat-button><mat-icon>add</mat-icon> Incorporar</button>
-        </div>
-    </mat-card-content>
-</mat-card>
+<div class="button-group">
+    <button mat-button (click)="create.emit(Type.Markdown)" [disabled]="disabled()">
+        <mat-icon>add</mat-icon> Texto
+    </button>
+    <button mat-button (click)="create.emit(Type.Image)" [disabled]="disabled()">
+        <mat-icon>add</mat-icon> Imagem
+    </button>
+    <button mat-button (click)="create.emit(Type.Embed)" [disabled]="disabled()">
+        <mat-icon>add</mat-icon> Incorporar
+    </button>
+</div>

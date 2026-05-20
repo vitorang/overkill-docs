@@ -1,5 +1,5 @@
-import { Component, input } from '@angular/core';
-import { DocumentFragment } from '@features/document/models/document.models';
+import { Component, input, output } from '@angular/core';
+import { DocumentFragmentType } from '@features/document/models/document.models';
 import { SHARED } from '@shared/index';
 
 @Component({
@@ -9,6 +9,8 @@ import { SHARED } from '@shared/index';
     styleUrl: './article-add-fragment.component.scss',
 })
 export class ArticleAddFragmentComponent {
-    fragments = input.required<DocumentFragment[]>();
-    insertAfter = input.required<DocumentFragment | null>();
+    disabled = input.required<boolean>();
+    create = output<DocumentFragmentType>();
+
+    protected Type = DocumentFragmentType;
 }

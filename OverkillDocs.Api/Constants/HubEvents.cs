@@ -15,10 +15,10 @@ public static class HubEvents
         public const string Changed = $"{MainHub.documentIndexGroup}:OnChanged";
     }
 
-    public static class DocumentView
+    public static class DocumentViewer
     {
-        public const string ActiveLocksChanged = $"{MainHub.documentViewGroup}:OnActiveLocksChanged";
-        public const string DocumentChanged = $"{MainHub.documentViewGroup}:OnDocumentChanged";
-        public const string FragmentChanged = $"{MainHub.documentViewGroup}:OnFragmentChanged";
+        public const string ActiveLocksChanged = $"{MainHub.documentViewerGroup}:OnActiveLocksChanged";
+        public const string DocumentChanged = $"{MainHub.documentViewerGroup}:OnDocumentChanged";
+        public const string FragmentChanged = $"{MainHub.documentViewerGroup}:OnFragmentChanged";
     }
 }

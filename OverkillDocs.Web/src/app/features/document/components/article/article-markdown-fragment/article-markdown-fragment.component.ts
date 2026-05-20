@@ -3,10 +3,11 @@ import MarkdownIt from 'markdown-it';
 import DOMPurify from 'dompurify';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ArticleMarkdownFragment } from '@features/document/models/article.models';
+import { ArticlePlaceholderFragmentComponent } from '../article-placeholder-fragment/article-placeholder-fragment.component';
 
 @Component({
     selector: 'okd-article-markdown-fragment',
-    imports: [],
+    imports: [ArticlePlaceholderFragmentComponent],
     templateUrl: './article-markdown-fragment.component.html',
     styleUrl: './article-markdown-fragment.component.scss',
 })
@@ -43,6 +44,8 @@ export class ArticleMarkdownFragmentComponent {
 
         return instance;
     })();
+
+    protected showPlaceholder = computed(() => !this.fragment().text.trim());
 
     protected htmlContent = computed(() => {
         let html = this.markdownIt.render(this.fragment().text);

@@ -12,7 +12,20 @@ export const DOCUMENT_ROUTES: Routes = [
         component: DocumentLayoutComponent,
         children: [
             { path: '', component: DocumentIntroPageComponent },
-            { path: S.EDITOR, component: DocumentViewerPageComponent },
+            {
+                path: S.EDITOR,
+                component: DocumentViewerPageComponent,
+                canDeactivate: [
+                    async (component: DocumentViewerPageComponent): Promise<boolean> => {
+                        try {
+                            await component.leaveViewerHub();
+                        } catch (e) {
+                            console.error(e);
+                        }
+                        return true;
+                    },
+                ],
+            },
         ],
     },
 ];

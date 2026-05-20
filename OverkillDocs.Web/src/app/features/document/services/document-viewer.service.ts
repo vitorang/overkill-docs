@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { API } from '@core/constants/api.constants';
 import { apiHandler } from '@core/utils/api-handler.utils';
-import { faker } from '@faker-js/faker';
+import { DocumentViewerHub } from '@features/document/hubs/document-viewer.hub';
 import {
     ArticleEmbedFragment,
     ArticleImageFragment,
@@ -13,42 +13,64 @@ import {
     DocumentType,
     DocumentDetail,
     DocumentFragmentType,
+    DocumentFragment,
+    typedFragment,
 } from '@features/document/models/document.models';
-import { filter, map, startWith } from 'rxjs';
+import { filter, merge, Observable } from 'rxjs';
 
 @Injectable()
 export class DocumentViewerService {
+    private viewerHub = inject(DocumentViewerHub);
     private http = inject(HttpClient);
-    public documentHandler = apiHandler();
-    private router = inject(Router);
+    private documentHashId = '';
+    private connected = toObservable(this.viewerHub.state.connected);
+    private initialized = false;
+    private destroyRef = inject(DestroyRef);
 
-    constructor() {
-        this.router.events
-            .pipe(
-                filter((event) => event instanceof NavigationEnd),
-                startWith(null),
-                map(() => this.getIdFromRoute()),
-                filter((documentHashId) => !!documentHashId),
-            )
-            .subscribe((documentHashId) => this.load(documentHashId!));
-    }
-
+    documentHandler = apiHandler();
     document = signal<DocumentDetail>(this.emptyDocument);
 
-    private getIdFromRoute(): string | null {
-        let route = this.router.routerState.snapshot.root;
-        while (route.firstChild) {
-            route = route.firstChild;
+    initialize(documentHashId: string): void {
+        if (this.initialized) {
+            throw 'Serviço já foi inicializado';
         }
-        return route.paramMap.get('documentHashId');
+        this.initialized = true;
+        this.documentHashId = documentHashId;
+
+        merge(this.viewerHub.onJoinRequested, this.viewerHub.onDocumentChanged)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => this.load());
+
+        this.viewerHub.onFragmentChanged
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((fragment) => {
+                const document = this.document();
+                const index = document.fragments.findIndex((e) => e.hashId === fragment.hashId);
+                if (index !== -1) {
+                    document.fragments[index] = fragment;
+                    this.document.set(document);
+                }
+            });
+
+        this.connected
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                filter((connected) => connected),
+            )
+            .subscribe(() => this.viewerHub.join(this.documentHashId));
     }
 
-    private load(documentHashId: string): void {
-        this.document.set(this.emptyDocument);
+    private load(): void {
+        if (!this.documentHashId) {
+            return;
+        }
+
         this.documentHandler.execute(
-            this.http.get<DocumentDetail>(API.DOCUMENTS.BY_ID(documentHashId)),
+            this.http.get<DocumentDetail>(API.DOCUMENTS.BY_ID(this.documentHashId)),
             (result) => {
-                if (result.updatedAt > this.document().updatedAt) this.document.set(result);
+                if (result.updatedAt > this.document().updatedAt) {
+                    this.document.set(result);
+                }
             },
         );
     }
@@ -63,54 +85,75 @@ export class DocumentViewerService {
         };
     }
 
-    private mock(): void {
-        this.document.set({
-            ...this.document(),
-            type: DocumentType.Article,
-            title: faker.lorem.sentence(),
-            fragments: [
-                {
-                    hashId: faker.string.ulid(),
-                    order: 1,
-                    type: DocumentFragmentType.Markdown,
-                    text: [
-                        `# ${faker.lorem.sentence(10)}`,
-                        faker.lorem.paragraphs(),
-                        '- A',
-                        '- B',
-                        '\nMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM',
-                        '\n[Google](https://www.google.com)',
-                        '\n<big>Textão!</big>',
-                        '![Descrição da Imagem](https://upload.wikimedia.org/wikipedia/commons/d/dd/Paullinia_cupana_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-234.jpg)',
-                    ].join('\n'),
-                } as ArticleMarkdownFragment,
-                {
-                    hashId: faker.string.ulid(),
-                    order: 2,
-                    type: DocumentFragmentType.Embed,
-                    url: 'https://www.youtube.com/watch?v=Y7fUHwLtjJ8',
-                } as ArticleEmbedFragment,
+    private createFragment(
+        type: DocumentFragmentType,
+        order: number,
+    ): Observable<DocumentFragment> {
+        let fragment: DocumentFragment = {
+            hashId: '',
+            documentHashId: this.documentHashId!,
+            type,
+            order,
+        };
 
-                {
-                    hashId: faker.string.ulid(),
-                    order: 3,
-                    type: DocumentFragmentType.Embed,
-                    url: 'https://youtu.be/7lIRGyhpEuU?si=PsBj2ST8yL7Q58jN',
-                } as ArticleEmbedFragment,
-                {
-                    hashId: faker.string.ulid(),
-                    order: 4,
-                    type: DocumentFragmentType.Embed,
-                    url: 'https://www.youtube.com/shorts/qBBlfT86GUk',
-                } as ArticleEmbedFragment,
-                {
-                    hashId: faker.string.ulid(),
-                    order: 4,
-                    type: DocumentFragmentType.Image,
-                    url: 'https://upload.wikimedia.org/wikipedia/commons/d/dd/Paullinia_cupana_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-234.jpg',
-                    alt: 'Descrição anatômica de Paullinia cupana',
-                } as ArticleImageFragment,
-            ],
-        });
+        if (type === DocumentFragmentType.Markdown) {
+            const markdown: ArticleMarkdownFragment = {
+                ...fragment,
+                type,
+                text: '',
+            };
+
+            fragment = markdown;
+        }
+
+        if (type === DocumentFragmentType.Image) {
+            const image: ArticleImageFragment = {
+                ...fragment,
+                type,
+                alt: '',
+                url: '',
+            };
+
+            fragment = image;
+        }
+
+        if (type === DocumentFragmentType.Embed) {
+            const embed: ArticleEmbedFragment = {
+                ...fragment,
+                type,
+                url: '',
+            };
+
+            fragment = embed;
+        }
+
+        return this.http.post<DocumentFragment>(
+            API.DOCUMENT_FRAGMENTS.INDEX,
+            typedFragment(fragment),
+        );
+    }
+
+    addFragment(
+        type: DocumentFragmentType,
+        after: DocumentFragment | null,
+    ): Observable<DocumentFragment> {
+        const fragments = this.document()
+            .fragments.map((e) => ({ hashId: e.hashId, order: e.order }))
+            .sort((a, b) => a.order - b.order);
+
+        let order = 0;
+        const index = fragments.findIndex((e) => e.hashId === after?.hashId);
+
+        if (fragments.length === 0) {
+            order = 1000;
+        } else if (after === null) {
+            order = fragments[0].order - 1000;
+        } else if (index === -1 || after.hashId === fragments.at(-1)!.hashId) {
+            order = fragments.at(-1)!.order + 1000;
+        } else {
+            order = (fragments[index].order + fragments[index + 1].order) / 2;
+        }
+
+        return this.createFragment(type, order);
     }
 }

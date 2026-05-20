@@ -62,7 +62,7 @@ public static class DocumentFragmentExtensions
             ArticleEmbedFragmentDto embed when dto.Type == DocumentFragmentType.Embed
                 => JsonSerializer.Serialize(new { embed.Url }, jsonOptions),
 
-            _ => throw new NotImplementedException($"Dados inconsistentes em HashId={dto.HashId} Type={dto.Type}")
+            _ => throw new NotImplementedException($"Dados inconsistentes em HashId='{dto.HashId}' Type={dto.Type}")
         };
     }
 }

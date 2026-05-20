@@ -6,6 +6,7 @@ import { AuthService } from '@core/services/auth.service';
 import { API } from '@core/constants/api.constants';
 import { ChatHub } from '@features/chat/hubs/chat.hub';
 import { DocumentIndexHub } from '@features/document/hubs/document-index.hub';
+import { DocumentViewerHub } from '@features/document/hubs/document-viewer.hub';
 
 export interface ResponseListener {
     name: string;
@@ -86,7 +87,9 @@ export class MainHub {
     );
 
     private connect = (): void => {
-        if (!this.state.disconnected()) return;
+        if (!this.state.disconnected()) {
+            return;
+        }
 
         if (!this.hubConnection) {
             this.hubConnection = new signalR.HubConnectionBuilder()
@@ -97,7 +100,9 @@ export class MainHub {
             this.hubConnection.onreconnecting(() => this.connectionState.set('CONNECTING'));
             this.hubConnection.onreconnected(() => this.connectionState.set('CONNECTED'));
             this.hubConnection.onclose((error) => {
-                if (error) console.error('Hub:', error);
+                if (error) {
+                    console.error('Hub:', error);
+                }
 
                 this.connectionState.set('DISCONNECTED');
             });
@@ -120,19 +125,26 @@ export class MainHub {
     };
 
     private send = <T>(method: string, data: T): Promise<void> => {
-        if (!this.hubConnection) throw 'Conexão indefinida.';
+        if (!this.hubConnection) {
+            throw 'Conexão indefinida.';
+        }
 
         this.onSended.next({ method, data });
-        if (data === undefined) return this.hubConnection.invoke(method);
+        if (data === undefined) {
+            return this.hubConnection.invoke(method);
+        }
 
         return this.hubConnection.invoke(method, data);
     };
 
     private registerListeners = () => {
         const addListener = (event: ResponseListener) => {
-            if (this.listenerNames.has(event.name))
+            if (this.listenerNames.has(event.name)) {
                 throw `Hub: ${event.listener} já foi registrado`;
-            if (!this.hubConnection) throw 'Conexão indefinida.';
+            }
+            if (!this.hubConnection) {
+                throw 'Conexão indefinida.';
+            }
 
             this.listenerNames.add(event.name);
             this.hubConnection.on(event.name, (data: unknown) => {
@@ -143,6 +155,7 @@ export class MainHub {
 
         inject(ChatHub).responseListeners.forEach((listener) => addListener(listener));
         inject(DocumentIndexHub).responseListeners.forEach((listener) => addListener(listener));
+        inject(DocumentViewerHub).responseListeners.forEach((listener) => addListener(listener));
     };
 
     private disposeConnection = () => {

@@ -1,9 +1,5 @@
-<okd-request-overlay [requestHandler]="documentHandler" [expandHeight]="true">
-    <div class="document-wrapper">
-        @switch (document().type) {
-            @case (DocumentType.Article) {
-                <okd-article-viewer />
-            }
-        }
-    </div>
-</okd-request-overlay>
+@for (hashId of documentHashIds(); track hashId) {
+    @if (hashId) {
+        <okd-document-viewer [documentHashId]="hashId" />
+    }
+}

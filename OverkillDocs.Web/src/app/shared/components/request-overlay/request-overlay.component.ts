@@ -13,10 +13,13 @@ import { SHARED } from '@shared/index';
 })
 export class RequestOverlayComponent {
     requestHandler = input.required<ApiHandler>();
+    hideLoadingOverlay = input(false);
     expandHeight = input(false);
     retry = output();
 
     protected locked = computed(
-        () => this.requestHandler().loading() || this.requestHandler().error(),
+        () =>
+            this.requestHandler().error() ||
+            (this.requestHandler().loading() && !this.hideLoadingOverlay()),
     );
 }

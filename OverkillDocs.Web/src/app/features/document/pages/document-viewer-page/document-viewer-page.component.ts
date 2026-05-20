@@ -1,20 +1,44 @@
 import { Component, inject } from '@angular/core';
-import { DocumentType } from '@features/document/models/document.models';
-import { DocumentViewerService } from '@features/document/services/document-viewer.service';
-import { SHARED } from '@shared/index';
-import { ArticleViewerComponent } from '@features/document/components/article/article-viewer/article-viewer.component';
-import { RequestOverlayComponent } from '@shared/components/request-overlay/request-overlay.component';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
+import { distinctUntilChanged, filter, map, startWith } from 'rxjs';
+import { DocumentViewerComponent } from '@features/document/components/document-viewer/document-viewer.component';
+import { DocumentViewerHub } from '@features/document/hubs/document-viewer.hub';
 
 @Component({
     selector: 'okd-document-viewer-page',
-    imports: [SHARED, ArticleViewerComponent, RequestOverlayComponent],
+    imports: [DocumentViewerComponent],
     templateUrl: './document-viewer-page.component.html',
     styleUrl: './document-viewer-page.component.scss',
-    providers: [DocumentViewerService],
 })
 export class DocumentViewerPageComponent {
-    private viewerService = inject(DocumentViewerService);
-    protected documentHandler = this.viewerService.documentHandler;
-    protected document = this.viewerService.document;
-    protected DocumentType = DocumentType;
+    private viewerHub = inject(DocumentViewerHub);
+    private router = inject(Router);
+    protected documentHashIds = toSignal(
+        this.router.events.pipe(
+            filter((event) => event instanceof NavigationEnd),
+            startWith(null),
+            map(() => [this.getIdFromRoute()]),
+            distinctUntilChanged(),
+        ),
+    );
+
+    private getIdFromRoute(): string | null {
+        let route = this.router.routerState.snapshot.root;
+        while (route.firstChild) {
+            route = route.firstChild;
+        }
+        return route.paramMap.get('documentHashId');
+    }
+
+    async leaveViewerHub(): Promise<void> {
+        if (!this.viewerHub.state.connected()) {
+            return;
+        }
+
+        const hashId = (this.documentHashIds() || [])[0];
+        if (hashId) {
+            await this.viewerHub.leave(hashId);
+        }
+    }
 }

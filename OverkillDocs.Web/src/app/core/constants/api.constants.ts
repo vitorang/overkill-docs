@@ -15,11 +15,10 @@ export const API = {
     DOCUMENTS: {
         ROOT: `${url}/documents`,
         BY_ID: (hashId: string) => `${url}/documents/${hashId}`,
-        FRAGMENT: {
-            INDEX: (documentHashId: string) => `${url}/documents/${documentHashId}/fragments`,
-            BY_ID: (documentHashId: string, fragmentHashId: string) =>
-                `${url}/documents/${documentHashId}/fragments/${fragmentHashId}`,
-        },
+    },
+    DOCUMENT_FRAGMENTS: {
+        INDEX: `${url}/document-fragments`,
+        BY_ID: (hashId: string) => `${url}/document-fragments/${hashId}`,
     },
     HUB: {
         MAIN: (authToken: string) => `${url}/hubs/main?auth_token=${authToken}`,

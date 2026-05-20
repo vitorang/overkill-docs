@@ -34,7 +34,9 @@ internal sealed class DocumentRepository(
 
     public async Task<Document?> GetById(int documentId, CancellationToken ct)
     {
-        return await context.Documents.FirstOrDefaultAsync(e => e.Id == documentId, ct);
+        return await context.Documents
+            .Include(d => d.Fragments)
+            .FirstOrDefaultAsync(e => e.Id == documentId, ct);
     }
 
     public async Task<DocumentSummaryDto[]> List(CancellationToken ct)

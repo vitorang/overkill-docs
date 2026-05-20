@@ -1,1 +1,5 @@
-<div class="content" [innerHTML]="htmlContent()"></div>
+@if (showPlaceholder()) {
+    <okd-article-placeholder-fragment [type]="fragment().type" />
+} @else {
+    <div class="content" [innerHTML]="htmlContent()"></div>
+}

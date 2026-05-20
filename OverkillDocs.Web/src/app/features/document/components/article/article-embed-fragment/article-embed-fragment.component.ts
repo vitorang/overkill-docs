@@ -2,10 +2,11 @@ import { Component, computed, inject, input } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ArticleEmbedFragment } from '@features/document/models/article.models';
 import { SHARED } from '@shared/index';
+import { ArticlePlaceholderFragmentComponent } from '../article-placeholder-fragment/article-placeholder-fragment.component';
 
 @Component({
     selector: 'okd-article-embed-fragment',
-    imports: [SHARED],
+    imports: [SHARED, ArticlePlaceholderFragmentComponent],
     templateUrl: './article-embed-fragment.component.html',
     styleUrl: './article-embed-fragment.component.scss',
 })
@@ -16,9 +17,13 @@ export class ArticleEmbedFragmentComponent {
     protected isVertical = computed(() => this.isVerticalContent(this.fragment().url));
     protected url = computed((): SafeResourceUrl | null => {
         const url = this.embedUrlFrom(this.fragment().url);
-        if (url === null) return null;
+        if (url === null) {
+            return null;
+        }
         return this.sanitizer.bypassSecurityTrustResourceUrl(url);
     });
+
+    protected showPlaceholder = computed(() => !this.url());
 
     private embedUrlFrom(url: string): string | null {
         const a = document.createElement('a');
@@ -49,7 +54,9 @@ export class ArticleEmbedFragmentComponent {
         const a = document.createElement('a');
         a.href = url;
 
-        if (a.host === 'www.youtube.com') return a.pathname.startsWith('/shorts/');
+        if (a.host === 'www.youtube.com') {
+            return a.pathname.startsWith('/shorts/');
+        }
 
         return false;
     }

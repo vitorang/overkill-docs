@@ -1,16 +1,5 @@
-@if (!url()) {
-    <mat-card>
-        <mat-card-content>
-            @if (fragment().url === '') {
-                Registro de conteúdo incompleto
-            } @else {
-                Endereço não reconhecido: <br />
-                {{ fragment().url }}
-            }
-        </mat-card-content>
-    </mat-card>
-
-    <p>Endereço não suportado</p>
+@if (showPlaceholder()) {
+    <okd-article-placeholder-fragment [type]="fragment().type" />
 } @else {
     <iframe
         [src]="url()"

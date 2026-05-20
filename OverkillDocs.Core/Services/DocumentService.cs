@@ -78,6 +78,7 @@ internal sealed class DocumentService(
         if (document == null)
             throw new NotFoundException("Documento não encontrado");
 
+        document.UpdatedAt = DateTime.UtcNow;
         DocumentFragment fragment = new()
         {
             Id = 0,

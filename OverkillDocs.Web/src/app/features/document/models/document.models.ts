@@ -1,9 +1,3 @@
-import {
-    ArticleEmbedFragment,
-    ArticleImageFragment,
-    ArticleMarkdownFragment,
-} from '@features/document/models/article.models';
-
 export enum DocumentType {
     Unknown = 0,
     Article = 1,
@@ -25,12 +19,27 @@ export interface DocumentDetail {
     hashId: string;
     title: string;
     type: DocumentType;
-    fragments: (ArticleEmbedFragment | ArticleImageFragment | ArticleMarkdownFragment)[];
+    fragments: DocumentFragment[];
     updatedAt: string;
 }
 
 export interface DocumentFragment {
     hashId: string;
+    documentHashId: string;
     type: DocumentFragmentType;
     order: number;
+}
+
+export interface DocumentFragmentLock {
+    userHashId: string;
+    fragmentHashId: string;
+}
+
+export function typedFragment(
+    fragment: DocumentFragment,
+): DocumentFragment & { $type: DocumentFragmentType } {
+    return {
+        $type: fragment.type,
+        ...fragment,
+    };
 }

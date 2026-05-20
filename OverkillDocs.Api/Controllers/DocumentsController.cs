@@ -60,8 +60,8 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
         await hubContext.Clients.Group(MainHub.documentIndexGroup)
             .SendAsync(HubEvents.DocumentIndex.Changed, hashId, ct);
 
-        var groupName = MainHub.DocumentViewGetGroupName(hashId);
+        var groupName = MainHub.DocumentViewerGetGroupName(hashId);
         await hubContext.Clients.Group(groupName)
-            .SendAsync(HubEvents.DocumentView.DocumentChanged, ct);
+            .SendAsync(HubEvents.DocumentViewer.DocumentChanged, ct);
     }
 }
