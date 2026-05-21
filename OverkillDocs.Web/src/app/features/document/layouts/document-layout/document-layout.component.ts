@@ -44,18 +44,22 @@ export class DocumentLayoutComponent {
         { initialValue: false },
     );
 
-    protected activePanel = signal<SidePanel | null>(null);
+    protected activePanel = signal<SidePanel | null>('documents');
     protected hasUnreadMessage = signal(false);
     protected accountSettingsPath = PATHS.ACCOUNT.SETTINGS;
 
     constructor() {
         this.chatHub.onMessageReceived.pipe(takeUntilDestroyed()).subscribe(() => {
-            if (this.activePanel() !== 'chat') this.hasUnreadMessage.set(true);
+            if (this.activePanel() !== 'chat') {
+                this.hasUnreadMessage.set(true);
+            }
         });
     }
 
     protected toggleActivePanel(panel: SidePanel): void {
-        if (panel === 'chat') this.hasUnreadMessage.set(false);
+        if (panel === 'chat') {
+            this.hasUnreadMessage.set(false);
+        }
 
         this.activePanel.set(panel !== this.activePanel() ? panel : null);
     }
