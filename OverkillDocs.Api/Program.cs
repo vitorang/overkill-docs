@@ -132,7 +132,7 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.MapHealthChecks("/health");
 
-app.Map("/api/{*path}", (string path) => Results.NotFound());
+app.Map("/api/{*path:regex(^(?!swagger).*$)}", (string path) => Results.NotFound());
 app.MapFallbackToFile("index.html");
 #endregion
 
