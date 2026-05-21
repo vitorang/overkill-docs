@@ -65,4 +65,45 @@ public static class DocumentFragmentExtensions
             _ => throw new NotImplementedException($"Dados inconsistentes em HashId='{dto.HashId}' Type={dto.Type}")
         };
     }
+
+    public static string GetContent(this DocumentFragmentCreationDto dto)
+    {
+        return dto.ToFragmentDto().GetContent();
+    }
+
+    private static DocumentFragmentDto ToFragmentDto(this DocumentFragmentCreationDto dto)
+    {
+        if (dto.Type == DocumentFragmentType.Markdown)
+            return new ArticleMarkdownFragmentDto
+            {
+                HashId = string.Empty,
+                DocumentHashId = dto.DocumentHashId,
+                Order = 0,
+                Type = dto.Type,
+                Text = string.Empty
+            };
+
+        if (dto.Type == DocumentFragmentType.Image)
+            return new ArticleImageFragmentDto
+            {
+                HashId = string.Empty,
+                DocumentHashId = dto.DocumentHashId,
+                Order = 0,
+                Type = dto.Type,
+                Url = string.Empty,
+                Alt = string.Empty
+            };
+
+        if (dto.Type == DocumentFragmentType.Embed)
+            return new ArticleEmbedFragmentDto
+            {
+                HashId = string.Empty,
+                DocumentHashId = dto.DocumentHashId,
+                Order = 0,
+                Type = dto.Type,
+                Url = string.Empty
+            };
+
+        throw new NotImplementedException($"Sem suporte para fragmento Type={dto.Type}");
+    }
 }

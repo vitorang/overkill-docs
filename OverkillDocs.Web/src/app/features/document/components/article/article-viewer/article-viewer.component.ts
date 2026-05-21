@@ -40,7 +40,7 @@ export class ArticleViewerComponent {
     protected addFragment(type: DocumentFragmentType, after: DocumentFragment | null): void {
         this.isLoading.set(true);
         this.viewerService
-            .addFragment(type, after)
+            .createFragment(type, after?.hashId || null)
             .pipe(
                 takeUntilDestroyed(this.destroyRef),
                 finalize(() => this.isLoading.set(false)),

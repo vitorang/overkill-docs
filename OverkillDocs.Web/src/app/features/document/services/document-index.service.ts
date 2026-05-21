@@ -4,7 +4,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { API } from '@core/constants/api.constants';
 import { faker } from '@faker-js/faker';
 import { DocumentIndexHub } from '@features/document/hubs/document-index.hub';
-import { DocumentSummary, DocumentType } from '@features/document/models/document.models';
+import {
+    DocumentCreation,
+    DocumentSummary,
+    DocumentType,
+} from '@features/document/models/document.models';
 import { AlertService } from '@shared/services/alert.service';
 import { asyncScheduler, filter, forkJoin, Observable, throttleTime } from 'rxjs';
 
@@ -57,7 +61,7 @@ export class DocumentIndexService {
         return this.http.get<DocumentSummary[]>(API.DOCUMENTS.ROOT);
     }
 
-    create(document: DocumentSummary): Observable<DocumentSummary> {
+    create(document: DocumentCreation): Observable<DocumentSummary> {
         return this.http.post<DocumentSummary>(API.DOCUMENTS.ROOT, document);
     }
 
@@ -78,7 +82,6 @@ export class DocumentIndexService {
 
         for (let i = 0; i < quantity; i++) {
             const observable = this.create({
-                hashId: '',
                 title: `${faker.commerce.productAdjective()} ${faker.commerce.productName()}`,
                 type: DocumentType.Article,
             });

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.SignalR;
 using OverkillDocs.Api.Constants;
 using OverkillDocs.Api.Hubs;
 using OverkillDocs.Core.DTOs.Document;
-using OverkillDocs.Core.DTOs.User;
 using OverkillDocs.Core.Interfaces.Services;
 
 namespace OverkillDocs.Api.Controllers;
@@ -14,7 +13,7 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
 {
     [HttpGet]
     [ProducesResponseType(typeof(DocumentSummaryDto[]), StatusCodes.Status200OK)]
-    public async Task<ActionResult<SimpleUserDto>> List(CancellationToken ct)
+    public async Task<ActionResult<DocumentSummaryDto[]>> List(CancellationToken ct)
     {
         var result = await documentService.List(ct);
         return Ok(result);
@@ -22,10 +21,10 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
 
     [HttpPost]
     [ProducesResponseType(typeof(DocumentSummaryDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<SimpleUserDto>> Create([FromBody] DocumentSummaryDto document, CancellationToken ct)
+    public async Task<ActionResult<DocumentSummaryDto>> Create([FromBody] DocumentCreationDto document, CancellationToken ct)
     {
         var result = await documentService.Create(document, ct);
-        await NotifyDocumentChanged(document.HashId, ct);
+        await NotifyDocumentChanged(result.HashId, ct);
         return Ok(result);
     }
 

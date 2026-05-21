@@ -9,6 +9,11 @@ export enum DocumentFragmentType {
     Embed = 3,
 }
 
+export interface DocumentCreation {
+    title: string;
+    type: DocumentType;
+}
+
 export interface DocumentSummary {
     hashId: string;
     title: string;
@@ -28,6 +33,12 @@ export interface DocumentFragment {
     documentHashId: string;
     type: DocumentFragmentType;
     order: number;
+}
+
+export interface DocumentFragmentCreation {
+    documentHashId: string;
+    insertAfterHashId: string | null;
+    type: DocumentFragmentType;
 }
 
 export interface DocumentFragmentLock {

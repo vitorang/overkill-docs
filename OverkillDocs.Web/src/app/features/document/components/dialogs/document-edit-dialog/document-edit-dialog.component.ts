@@ -5,7 +5,11 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ProblemDetails } from '@core/models/problem-details.model';
 import { apiHandler, ApiHandler } from '@core/utils/api-handler.utils';
 import { FormUtils } from '@core/utils/form.utils';
-import { DocumentSummary, DocumentType } from '@features/document/models/document.models';
+import {
+    DocumentCreation,
+    DocumentSummary,
+    DocumentType,
+} from '@features/document/models/document.models';
 import { DocumentIndexService } from '@features/document/services/document-index.service';
 import { SHARED } from '@shared/index';
 import { AlertService } from '@shared/services/alert.service';
@@ -48,13 +52,19 @@ export class DocumentEditDialogComponent implements OnInit {
     }
 
     protected onSubmit(): void {
-        if (!this.formGroup.valid || this.documentHandler.loading()) return;
+        if (!this.formGroup.valid || this.documentHandler.loading()) {
+            return;
+        }
 
-        const document: DocumentSummary = this.formGroup.getRawValue();
+        const documentSummary: DocumentSummary = this.formGroup.getRawValue();
+        const documentCreation: DocumentCreation = {
+            title: documentSummary.title,
+            type: documentSummary.type,
+        };
 
         const observable = this.isEditing()
-            ? this.documentService.update(document)
-            : this.documentService.create(document);
+            ? this.documentService.update(documentSummary)
+            : this.documentService.create(documentCreation);
 
         this.documentHandler.execute(
             observable,
@@ -65,8 +75,11 @@ export class DocumentEditDialogComponent implements OnInit {
 
     private onError(err: HttpErrorResponse) {
         const problem = err.error as ProblemDetails | undefined;
-        if (problem?.errors) FormUtils.injectError(this.formGroup, problem.errors);
-        else this.alertService.error(problem?.detail);
+        if (problem?.errors) {
+            FormUtils.injectError(this.formGroup, problem.errors);
+        } else {
+            this.alertService.error(problem?.detail);
+        }
     }
 
     protected get titleError(): string {

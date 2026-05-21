@@ -18,7 +18,7 @@ internal sealed class DocumentService(
     IHashids hashids,
     UserContext userContext) : IDocumentService
 {
-    public async Task<DocumentSummaryDto> Create(DocumentSummaryDto documentDto, CancellationToken ct)
+    public async Task<DocumentSummaryDto> Create(DocumentCreationDto documentDto, CancellationToken ct)
     {
         var document = new Document
         {
@@ -71,20 +71,36 @@ internal sealed class DocumentService(
         return document.ToSummaryDto(hashids);
     }
 
-    public async Task<DocumentFragmentDto> CreateFragment(DocumentFragmentDto fragmentDto, CancellationToken ct)
+    public async Task<DocumentFragmentDto> CreateFragment(DocumentFragmentCreationDto creationDto, CancellationToken ct)
     {
-        int documentId = hashids.Decode(fragmentDto.DocumentHashId).First();
+        int documentId = hashids.Decode(creationDto.DocumentHashId).First();
         var document = await documentRepository.GetById(documentId, ct);
         if (document == null)
             throw new NotFoundException("Documento não encontrado");
+
+        var fragments = document.Fragments.OrderBy(e => e.Order).ToList();
+        int afterId = creationDto.InsertAfterHashId == null ? -1 : hashids.Decode(creationDto.InsertAfterHashId).First();
+        int afterIndex = fragments.FindIndex(e => e.Id == afterId);
+        double order;
+
+        if (fragments.Count == 0)
+            order = 0;
+        else if (creationDto.InsertAfterHashId == null)
+            order = fragments.First().Order - 1000;
+        else if (afterIndex == -1)
+            throw new NotFoundException("Fragmento anterior não encontrado");
+        else if (afterIndex == fragments.Count - 1)
+            order = fragments.Last().Order + 1000;
+        else
+            order = (fragments[afterIndex].Order + fragments[afterIndex + 1].Order) / 2;
 
         document.UpdatedAt = DateTime.UtcNow;
         DocumentFragment fragment = new()
         {
             Id = 0,
-            Content = fragmentDto.GetContent(),
-            Order = fragmentDto.Order,
-            Type = fragmentDto.Type,
+            Content = creationDto.GetContent(),
+            Order = order,
+            Type = creationDto.Type,
             Document = document
         };
 

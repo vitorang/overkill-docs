@@ -12,7 +12,7 @@ public class DocumentFragmentsController(IDocumentService documentService, IHubC
 {
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult> Create([FromBody] DocumentFragmentDto fragment, CancellationToken ct)
+    public async Task<ActionResult> Create([FromBody] DocumentFragmentCreationDto fragment, CancellationToken ct)
     {
         var result = await documentService.CreateFragment(fragment, ct);
         await NotifyDocumentChanged(result.DocumentHashId, ct);
