@@ -1,0 +1,55 @@
+<div class="action-bar">
+    @if (lock()) {
+        <okd-avatar [avatarCode]="''" seed="" [size]="24" sizeUnit="px" />
+        <div class="name">MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM</div>
+    }
+
+    <button
+        mat-icon-button
+        [matMenuTriggerFor]="insertFragment"
+        title="Adicionar"
+        [disabled]="isLoading()"
+    >
+        <mat-icon>add_row_below</mat-icon>
+    </button>
+
+    @if (fragment()) {
+        <button
+            mat-icon-button
+            [matMenuTriggerFor]="editFragment"
+            title="Modificar"
+            [disabled]="isLoading()"
+        >
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    }
+</div>
+
+<mat-menu #insertFragment="matMenu">
+    <button mat-menu-item (click)="create.emit(Type.Markdown)">
+        <mat-icon>notes</mat-icon>
+        <span>Texto</span>
+    </button>
+
+    <button mat-menu-item (click)="create.emit(Type.Image)">
+        <mat-icon>image</mat-icon>
+        <span>Imagem</span>
+    </button>
+
+    <button mat-menu-item (click)="create.emit(Type.Embed)">
+        <mat-icon>play_circle</mat-icon>
+        <span>Vídeo</span>
+    </button>
+</mat-menu>
+
+<mat-menu #editFragment="matMenu">
+    <button mat-menu-item (click)="edit.emit()">
+        <mat-icon>edit_document</mat-icon>
+        <span>Editar</span>
+    </button>
+
+    <button mat-menu-item (click)="delete.emit()">
+        <mat-icon>remove</mat-icon>
+        <span>Excluir</span>
+    </button>
+</mat-menu>

@@ -4,13 +4,14 @@ import { DocumentViewerService } from '@features/document/services/document-view
 import { SHARED } from '@shared/index';
 import { ArticleViewerComponent } from '@features/document/components/article/article-viewer/article-viewer.component';
 import { RequestOverlayComponent } from '@shared/components/request-overlay/request-overlay.component';
+import { UserService } from '@core/services/user.service';
 
 @Component({
     selector: 'okd-document-viewer',
     imports: [SHARED, ArticleViewerComponent, RequestOverlayComponent],
     templateUrl: './document-viewer.component.html',
     styleUrl: './document-viewer.component.scss',
-    providers: [DocumentViewerService],
+    providers: [DocumentViewerService, UserService],
 })
 export class DocumentViewerComponent implements OnInit {
     documentHashId = input.required<string>();

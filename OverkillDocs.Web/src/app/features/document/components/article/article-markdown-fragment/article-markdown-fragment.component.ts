@@ -13,6 +13,7 @@ import { ArticlePlaceholderFragmentComponent } from '../article-placeholder-frag
 })
 export class ArticleMarkdownFragmentComponent {
     fragment = input.required<ArticleMarkdownFragment>();
+    isEditing = input.required<boolean>();
 
     private sanitizer = inject(DomSanitizer);
 

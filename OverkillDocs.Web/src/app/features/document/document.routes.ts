@@ -13,7 +13,7 @@ export const DOCUMENT_ROUTES: Routes = [
         children: [
             { path: '', component: DocumentIntroPageComponent },
             {
-                path: S.EDITOR,
+                path: S.VIEWER,
                 component: DocumentViewerPageComponent,
                 canDeactivate: [
                     async (component: DocumentViewerPageComponent): Promise<boolean> => {

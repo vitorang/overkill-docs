@@ -16,9 +16,9 @@ internal sealed class DocumentRepository(
     IDocumentFragmentRepository fragmentRepository,
     IHashids hashids) : IDocumentRepository
 {
-    public async Task Add(Document document, CancellationToken ct)
+    public void Add(Document document)
     {
-        await context.Documents.AddAsync(document, ct);
+        context.Documents.Add(document);
     }
 
     public async Task ExecuteDelete(int documentId, CancellationToken ct)
@@ -53,10 +53,11 @@ internal sealed class DocumentRepository(
         return (await documentSummaryCache.Get(string.Empty, fetchFromDb!))!.Documents;
     }
 
-    public async Task InvalidateCache(int documentId)
+    public async Task InvalidateCache(int? documentId)
     {
         await documentSummaryCache.RemoveById(string.Empty);
-        await fragmentIdsCache.RemoveById(documentId);
+        if (documentId != null)
+            await fragmentIdsCache.RemoveById((int)documentId);
     }
 
     public async Task<int?> GetDocumentIdByFragmentId(int fragmentId, CancellationToken ct)

@@ -26,9 +26,9 @@ internal sealed class DocumentService(
             Type = documentDto.Type,
         };
 
-        await documentRepository.Add(document, ct);
+        documentRepository.Add(document);
         await unitOfWork.CommitAsync(ct);
-        await documentRepository.InvalidateCache(document.Id);
+        await documentRepository.InvalidateCache();
 
         return document.ToSummaryDto(hashids);
     }
@@ -104,7 +104,7 @@ internal sealed class DocumentService(
             Document = document
         };
 
-        await fragmentRepository.Add(fragment, ct);
+        fragmentRepository.Add(fragment);
         await unitOfWork.CommitAsync(ct);
         return fragment.ToDto(hashids);
     }
@@ -124,11 +124,16 @@ internal sealed class DocumentService(
     public async Task DeleteFragment(string fragmentHashId, CancellationToken ct)
     {
         int fragmentId = hashids.Decode(fragmentHashId).First();
+        var fragment = await fragmentRepository.GetById(fragmentId, ct, includeDocument: true);
+        if (fragment == null)
+            throw new NotFoundException("Fragmento não encontrado");
 
         if ((await fragmentRepository.GetLock(fragmentId)) != null)
             throw new ConflictException("Fragmento em uso não pode ser excluído");
 
-        await fragmentRepository.ExecuteDelete([fragmentId], ct);
+        fragment.Document.UpdatedAt = DateTime.UtcNow;
+        fragmentRepository.Remove(fragment);
+        await unitOfWork.CommitAsync(ct);
     }
 
     public async Task<string> GetDocumentHashIdByFragmentHashId(string fragmentHashId, CancellationToken ct)

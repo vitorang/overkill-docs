@@ -2,12 +2,12 @@
     <div class="toolbar-content max-width">
         <div class="title">{{ document().title }}</div>
 
-        @if (editMode()) {
-            <button mat-icon-button (click)="editMode.set(false)">
+        @if (editModeEnabled()) {
+            <button mat-icon-button (click)="editModeEnabled.set(false)">
                 <mat-icon>edit_off</mat-icon>
             </button>
         } @else {
-            <button mat-icon-button (click)="editMode.set(true)">
+            <button mat-icon-button (click)="editModeEnabled.set(true)">
                 <mat-icon>edit</mat-icon>
             </button>
         }
@@ -29,34 +29,47 @@
 </mat-menu>
 
 <div class="main-content">
-    @if (!editMode() && document().fragments.length === 0) {
+    @if (!editModeEnabled() && document().fragments.length === 0) {
         <okd-info-box icon="edit_document">Está vazio</okd-info-box>
     } @else {
         <article class="max-width">
-            @if (editMode()) {
-                <okd-article-add-fragment
+            @if (editModeEnabled() && !isEditingFragment()) {
+                <okd-article-fragment-actions
+                    [fragment]="null"
+                    [isLoading]="isLoading()"
                     (create)="addFragment($event, null)"
-                    [disabled]="isLoading()"
                 />
             }
 
             @for (fragment of document().fragments; track fragment.hashId) {
                 @switch (fragment.type) {
                     @case (FragmentType.Markdown) {
-                        <okd-article-markdown-fragment [fragment]="asMarkdown(fragment)" />
+                        <okd-article-markdown-fragment
+                            [fragment]="asMarkdown(fragment)"
+                            [isEditing]="editingFragmentId() === fragment.hashId"
+                        />
                     }
                     @case (FragmentType.Image) {
-                        <okd-article-image-fragment [fragment]="asImage(fragment)" />
+                        <okd-article-image-fragment
+                            [fragment]="asImage(fragment)"
+                            [isEditing]="editingFragmentId() === fragment.hashId"
+                        />
                     }
                     @case (FragmentType.Embed) {
-                        <okd-article-embed-fragment [fragment]="asEmbed(fragment)" />
+                        <okd-article-embed-fragment
+                            [fragment]="asEmbed(fragment)"
+                            [isEditing]="editingFragmentId() === fragment.hashId"
+                        />
                     }
                 }
 
-                @if (editMode()) {
-                    <okd-article-add-fragment
+                @if (editModeEnabled() && !isEditingFragment()) {
+                    <okd-article-fragment-actions
+                        [fragment]="fragment"
+                        [isLoading]="isLoading()"
                         (create)="addFragment($event, fragment)"
-                        [disabled]="isLoading()"
+                        (edit)="edit(fragment.documentHashId)"
+                        (delete)="delete(fragment)"
                     />
                 }
             }

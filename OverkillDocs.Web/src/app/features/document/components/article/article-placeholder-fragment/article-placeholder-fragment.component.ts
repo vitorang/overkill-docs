@@ -11,6 +11,7 @@ import { SHARED } from '@shared/index';
 })
 export class ArticlePlaceholderFragmentComponent {
     type = input.required<DocumentFragmentType>();
+
     protected Type = DocumentFragmentType;
 
     protected textPlaceholder = signal(faker.lorem.words(50));

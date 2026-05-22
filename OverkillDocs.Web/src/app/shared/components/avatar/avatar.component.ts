@@ -11,7 +11,8 @@ type sizeUnit = 'px' | 'em' | 'rem' | '%';
     templateUrl: './avatar.component.html',
     styleUrl: './avatar.component.scss',
     host: {
-        '[style.--avatar-size]': 'avatarSize',
+        '[style.width]': 'avatarSize()',
+        '[style.height]': 'avatarSize()',
     },
 })
 export class AvatarComponent implements OnInit {

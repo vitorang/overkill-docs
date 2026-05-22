@@ -14,9 +14,14 @@ internal sealed class DocumentFragmentRepository(
     IObjectCache<DocumentFragmentIdsResult> fragmentIdsCache
     ) : IDocumentFragmentRepository
 {
-    public async Task Add(DocumentFragment fragment, CancellationToken ct)
+    public void Add(DocumentFragment fragment)
     {
-        await context.DocumentFragments.AddAsync(fragment, ct);
+        context.DocumentFragments.Add(fragment);
+    }
+
+    public void Remove(DocumentFragment fragment)
+    {
+        context.DocumentFragments.Remove(fragment);
     }
 
     public async Task ExecuteDelete(int[] fragmentIds, CancellationToken ct)
@@ -35,10 +40,11 @@ internal sealed class DocumentFragmentRepository(
             ct);
     }
 
-    public async Task<DocumentFragment?> GetById(int fragmentId, CancellationToken ct)
+    public async Task<DocumentFragment?> GetById(int fragmentId, CancellationToken ct, bool includeDocument)
     {
         return await context.DocumentFragments
             .Where(e => e.Id == fragmentId)
+            .Include(e => includeDocument ? e.Document : null)
             .FirstOrDefaultAsync(ct);
     }
 

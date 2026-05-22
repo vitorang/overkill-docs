@@ -6,7 +6,7 @@ export const SEGMENTS = {
     },
     DOCUMENT: {
         ROOT: 'documents',
-        EDITOR: ':documentHashId',
+        VIEWER: ':documentHashId',
     },
 } as const;
 
@@ -19,6 +19,6 @@ export const PATHS = {
     },
     DOCUMENT: {
         INDEX: `/${S.DOCUMENT.ROOT}`,
-        EDITOR: `/${S.DOCUMENT.ROOT}/${S.DOCUMENT.EDITOR}`,
+        EDITOR: `/${S.DOCUMENT.ROOT}/${S.DOCUMENT.VIEWER}`,
     },
 } as const;

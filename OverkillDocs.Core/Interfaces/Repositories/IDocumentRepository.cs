@@ -7,8 +7,8 @@ public interface IDocumentRepository
 {
     Task<DocumentSummaryDto[]> List(CancellationToken ct);
     Task<Document?> GetById(int documentId, CancellationToken ct);
-    Task Add(Document document, CancellationToken ct);
+    void Add(Document document);
     Task ExecuteDelete(int documentId, CancellationToken ct);
-    Task InvalidateCache(int documentId);
+    Task InvalidateCache(int? documentId = null);
     Task<int?> GetDocumentIdByFragmentId(int fragmentId, CancellationToken ct);
 }

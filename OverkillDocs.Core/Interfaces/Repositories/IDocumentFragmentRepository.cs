@@ -9,8 +9,9 @@ public interface IDocumentFragmentRepository
     Task Unlock(DocumentFragmentLockDto fragment);
     Task<DocumentFragmentLockDto?> GetLock(int fragmentId);
 
-    Task<DocumentFragment?> GetById(int fragmentId, CancellationToken ct);
-    Task Add(DocumentFragment fragment, CancellationToken ct);
+    Task<DocumentFragment?> GetById(int fragmentId, CancellationToken ct, bool includeDocument = false);
+    void Add(DocumentFragment fragment);
+    void Remove(DocumentFragment fragment);
     Task ExecuteDelete(int[] fragmentIds, CancellationToken ct);
     Task<int> ExecuteUpdateContent(int fragmentId, string content, CancellationToken ct);
     Task<DocumentFragmentLockDto[]> GetActiveLocksFromDocument(int documentId, CancellationToken ct);

@@ -9,6 +9,7 @@ import { SHARED } from '@shared/index';
 import { Router } from '@angular/router';
 import { InfoBoxComponent } from '@shared/components/info-box/info-box.component';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { skip } from 'rxjs';
 
 @Component({
     selector: 'okd-document-index',
@@ -34,7 +35,7 @@ export class DocumentIndexComponent {
 
     constructor() {
         toObservable(this.documents)
-            .pipe(takeUntilDestroyed())
+            .pipe(takeUntilDestroyed(), skip(1))
             .subscribe((documents) => {
                 const hashId = this.currentDocumentHashId;
                 if (hashId && !documents.find((e) => e.hashId === hashId)) {

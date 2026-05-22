@@ -12,6 +12,7 @@ import { ArticlePlaceholderFragmentComponent } from '../article-placeholder-frag
 })
 export class ArticleEmbedFragmentComponent {
     fragment = input.required<ArticleEmbedFragment>();
+    isEditing = input.required<boolean>();
 
     private sanitizer = inject(DomSanitizer);
     protected isVertical = computed(() => this.isVerticalContent(this.fragment().url));

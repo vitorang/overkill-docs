@@ -11,6 +11,7 @@ import { ArticlePlaceholderFragmentComponent } from '../article-placeholder-frag
 })
 export class ArticleImageFragmentComponent {
     fragment = input.required<ArticleImageFragment>();
+    isEditing = input.required<boolean>();
 
     protected showPlaceholder = computed(() => !this.fragment().url.trim());
 }

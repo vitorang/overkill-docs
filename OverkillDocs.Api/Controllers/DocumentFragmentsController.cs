@@ -32,7 +32,7 @@ public class DocumentFragmentsController(IDocumentService documentService, IHubC
     }
 
     [HttpDelete("{hashId}")]
-    [ProducesStatusFor(typeof(NotFoundException))]
+    [ProducesStatusFor(typeof(NotFoundException), typeof(ConflictException))]
     public async Task<NoContentResult> Delete(string hashId, CancellationToken ct)
     {
         string documentHashId = await documentService.GetDocumentHashIdByFragmentHashId(hashId, ct);

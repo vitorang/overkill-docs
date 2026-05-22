@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { SHARED } from '@shared/index';
 import { ChatViewComponent } from '@features/chat/components/chat-view/chat-view.component';
 import { UserService } from '@core/services/user.service';
