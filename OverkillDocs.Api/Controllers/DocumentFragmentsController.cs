@@ -2,26 +2,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using OverkillDocs.Api.Constants;
 using OverkillDocs.Api.Hubs;
+using OverkillDocs.Core.Attributes;
 using OverkillDocs.Core.DTOs.Document.Fragment;
+using OverkillDocs.Core.Exceptions;
 using OverkillDocs.Core.Interfaces.Services;
 namespace OverkillDocs.Api.Controllers;
 
-[Route("api/document-fragments")]
+[Route("api/[controller]")]
 [ApiController]
+[ProducesErrorResponseType(typeof(ProblemDetails))]
 public class DocumentFragmentsController(IDocumentService documentService, IHubContext<MainHub> hubContext) : ControllerBase
 {
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult> Create([FromBody] DocumentFragmentCreationDto fragment, CancellationToken ct)
+    [ProducesStatusFor(typeof(NotFoundException))]
+    public async Task<CreatedResult> Create([FromBody] DocumentFragmentCreationDto fragment, CancellationToken ct)
     {
         var result = await documentService.CreateFragment(fragment, ct);
         await NotifyDocumentChanged(result.DocumentHashId, ct);
-        return NoContent();
+        return Created();
     }
 
     [HttpPut]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult> Update([FromBody] DocumentFragmentDto fragment, CancellationToken ct)
+    [ProducesStatusFor(typeof(ConflictException), typeof(NotFoundException))]
+    public async Task<NoContentResult> Update([FromBody] DocumentFragmentDto fragment, CancellationToken ct)
     {
         await documentService.UpdateFragment(fragment, ct);
         await NotifyFragmentChanged(fragment, ct);
@@ -29,8 +32,8 @@ public class DocumentFragmentsController(IDocumentService documentService, IHubC
     }
 
     [HttpDelete("{hashId}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult> Delete(string hashId, CancellationToken ct)
+    [ProducesStatusFor(typeof(NotFoundException))]
+    public async Task<NoContentResult> Delete(string hashId, CancellationToken ct)
     {
         string documentHashId = await documentService.GetDocumentHashIdByFragmentHashId(hashId, ct);
         await documentService.DeleteFragment(hashId, ct);
@@ -38,9 +41,9 @@ public class DocumentFragmentsController(IDocumentService documentService, IHubC
         return NoContent();
     }
 
-    [HttpPost("{hashId}/lock")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult> LockFragment(string hashId, CancellationToken ct)
+    [HttpPost("{hashId}/Lock")]
+    [ProducesStatusFor(typeof(ConflictException))]
+    public async Task<NoContentResult> LockFragment(string hashId, CancellationToken ct)
     {
         await documentService.LockFragment(hashId, ct);
         string documentHashId = await documentService.GetDocumentHashIdByFragmentHashId(hashId, ct);
@@ -48,9 +51,9 @@ public class DocumentFragmentsController(IDocumentService documentService, IHubC
         return NoContent();
     }
 
-    [HttpDelete("{hashId}/lock")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult> UnlockFragment(string hashId, CancellationToken ct)
+    [HttpDelete("{hashId}/Lock")]
+    [ProducesStatusFor]
+    public async Task<NoContentResult> UnlockFragment(string hashId, CancellationToken ct)
     {
         await documentService.UnlockFragment(hashId, ct);
         string documentHashId = await documentService.GetDocumentHashIdByFragmentHashId(hashId, ct);

@@ -12,7 +12,7 @@ namespace OverkillDocs.Tests.Integration.Tests.AccountController;
 
 public class ChangePasswordTests
 {
-    private static readonly string url = "/api/account/change-password";
+    private static readonly string url = "/api/account/ChangePassword";
 
     public class Success(TestFactory factory, ITestOutputHelper outputHelper) : TestBase(factory, outputHelper)
     {

@@ -2,17 +2,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using OverkillDocs.Api.Constants;
 using OverkillDocs.Api.Hubs;
+using OverkillDocs.Core.Attributes;
 using OverkillDocs.Core.DTOs.Document;
+using OverkillDocs.Core.Exceptions;
 using OverkillDocs.Core.Interfaces.Services;
 
 namespace OverkillDocs.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[ProducesErrorResponseType(typeof(ProblemDetails))]
 public class DocumentsController(IDocumentService documentService, IHubContext<MainHub> hubContext) : ControllerBase
 {
     [HttpGet]
-    [ProducesResponseType(typeof(DocumentSummaryDto[]), StatusCodes.Status200OK)]
+    [ProducesStatusFor]
     public async Task<ActionResult<DocumentSummaryDto[]>> List(CancellationToken ct)
     {
         var result = await documentService.List(ct);
@@ -20,7 +23,7 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(DocumentSummaryDto), StatusCodes.Status200OK)]
+    [ProducesStatusFor]
     public async Task<ActionResult<DocumentSummaryDto>> Create([FromBody] DocumentCreationDto document, CancellationToken ct)
     {
         var result = await documentService.Create(document, ct);
@@ -29,8 +32,8 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
     }
 
     [HttpPut]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult> Update([FromBody] DocumentSummaryDto document, CancellationToken ct)
+    [ProducesStatusFor(typeof(NotFoundException))]
+    public async Task<NoContentResult> Update([FromBody] DocumentSummaryDto document, CancellationToken ct)
     {
         await documentService.Update(document, ct);
         await NotifyDocumentChanged(document.HashId, ct);
@@ -38,7 +41,7 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
     }
 
     [HttpGet("{hashId}")]
-    [ProducesResponseType(typeof(DocumentDetailDto), StatusCodes.Status200OK)]
+    [ProducesStatusFor(typeof(NotFoundException))]
     public async Task<ActionResult<DocumentDetailDto>> Get(string hashId, CancellationToken ct)
     {
         var document = await documentService.Get(hashId, ct);
@@ -46,8 +49,8 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
     }
 
     [HttpDelete("{hashId}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult> Delete(string hashId, CancellationToken ct)
+    [ProducesStatusFor]
+    public async Task<NoContentResult> Delete(string hashId, CancellationToken ct)
     {
         await documentService.Delete(hashId, ct);
         await NotifyDocumentChanged(hashId, ct);
