@@ -9,6 +9,7 @@ import {
     DocumentDetail,
     DocumentFragmentType,
     DocumentFragmentCreation,
+    DocumentFragment,
 } from '@features/document/models/document.models';
 import { filter, merge, Observable } from 'rxjs';
 
@@ -87,5 +88,9 @@ export class DocumentViewerService {
         };
 
         return this.http.post<void>(API.DOCUMENT_FRAGMENTS.INDEX, fragment);
+    }
+
+    deleteFragment(fragment: DocumentFragment): Observable<void> {
+        return this.http.delete<void>(API.DOCUMENT_FRAGMENTS.BY_ID(fragment.hashId));
     }
 }
