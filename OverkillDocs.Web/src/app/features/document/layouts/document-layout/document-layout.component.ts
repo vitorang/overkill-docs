@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { SHARED } from '@shared/index';
 import { ChatViewComponent } from '@features/chat/components/chat-view/chat-view.component';
 import { UserService } from '@core/services/user.service';
@@ -47,6 +47,8 @@ export class DocumentLayoutComponent {
     protected activePanel = signal<SidePanel | null>('documents');
     protected hasUnreadMessage = signal(false);
     protected accountSettingsPath = PATHS.ACCOUNT.SETTINGS;
+    protected sidenavClosing = signal(false);
+    protected activeButton = computed(() => !this.sidenavClosing() && this.activePanel());
 
     constructor() {
         this.chatHub.onMessageReceived.pipe(takeUntilDestroyed()).subscribe(() => {
@@ -66,5 +68,10 @@ export class DocumentLayoutComponent {
 
     protected logout(): void {
         this.accountService.logout();
+    }
+
+    protected onSidenavClosed(): void {
+        this.activePanel.set(null);
+        this.sidenavClosing.set(false);
     }
 }

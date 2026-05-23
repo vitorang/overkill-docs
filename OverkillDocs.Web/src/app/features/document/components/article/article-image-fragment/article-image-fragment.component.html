@@ -1,5 +1,17 @@
+@if (isEditing()) {
+    <mat-form-field appearance="outline">
+        <mat-label>Endereço</mat-label>
+        <input matInput [(ngModel)]="urlModel" (blur)="onInputBlur()" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Descrição</mat-label>
+        <input matInput [(ngModel)]="altModel" (blur)="onInputBlur()" />
+    </mat-form-field>
+}
+
 @if (showPlaceholder()) {
     <okd-article-placeholder-fragment [type]="fragment().type" />
 } @else {
-    <img [src]="fragment().url" [alt]="fragment().alt" />
+    <img [src]="current().url" [alt]="current().alt" />
 }

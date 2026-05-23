@@ -10,6 +10,7 @@ import {
     DocumentFragmentType,
     DocumentFragmentCreation,
     DocumentFragment,
+    typedFragment,
 } from '@features/document/models/document.models';
 import { filter, merge, Observable } from 'rxjs';
 
@@ -92,5 +93,9 @@ export class DocumentViewerService {
 
     deleteFragment(fragment: DocumentFragment): Observable<void> {
         return this.http.delete<void>(API.DOCUMENT_FRAGMENTS.BY_ID(fragment.hashId));
+    }
+
+    updateFragment(fragment: DocumentFragment): Observable<void> {
+        return this.http.put<void>(API.DOCUMENT_FRAGMENTS.INDEX, typedFragment(fragment));
     }
 }

@@ -60,3 +60,22 @@ body {
 .mat-badge-small .mat-badge-content.mat-badge-active {
     transform: scale(1.5);
 }
+
+.EasyMDEContainer {
+    .CodeMirror.CodeMirror {
+        background-color: var(--mat-sys-surface-container);
+        border-radius: 8px;
+        border: 1px solid var(--mat-sys-outline-variant);
+        color: var(--mat-sys-on-surface);
+
+        .CodeMirror-cursors {
+            .CodeMirror-cursor {
+                border-left-color: currentColor;
+            }
+        }
+
+        .CodeMirror-selected {
+            background-color: Highlight;
+        }
+    }
+}

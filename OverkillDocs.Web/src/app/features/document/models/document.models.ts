@@ -33,6 +33,7 @@ export interface DocumentFragment {
     documentHashId: string;
     type: DocumentFragmentType;
     order: number;
+    updatedAt: string;
 }
 
 export interface DocumentFragmentCreation {

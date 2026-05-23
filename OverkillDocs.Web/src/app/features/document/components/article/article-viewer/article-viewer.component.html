@@ -47,18 +47,21 @@
                         <okd-article-markdown-fragment
                             [fragment]="asMarkdown(fragment)"
                             [isEditing]="editingFragmentId() === fragment.hashId"
+                            (fragmentChanged)="onFragmentChanged($event)"
                         />
                     }
                     @case (FragmentType.Image) {
                         <okd-article-image-fragment
                             [fragment]="asImage(fragment)"
                             [isEditing]="editingFragmentId() === fragment.hashId"
+                            (fragmentChanged)="onFragmentChanged($event)"
                         />
                     }
                     @case (FragmentType.Embed) {
                         <okd-article-embed-fragment
                             [fragment]="asEmbed(fragment)"
                             [isEditing]="editingFragmentId() === fragment.hashId"
+                            (fragmentChanged)="onFragmentChanged($event)"
                         />
                     }
                 }
@@ -68,7 +71,7 @@
                         [fragment]="fragment"
                         [isLoading]="isLoading()"
                         (create)="addFragment($event, fragment)"
-                        (edit)="edit(fragment.documentHashId)"
+                        (edit)="edit(fragment.hashId)"
                         (delete)="delete(fragment)"
                     />
                 }

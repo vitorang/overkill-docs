@@ -15,4 +15,11 @@
             aspect-ratio: 16/9;
         }
     }
+
+    mat-form-field {
+        display: block;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+    }
 }

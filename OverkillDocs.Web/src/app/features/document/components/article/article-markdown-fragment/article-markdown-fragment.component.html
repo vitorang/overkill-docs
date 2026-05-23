@@ -1,5 +1,7 @@
-@if (showPlaceholder()) {
+@if (isEditing()) {
+    <textarea #mdeTextarea></textarea>
+} @else if (showPlaceholder()) {
     <okd-article-placeholder-fragment [type]="fragment().type" />
 } @else {
-    <div class="content" [innerHTML]="htmlContent()"></div>
+    <div class="content" [innerHTML]="current().html"></div>
 }

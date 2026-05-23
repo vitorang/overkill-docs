@@ -31,12 +31,12 @@ internal sealed class DocumentFragmentRepository(
             .ExecuteDeleteAsync(ct);
     }
 
-    public async Task<int> ExecuteUpdateContent(int fragmentId, string content, CancellationToken ct)
+    public async Task<int> ExecuteUpdateContent(int fragmentId, string content, DateTime updatedAt, CancellationToken ct)
     {
         return await context.DocumentFragments.Where(e => e.Id == fragmentId)
             .ExecuteUpdateAsync(setters => setters
                 .SetProperty(f => f.Content, content)
-                .SetProperty(f => f.UpdatedAt, DateTime.UtcNow),
+                .SetProperty(f => f.UpdatedAt, updatedAt),
             ct);
     }
 

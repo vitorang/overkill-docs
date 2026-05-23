@@ -12,4 +12,5 @@ public abstract record DocumentFragmentDto
     public required string DocumentHashId { get; init; }
     public DocumentFragmentType Type { get; init; }
     public double Order { get; init; }
+    public DateTime UpdatedAt { get; set; }
 }

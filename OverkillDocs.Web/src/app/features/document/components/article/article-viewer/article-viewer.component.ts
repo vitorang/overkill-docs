@@ -7,7 +7,7 @@ import { DocumentFragment, DocumentFragmentType } from '@features/document/model
 import { DocumentViewerService } from '@features/document/services/document-viewer.service';
 import { InfoBoxComponent } from '@shared/components/info-box/info-box.component';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { filter, finalize, take } from 'rxjs';
+import { filter, finalize } from 'rxjs';
 import {
     ArticleEmbedFragment,
     ArticleImageFragment,
@@ -57,8 +57,8 @@ export class ArticleViewerComponent {
             .subscribe();
     }
 
-    protected edit(documentHashId: string): void {
-        this.editingFragmentId.set(documentHashId);
+    protected edit(hashId: string): void {
+        this.editingFragmentId.set(hashId);
     }
 
     protected delete(fragment: DocumentFragment): void {
@@ -82,5 +82,12 @@ export class ArticleViewerComponent {
 
     protected asEmbed(fragment: DocumentFragment): ArticleEmbedFragment {
         return fragment as ArticleEmbedFragment;
+    }
+
+    protected onFragmentChanged(fragment: DocumentFragment): void {
+        this.viewerService
+            .updateFragment(fragment)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe();
     }
 }

@@ -1,9 +1,16 @@
+@if (isEditing()) {
+    <mat-form-field appearance="outline">
+        <mat-label>Endereço</mat-label>
+        <input matInput [(ngModel)]="urlModel" (blur)="onInputBlur()" />
+    </mat-form-field>
+}
+
 @if (showPlaceholder()) {
     <okd-article-placeholder-fragment [type]="fragment().type" />
 } @else {
     <iframe
-        [src]="url()"
-        [class.vertical]="isVertical()"
+        [src]="current().url"
+        [class.vertical]="current().isVertical"
         frameborder="0"
         allow="picture-in-picture"
         referrerpolicy="strict-origin-when-cross-origin"

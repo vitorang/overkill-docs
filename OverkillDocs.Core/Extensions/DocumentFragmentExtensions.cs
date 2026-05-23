@@ -22,7 +22,8 @@ public static class DocumentFragmentExtensions
                 DocumentHashId = hashids.Encode(fragment.DocumentId),
                 Order = fragment.Order,
                 Type = fragment.Type,
-                Text = content["text"]
+                Text = content["text"],
+                UpdatedAt = fragment.UpdatedAt
             };
 
         if (fragment.Type == DocumentFragmentType.Image)
@@ -33,7 +34,8 @@ public static class DocumentFragmentExtensions
                 Order = fragment.Order,
                 Type = fragment.Type,
                 Url = content["url"],
-                Alt = content["alt"]
+                Alt = content["alt"],
+                UpdatedAt = fragment.UpdatedAt
             };
 
         if (fragment.Type == DocumentFragmentType.Embed)
@@ -44,6 +46,7 @@ public static class DocumentFragmentExtensions
                 Order = fragment.Order,
                 Type = fragment.Type,
                 Url = content["url"],
+                UpdatedAt = fragment.UpdatedAt
             };
 
         throw new NotImplementedException($"Sem suporte para fragmento Type={fragment.Type}");
