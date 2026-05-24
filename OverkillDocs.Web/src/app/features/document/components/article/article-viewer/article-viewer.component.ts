@@ -13,7 +13,8 @@ import {
     ArticleImageFragment,
     ArticleMarkdownFragment,
 } from '@features/document/models/article.models';
-import { ArticleFragmentActionsComponent } from '../article-fragment-actions/article-fragment-actions.component';
+import { ArticleAddFragmentComponent } from '@features/document/components/article/article-add-fragment/article-add-fragment.component';
+import { ArticleEditFragmentComponent } from '@features/document/components/article/article-edit-fragment/article-edit-fragment.component';
 
 @Component({
     selector: 'okd-article-viewer',
@@ -23,7 +24,8 @@ import { ArticleFragmentActionsComponent } from '../article-fragment-actions/art
         ArticleImageFragmentComponent,
         ArticleEmbedFragmentComponent,
         InfoBoxComponent,
-        ArticleFragmentActionsComponent,
+        ArticleAddFragmentComponent,
+        ArticleEditFragmentComponent,
     ],
     templateUrl: './article-viewer.component.html',
     styleUrl: './article-viewer.component.scss',
@@ -47,6 +49,10 @@ export class ArticleViewerComponent {
     }
 
     protected addFragment(type: DocumentFragmentType, after: DocumentFragment | null): void {
+        if (this.isLoading() || this.isEditingFragment()) {
+            return;
+        }
+
         this.isLoading.set(true);
         this.viewerService
             .createFragment(type, after?.hashId || null)

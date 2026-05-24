@@ -1,0 +1,18 @@
+<div class="content">
+    <okd-avatar avatarCode="" seed="" [size]="24" sizeUnit="px" title="NOME" />
+    <button mat-icon-button [matMenuTriggerFor]="editFragment" title="Modificar">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+</div>
+
+<mat-menu #editFragment="matMenu">
+    <button mat-menu-item (click)="edit.emit()">
+        <mat-icon>edit_note</mat-icon>
+        <span>Editar</span>
+    </button>
+
+    <button mat-menu-item (click)="delete.emit()">
+        <mat-icon>remove</mat-icon>
+        <span>Remover</span>
+    </button>
+</mat-menu>

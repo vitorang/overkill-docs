@@ -6,7 +6,7 @@
 
     .max-width {
         width: 100%;
-        max-width: 1200px;
+        max-width: 900px;
         margin: 0 auto;
     }
 
@@ -24,6 +24,17 @@
                 overflow: hidden;
                 text-align: center;
             }
+
+            .toolbar-edit {
+                flex: 1;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+
+                mat-divider:first-child {
+                    display: none;
+                }
+            }
         }
     }
 
@@ -36,13 +47,20 @@
         article {
             padding: 1rem;
 
-            > * {
-                display: block;
-            }
-
             > *:not(:last-child) {
                 margin-bottom: 1rem;
                 min-height: 0;
+            }
+        }
+
+        .fragment-wrapper {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            margin: 1rem 0;
+
+            :not(okd-article-edit-fragment) {
+                flex: 1;
             }
         }
     }
