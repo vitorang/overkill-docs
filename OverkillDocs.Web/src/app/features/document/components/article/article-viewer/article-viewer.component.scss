@@ -1,3 +1,5 @@
+@use 'mixins/navigation' as nav;
+
 :host {
     display: flex;
     flex-direction: column;
@@ -12,8 +14,10 @@
 
     mat-toolbar {
         .toolbar-content {
+            @include nav.border-bottom;
             display: flex;
             flex-direction: row;
+            padding-bottom: 2px;
 
             .title {
                 align-self: center;
@@ -23,17 +27,6 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-align: center;
-            }
-
-            .toolbar-edit {
-                flex: 1;
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-
-                mat-divider:first-child {
-                    display: none;
-                }
             }
         }
     }

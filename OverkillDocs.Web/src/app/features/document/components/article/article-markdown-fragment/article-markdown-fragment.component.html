@@ -5,3 +5,29 @@
 } @else {
     <div class="content" [innerHTML]="current().html"></div>
 }
+
+<ng-template #toolbarContent>
+    <button mat-icon-button (click)="executeAction('heading')">
+        <mat-icon>format_h1</mat-icon>
+    </button>
+    <button mat-icon-button (click)="executeAction('bold')">
+        <mat-icon>format_bold</mat-icon>
+    </button>
+    <button mat-icon-button (click)="executeAction('italic')">
+        <mat-icon>format_italic</mat-icon>
+    </button>
+    <button mat-icon-button (click)="executeAction('quote')">
+        <mat-icon>format_quote</mat-icon>
+    </button>
+    <button mat-icon-button (click)="executeAction('list')">
+        <mat-icon>list</mat-icon>
+    </button>
+    <button mat-icon-button (click)="executeAction('link')">
+        <mat-icon>link</mat-icon>
+    </button>
+
+    <div [style.flex]="1"></div>
+    <button mat-mini-fab (click)="saveAndFinishEdit()" title="Concluir edição">
+        <mat-icon>check</mat-icon>
+    </button>
+</ng-template>

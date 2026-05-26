@@ -1,44 +1,16 @@
 <mat-toolbar>
     <div class="toolbar-content max-width">
-        @if (isEditingFragment()) {
-            <div class="toolbar-edit">
-                <button mat-icon-button>
-                    <mat-icon>format_h1</mat-icon>
-                </button>
-                <button mat-icon-button>
-                    <mat-icon>format_bold</mat-icon>
-                </button>
-                <button mat-icon-button>
-                    <mat-icon>format_italic</mat-icon>
-                </button>
-                <button mat-icon-button>
-                    <mat-icon>format_quote</mat-icon>
-                </button>
-                <button mat-icon-button>
-                    <mat-icon>list</mat-icon>
-                </button>
-                <button mat-icon-button>
-                    <mat-icon>link</mat-icon>
-                </button>
-
-                <mat-divider [vertical]="true" />
-                <button mat-icon-button (click)="edit('')" title="Concluir edição">
-                    <mat-icon>check</mat-icon>
-                </button>
-            </div>
-        } @else {
+        @if (toolbar()?.showTitle !== false) {
             <div class="title">{{ document().title }}</div>
+        }
 
-            @if (editModeEnabled()) {
-                <button mat-icon-button (click)="editModeEnabled.set(false)" title="Visualizar">
-                    <mat-icon>edit_off</mat-icon>
-                </button>
-            } @else {
-                <button mat-icon-button (click)="editModeEnabled.set(true)" title="Editar">
-                    <mat-icon>edit</mat-icon>
-                </button>
-            }
-
+        @if (isEditingFragment()) {
+            <ng-container *ngTemplateOutlet="toolbar()?.template"></ng-container>
+        } @else if (editModeEnabled()) {
+            <button mat-icon-button (click)="editModeEnabled.set(false)" title="Finalizar edição">
+                <mat-icon>edit_off</mat-icon>
+            </button>
+        } @else {
             <button mat-icon-button [matMenuTriggerFor]="menu" title="Ações">
                 <mat-icon>more_vert</mat-icon>
             </button>
@@ -47,8 +19,13 @@
 </mat-toolbar>
 
 <mat-menu #menu="matMenu" xPosition="before">
+    <button mat-menu-item (click)="editModeEnabled.set(true)">
+        <mat-icon>edit</mat-icon>
+        <span>Editar</span>
+    </button>
+
     <button mat-menu-item>
-        <mat-icon>edit_document</mat-icon>
+        <mat-icon>title</mat-icon>
         <span>Renomear</span>
     </button>
 
@@ -75,20 +52,21 @@
                                 [fragment]="asMarkdown(fragment)"
                                 [isEditing]="editingFragmentId() === fragment.hashId"
                                 (fragmentChanged)="onFragmentChanged($event)"
+                                (finishEdit)="saveAndRelease($event)"
                             />
                         }
                         @case (FragmentType.Image) {
                             <okd-article-image-fragment
                                 [fragment]="asImage(fragment)"
                                 [isEditing]="editingFragmentId() === fragment.hashId"
-                                (fragmentChanged)="onFragmentChanged($event)"
+                                (finishEdit)="saveAndRelease($event)"
                             />
                         }
                         @case (FragmentType.Embed) {
                             <okd-article-embed-fragment
                                 [fragment]="asEmbed(fragment)"
                                 [isEditing]="editingFragmentId() === fragment.hashId"
-                                (fragmentChanged)="onFragmentChanged($event)"
+                                (finishEdit)="saveAndRelease($event)"
                             />
                         }
                     }

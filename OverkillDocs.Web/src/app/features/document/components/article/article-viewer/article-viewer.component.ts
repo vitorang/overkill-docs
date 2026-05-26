@@ -15,6 +15,7 @@ import {
 } from '@features/document/models/article.models';
 import { ArticleAddFragmentComponent } from '@features/document/components/article/article-add-fragment/article-add-fragment.component';
 import { ArticleEditFragmentComponent } from '@features/document/components/article/article-edit-fragment/article-edit-fragment.component';
+import { DocumentViewerHub } from '@features/document/hubs/document-viewer.hub';
 
 @Component({
     selector: 'okd-article-viewer',
@@ -31,6 +32,7 @@ import { ArticleEditFragmentComponent } from '@features/document/components/arti
     styleUrl: './article-viewer.component.scss',
 })
 export class ArticleViewerComponent {
+    private viewerHub = inject(DocumentViewerHub);
     private viewerService = inject(DocumentViewerService);
     private destroyRef = inject(DestroyRef);
 
@@ -39,13 +41,17 @@ export class ArticleViewerComponent {
     protected editModeEnabled = signal(false);
     protected isLoading = signal(false);
 
-    protected editingFragmentId = signal('');
+    protected editingFragmentId = signal<string | null>(null);
     protected isEditingFragment = computed(() => !!this.editingFragmentId());
+    protected toolbar = this.viewerService.toolbar;
 
     constructor() {
         toObservable(this.editModeEnabled)
             .pipe(filter((enabled) => !enabled))
-            .subscribe(() => this.editingFragmentId.set(''));
+            .subscribe(() => {
+                this.editingFragmentId.set(null);
+                this.toolbar.set(null);
+            });
     }
 
     protected addFragment(type: DocumentFragmentType, after: DocumentFragment | null): void {
@@ -63,8 +69,11 @@ export class ArticleViewerComponent {
             .subscribe();
     }
 
-    protected edit(hashId: string): void {
+    protected edit(hashId: string | null): void {
         this.editingFragmentId.set(hashId);
+        if (hashId === null) {
+            this.toolbar.set(null);
+        }
     }
 
     protected delete(fragment: DocumentFragment): void {
@@ -91,9 +100,30 @@ export class ArticleViewerComponent {
     }
 
     protected onFragmentChanged(fragment: DocumentFragment): void {
+        if (!this.viewerHub.state.connected()) {
+            return;
+        }
+
         this.viewerService
             .updateFragment(fragment)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe();
+    }
+
+    protected saveAndRelease(fragment: DocumentFragment | null): void {
+        if (!this.viewerHub.state.connected()) {
+            return;
+        }
+
+        if (fragment === null) {
+            return this.edit(null);
+        }
+
+        this.viewerService
+            .updateFragment(fragment)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => {
+                this.edit(null);
+            });
     }
 }

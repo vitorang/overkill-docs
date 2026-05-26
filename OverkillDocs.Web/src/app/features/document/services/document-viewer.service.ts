@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { DestroyRef, inject, Injectable, signal, TemplateRef } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { API } from '@core/constants/api.constants';
 import { apiHandler } from '@core/utils/api-handler.utils';
@@ -25,6 +25,7 @@ export class DocumentViewerService {
 
     documentHandler = apiHandler();
     document = signal<DocumentDetail>(this.emptyDocument);
+    toolbar = signal<{ template: TemplateRef<void>; showTitle: boolean } | null>(null);
 
     initialize(documentHashId: string): void {
         if (this.initialized) {

@@ -12,5 +12,11 @@
         > :last-child {
             margin-bottom: 0 !important;
         }
+
+        blockquote {
+            border-left: 4px solid var(--mat-sys-outline-variant);
+            padding-left: 1rem;
+            margin: 1rem;
+        }
     }
 }

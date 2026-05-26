@@ -5,16 +5,14 @@ import {
     inject,
     output,
     signal,
-    model,
     viewChild,
     ElementRef,
-    effect,
     ViewChild,
     DestroyRef,
+    TemplateRef,
 } from '@angular/core';
 import MarkdownIt from 'markdown-it';
 import DOMPurify from 'dompurify';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ArticleMarkdownFragment } from '@features/document/models/article.models';
 import { ArticlePlaceholderFragmentComponent } from '../article-placeholder-fragment/article-placeholder-fragment.component';
 import { DocumentViewerHub } from '@features/document/hubs/document-viewer.hub';
@@ -26,14 +24,17 @@ import {
     fromEventPattern,
     map,
     merge,
-    Observable,
     tap,
 } from 'rxjs';
 import EasyMDE from 'easymde';
+import { SHARED } from '@shared/index';
+import { DocumentViewerService } from '@features/document/services/document-viewer.service';
+
+type MdeAction = 'heading' | 'bold' | 'italic' | 'quote' | 'list' | 'link';
 
 @Component({
     selector: 'okd-article-markdown-fragment',
-    imports: [ArticlePlaceholderFragmentComponent],
+    imports: [SHARED, ArticlePlaceholderFragmentComponent],
     templateUrl: './article-markdown-fragment.component.html',
     styleUrl: './article-markdown-fragment.component.scss',
 })
@@ -41,8 +42,20 @@ export class ArticleMarkdownFragmentComponent {
     fragment = input.required<ArticleMarkdownFragment>();
     isEditing = input.required<boolean>();
     fragmentChanged = output<ArticleMarkdownFragment>();
+    finishEdit = output<ArticleMarkdownFragment | null>();
 
+    private viewerHub = inject(DocumentViewerHub);
+    private viewerService = inject(DocumentViewerService);
     private destroyRef = inject(DestroyRef);
+
+    private textToSave: string | null = null;
+    protected current = signal({
+        updatedAt: '',
+        html: '',
+        markdown: '',
+    });
+
+    private toolbarContent = viewChild<TemplateRef<void>>('toolbarContent');
     private easyMDE: EasyMDE | null = null;
     @ViewChild('mdeTextarea', { static: false }) set textareaRef(
         element: ElementRef<HTMLTextAreaElement> | undefined,
@@ -52,20 +65,15 @@ export class ArticleMarkdownFragmentComponent {
         }
     }
 
-    private viewerHub = inject(DocumentViewerHub);
-    protected textModel = model<string>('');
-    protected current = signal({
-        updatedAt: '',
-        html: '',
-        markdown: '',
-    });
-
     constructor() {
         toObservable(this.isEditing)
             .pipe(distinctUntilChanged())
             .subscribe(() => {
                 if (this.isEditing()) {
-                    this.textModel.set(this.fragment().text);
+                    this.viewerService.toolbar.set({
+                        template: this.toolbarContent()!,
+                        showTitle: false,
+                    });
                 } else {
                     this.easyMDE?.toTextArea();
                     this.easyMDE = null;
@@ -107,13 +115,12 @@ export class ArticleMarkdownFragmentComponent {
         )
             .pipe(
                 map(() => this.easyMDE!.value()),
-                tap(() => console.log('editando')),
+                tap((text) => (this.textToSave = text)),
                 debounceTime(3000),
-                tap(() => console.log('editado')),
                 takeUntilDestroyed(this.destroyRef),
-                filter(() => this.viewerHub.state.connected()),
+                filter(() => this.textToSave !== null && this.isEditing()),
             )
-            .subscribe((text) => this.saveText(text));
+            .subscribe(() => this.saveText(false));
     }
 
     private markdownIt: MarkdownIt = (() => {
@@ -147,19 +154,6 @@ export class ArticleMarkdownFragmentComponent {
 
     protected showPlaceholder = computed(() => !this.current().html);
 
-    private sanitizer = inject(DomSanitizer);
-    /* protected htmlContent = computed(() => {
-        let html = this.markdownIt.render(this.fragment().text);
-
-        html = DOMPurify.sanitize(html, {
-            ADD_ATTR: ['target'],
-            FORBID_TAGS: ['img', 'video', 'audio', 'iframe'],
-            USE_PROFILES: { html: true },
-        });
-
-        return this.sanitizer.bypassSecurityTrustHtml(html);
-    });*/
-
     private getHtml(text: string): string {
         if (!text.trim()) {
             return '';
@@ -175,10 +169,38 @@ export class ArticleMarkdownFragmentComponent {
         return html;
     }
 
-    protected saveText(text: string): void {
-        this.fragmentChanged.emit({
+    private saveText(finishEdit: boolean): void {
+        const text = this.textToSave;
+        this.textToSave = null;
+
+        const content = {
             ...this.fragment(),
-            text,
-        });
+            text: text || '',
+        };
+
+        if (finishEdit) {
+            this.finishEdit.emit(text !== null ? content : null);
+        } else if (text !== null) {
+            this.fragmentChanged.emit(content);
+        }
+    }
+
+    protected saveAndFinishEdit(): void {
+        this.saveText(true);
+    }
+
+    executeAction(action: MdeAction): void {
+        const nativeActions: Record<MdeAction, (editor: EasyMDE) => void> = {
+            heading: EasyMDE.toggleHeadingSmaller,
+            bold: EasyMDE.toggleBold,
+            italic: EasyMDE.toggleItalic,
+            quote: EasyMDE.toggleBlockquote,
+            list: EasyMDE.toggleUnorderedList,
+            link: EasyMDE.drawLink,
+        };
+
+        if (this.easyMDE) {
+            nativeActions[action](this.easyMDE);
+        }
     }
 }

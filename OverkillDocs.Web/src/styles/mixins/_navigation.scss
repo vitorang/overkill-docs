@@ -1,13 +1,12 @@
-@mixin theme {
+@mixin background {
     background-color: var(--mat-sys-surface-container) !important;
-    border: 0px solid var(--mat-sys-outline-variant);
     box-shadow: var(--mat-sys-elevation-level1);
 }
 
 @mixin border-bottom {
-    border-bottom-width: 1px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
 }
 
 @mixin border-right {
-    border-right-width: 1px;
+    border-right: 1px solid var(--mat-sys-outline-variant);
 }

@@ -21,15 +21,18 @@ export class DocumentViewerHub {
     readonly onActiveLocksChanged = new Subject<DocumentFragmentLock[]>();
     readonly onDocumentChanged = new Subject<string>();
     readonly onFragmentChanged = new Subject<DocumentFragment>();
-    readonly onJoinRequested = new Subject<void>();
+    readonly onJoinRequested = new Subject<string>();
+    readonly onLeaveRequested = new Subject<string>();
 
     readonly join = async (documentHashId: string): Promise<void> => {
         await this.mainHub.send(Hub.join, documentHashId);
-        this.onJoinRequested.next();
+        this.onJoinRequested.next(documentHashId);
     };
 
-    readonly leave = (documentHashId: string): Promise<void> =>
-        this.mainHub.send(Hub.leave, documentHashId);
+    readonly leave = async (documentHashId: string): Promise<void> => {
+        await this.mainHub.send(Hub.leave, documentHashId);
+        this.onLeaveRequested.next(documentHashId);
+    };
 
     readonly requestActiveLocks = (documentHashId: string): Promise<void> =>
         this.mainHub.send(Hub.requestActiveLocks, documentHashId);

@@ -1,4 +1,14 @@
-import { Component, computed, inject, input, model, output, signal } from '@angular/core';
+import {
+    Component,
+    computed,
+    inject,
+    input,
+    model,
+    output,
+    signal,
+    TemplateRef,
+    viewChild,
+} from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ArticleEmbedFragment } from '@features/document/models/article.models';
 import { SHARED } from '@shared/index';
@@ -6,6 +16,7 @@ import { ArticlePlaceholderFragmentComponent } from '../article-placeholder-frag
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { filter, map, merge } from 'rxjs';
 import { DocumentViewerHub } from '@features/document/hubs/document-viewer.hub';
+import { DocumentViewerService } from '@features/document/services/document-viewer.service';
 
 @Component({
     selector: 'okd-article-embed-fragment',
@@ -16,9 +27,11 @@ import { DocumentViewerHub } from '@features/document/hubs/document-viewer.hub';
 export class ArticleEmbedFragmentComponent {
     fragment = input.required<ArticleEmbedFragment>();
     isEditing = input.required<boolean>();
-    fragmentChanged = output<ArticleEmbedFragment>();
+    finishEdit = output<ArticleEmbedFragment | null>();
 
+    private toolbarContent = viewChild<TemplateRef<void>>('toolbarContent');
     private viewerHub = inject(DocumentViewerHub);
+    private viewerService = inject(DocumentViewerService);
     protected urlModel = model<string>('');
     protected current = signal({
         updatedAt: '',
@@ -29,7 +42,13 @@ export class ArticleEmbedFragmentComponent {
     constructor() {
         toObservable(this.isEditing)
             .pipe(filter((isEditing) => isEditing))
-            .subscribe(() => this.urlModel.set(this.fragment().url));
+            .subscribe(() => {
+                this.urlModel.set(this.fragment().url);
+                this.viewerService.toolbar.set({
+                    template: this.toolbarContent()!,
+                    showTitle: true,
+                });
+            });
 
         merge(
             toObservable(this.fragment),
@@ -39,7 +58,6 @@ export class ArticleEmbedFragmentComponent {
                 takeUntilDestroyed(),
                 filter((fragment) => fragment.hashId === this.fragment().hashId),
                 filter((fragment) => fragment.updatedAt > this.current().updatedAt),
-                filter(() => this.viewerHub.state.connected()),
             )
             .subscribe((fragment) => {
                 this.current.set({
@@ -90,13 +108,16 @@ export class ArticleEmbedFragmentComponent {
         return false;
     }
 
-    protected onInputBlur(): void {
+    protected saveAndFinishEdit(): void {
         const modelChanged = this.urlModel() !== this.fragment().url;
+
         if (modelChanged) {
-            this.fragmentChanged.emit({
+            this.finishEdit.emit({
                 ...this.fragment(),
                 url: this.urlModel(),
             });
+        } else {
+            this.finishEdit.emit(null);
         }
     }
 }
