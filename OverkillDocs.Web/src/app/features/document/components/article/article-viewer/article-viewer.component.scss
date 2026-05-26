@@ -1,9 +1,8 @@
 @use 'mixins/navigation' as nav;
 
 :host {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+    display: block;
+    overflow-y: auto;
     height: 100%;
 
     .max-width {
@@ -13,6 +12,10 @@
     }
 
     mat-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+
         .toolbar-content {
             @include nav.border-bottom;
             display: flex;
@@ -32,13 +35,8 @@
     }
 
     .main-content {
-        flex: 1;
-        height: 100%;
-        width: 100%;
-        overflow-y: auto;
-
         article {
-            padding: 1rem;
+            padding: 0 1rem;
 
             > *:not(:last-child) {
                 margin-bottom: 1rem;

@@ -36,52 +36,48 @@
 </mat-menu>
 
 <div class="main-content">
-    @if (!editModeEnabled() && document().fragments.length === 0) {
-        <okd-info-box icon="edit_document">Está vazio</okd-info-box>
-    } @else {
-        <article class="max-width">
-            @if (editModeEnabled() && !isEditingFragment()) {
-                <okd-article-add-fragment (create)="addFragment($event, null)" />
-            }
+    <article class="max-width">
+        @if (editModeEnabled() && !isEditingFragment()) {
+            <okd-article-add-fragment (create)="addFragment($event, null)" />
+        }
 
-            @for (fragment of document().fragments; track fragment.hashId) {
-                <div class="fragment-wrapper">
-                    @switch (fragment.type) {
-                        @case (FragmentType.Markdown) {
-                            <okd-article-markdown-fragment
-                                [fragment]="asMarkdown(fragment)"
-                                [isEditing]="editingFragmentId() === fragment.hashId"
-                                (fragmentChanged)="onFragmentChanged($event)"
-                                (finishEdit)="saveAndRelease($event)"
-                            />
-                        }
-                        @case (FragmentType.Image) {
-                            <okd-article-image-fragment
-                                [fragment]="asImage(fragment)"
-                                [isEditing]="editingFragmentId() === fragment.hashId"
-                                (finishEdit)="saveAndRelease($event)"
-                            />
-                        }
-                        @case (FragmentType.Embed) {
-                            <okd-article-embed-fragment
-                                [fragment]="asEmbed(fragment)"
-                                [isEditing]="editingFragmentId() === fragment.hashId"
-                                (finishEdit)="saveAndRelease($event)"
-                            />
-                        }
-                    }
-                    @if (editModeEnabled()) {
-                        <okd-article-edit-fragment
-                            (edit)="edit(fragment.hashId)"
-                            (delete)="delete(fragment)"
+        @for (fragment of document().fragments; track fragment.hashId) {
+            <div class="fragment-wrapper">
+                @switch (fragment.type) {
+                    @case (FragmentType.Markdown) {
+                        <okd-article-markdown-fragment
+                            [fragment]="asMarkdown(fragment)"
+                            [isEditing]="editingFragmentId() === fragment.hashId"
+                            (fragmentChanged)="onFragmentChanged($event)"
+                            (finishEdit)="saveAndRelease($event)"
                         />
                     }
-                </div>
-
-                @if (editModeEnabled()) {
-                    <okd-article-add-fragment (create)="addFragment($event, fragment)" />
+                    @case (FragmentType.Image) {
+                        <okd-article-image-fragment
+                            [fragment]="asImage(fragment)"
+                            [isEditing]="editingFragmentId() === fragment.hashId"
+                            (finishEdit)="saveAndRelease($event)"
+                        />
+                    }
+                    @case (FragmentType.Embed) {
+                        <okd-article-embed-fragment
+                            [fragment]="asEmbed(fragment)"
+                            [isEditing]="editingFragmentId() === fragment.hashId"
+                            (finishEdit)="saveAndRelease($event)"
+                        />
+                    }
                 }
+                @if (editModeEnabled()) {
+                    <okd-article-edit-fragment
+                        (edit)="edit(fragment.hashId)"
+                        (delete)="delete(fragment)"
+                    />
+                }
+            </div>
+
+            @if (editModeEnabled()) {
+                <okd-article-add-fragment (create)="addFragment($event, fragment)" />
             }
-        </article>
-    }
+        }
+    </article>
 </div>
