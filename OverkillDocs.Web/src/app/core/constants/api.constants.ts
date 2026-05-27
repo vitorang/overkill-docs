@@ -19,6 +19,7 @@ export const API = {
     DOCUMENT_FRAGMENTS: {
         INDEX: `${url}/DocumentFragments`,
         BY_ID: (hashId: string) => `${url}/DocumentFragments/${hashId}`,
+        LOCK: (hashId: string) => `${url}/DocumentFragments/${hashId}/Lock`,
     },
     HUB: {
         MAIN: (authToken: string) => `${url}/Hubs/Main?auth_token=${authToken}`,

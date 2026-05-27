@@ -50,7 +50,7 @@ internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : Object
 
     public async Task<T[]> GetAll(string[] ids)
     {
-        RedisKey[] keys = [.. ids.Select(e => (RedisKey)e)];
+        RedisKey[] keys = [.. ids.Select(e => (RedisKey)KeyFrom(e))];
         RedisValue[] results = await database.StringGetAsync(keys);
 
         return [..results

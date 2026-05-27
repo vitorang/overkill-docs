@@ -99,4 +99,12 @@ export class DocumentViewerService {
     updateFragment(fragment: DocumentFragment): Observable<void> {
         return this.http.put<void>(API.DOCUMENT_FRAGMENTS.INDEX, typedFragment(fragment));
     }
+
+    lockFragment(fragmentHashId: string): Observable<void> {
+        return this.http.post<void>(API.DOCUMENT_FRAGMENTS.LOCK(fragmentHashId), {});
+    }
+
+    unlockFragment(fragmentHashId: string): Observable<void> {
+        return this.http.delete<void>(API.DOCUMENT_FRAGMENTS.LOCK(fragmentHashId));
+    }
 }

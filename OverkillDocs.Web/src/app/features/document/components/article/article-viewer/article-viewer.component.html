@@ -37,8 +37,11 @@
 
 <div class="main-content">
     <article class="max-width">
-        @if (editModeEnabled() && !isEditingFragment()) {
-            <okd-article-add-fragment (create)="addFragment($event, null)" />
+        @if (editModeEnabled()) {
+            <okd-article-add-fragment
+                (create)="addFragment($event, null)"
+                [disabled]="isEditingFragment()"
+            />
         }
 
         @for (fragment of document().fragments; track fragment.hashId) {
@@ -69,6 +72,8 @@
                 }
                 @if (editModeEnabled()) {
                     <okd-article-edit-fragment
+                        [fragmentHashId]="fragment.hashId"
+                        [disabled]="!!editingFragmentId()"
                         (edit)="edit(fragment.hashId)"
                         (delete)="delete(fragment)"
                     />
@@ -76,7 +81,10 @@
             </div>
 
             @if (editModeEnabled()) {
-                <okd-article-add-fragment (create)="addFragment($event, fragment)" />
+                <okd-article-add-fragment
+                    (create)="addFragment($event, fragment)"
+                    [disabled]="isEditingFragment()"
+                />
             }
         }
     </article>

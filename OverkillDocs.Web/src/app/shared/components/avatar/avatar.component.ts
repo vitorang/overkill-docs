@@ -13,6 +13,7 @@ type sizeUnit = 'px' | 'em' | 'rem' | '%';
     host: {
         '[style.width]': 'avatarSize()',
         '[style.height]': 'avatarSize()',
+        '[style.opacity]': 'opacity()',
     },
 })
 export class AvatarComponent implements OnInit {
@@ -47,4 +48,6 @@ export class AvatarComponent implements OnInit {
     }
 
     protected avatarSize = computed(() => `${this.size()}${this.sizeUnit()}`);
+
+    protected opacity = computed(() => (this.avatarCode() || this.seed() ? 1 : 0.05));
 }

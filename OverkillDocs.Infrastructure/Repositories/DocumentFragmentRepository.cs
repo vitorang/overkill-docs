@@ -1,3 +1,4 @@
+using HashidsNet;
 using Microsoft.EntityFrameworkCore;
 using OverkillDocs.Core.DTOs.Document;
 using OverkillDocs.Core.Entities.Document;
@@ -11,7 +12,8 @@ namespace OverkillDocs.Infrastructure.Repositories;
 internal sealed class DocumentFragmentRepository(
     AppDbContext context,
     IObjectCache<DocumentFragmentLockDto> lockCache,
-    IObjectCache<DocumentFragmentIdsResult> fragmentIdsCache
+    IObjectCache<DocumentFragmentIdsResult> fragmentIdsCache,
+    IHashids hashids
     ) : IDocumentFragmentRepository
 {
     public void Add(DocumentFragment fragment)
@@ -50,7 +52,7 @@ internal sealed class DocumentFragmentRepository(
 
     public async Task<DocumentFragmentLockDto?> GetLock(int fragmentId)
     {
-        return await lockCache.Get(fragmentId);
+        return await lockCache.Get(hashids.Encode(fragmentId));
     }
 
     public async Task<bool> Lock(DocumentFragmentLockDto fragmentLock)
@@ -74,6 +76,7 @@ internal sealed class DocumentFragmentRepository(
         }
 
         var fragmentResult = await fragmentIdsCache.Get(documentId, onCacheMiss!);
-        return await lockCache.GetAll(fragmentResult!.FragmentIds);
+        var hashIds = fragmentResult!.FragmentIds.Select(e => hashids.Encode(e)).ToArray();
+        return await lockCache.GetAll(hashIds);
     }
 }

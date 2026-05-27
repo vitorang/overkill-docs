@@ -113,8 +113,10 @@ internal sealed class DocumentService(
     {
         string userHashId = hashids.Encode(userContext.UserId);
         int fragmentId = hashids.Decode(fragmentDto.HashId).First();
-        //if ((await fragmentRepository.GetLock(fragmentId))?.UserHashId != userHashId)
-        //    throw new ConflictException("Usuário não está com posse do fragmento");
+        var fragmentLock = await fragmentRepository.GetLock(fragmentId);
+
+        if (fragmentLock?.UserHashId != userHashId)
+            throw new ConflictException("Usuário não está com posse do fragmento");
 
         fragmentDto.UpdatedAt = DateTime.UtcNow;
         int rowsAffected = await fragmentRepository.ExecuteUpdateContent(fragmentId, fragmentDto.GetContent(), fragmentDto.UpdatedAt, ct);

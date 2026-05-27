@@ -12,7 +12,7 @@ namespace OverkillDocs.Infrastructure.Repositories;
 internal sealed class DocumentRepository(
     AppDbContext context,
     IObjectCache<DocumentSummariesResult> documentSummaryCache,
-    IObjectCache<DocumentFragmentIdsResult> fragmentIdsCache,
+    IObjectCache<DocumentFragmentHashIdsResult> fragmentIdsCache,
     IDocumentFragmentRepository fragmentRepository,
     IHashids hashids) : IDocumentRepository
 {
