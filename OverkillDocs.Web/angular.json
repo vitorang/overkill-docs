@@ -45,7 +45,10 @@
                             "includePaths": [
                                 "src/styles"
                             ]
-                        }
+                        },
+                        "allowedCommonJsDependencies": [
+                            "easymde"
+                        ]
                     },
                     "configurations": {
                         "production": {

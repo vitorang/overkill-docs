@@ -5,7 +5,6 @@ import { ArticleImageFragmentComponent } from '../article-image-fragment/article
 import { ArticleEmbedFragmentComponent } from '../article-embed-fragment/article-embed-fragment.component';
 import { DocumentFragment, DocumentFragmentType } from '@features/document/models/document.models';
 import { DocumentViewerService } from '@features/document/services/document-viewer.service';
-import { InfoBoxComponent } from '@shared/components/info-box/info-box.component';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { filter, finalize } from 'rxjs';
 import {
@@ -24,7 +23,6 @@ import { DocumentViewerHub } from '@features/document/hubs/document-viewer.hub';
         ArticleMarkdownFragmentComponent,
         ArticleImageFragmentComponent,
         ArticleEmbedFragmentComponent,
-        InfoBoxComponent,
         ArticleAddFragmentComponent,
         ArticleEditFragmentComponent,
     ],

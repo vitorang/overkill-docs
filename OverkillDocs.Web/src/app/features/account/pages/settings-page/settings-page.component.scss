@@ -7,7 +7,7 @@
     height: 100vh;
 
     mat-toolbar {
-        @include nav.theme;
+        @include nav.background;
         @include nav.border-bottom;
     }
 
