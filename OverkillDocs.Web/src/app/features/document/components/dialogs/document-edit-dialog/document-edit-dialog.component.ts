@@ -1,9 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ProblemDetails } from '@core/models/problem-details.model';
-import { apiHandler, ApiHandler } from '@core/utils/api-handler.utils';
+import { apiHandler } from '@core/utils/api-handler.utils';
 import { FormUtils } from '@core/utils/form.utils';
 import {
     DocumentCreation,
@@ -23,7 +23,6 @@ type DocumentForm = FormGroup<{
     imports: [SHARED],
     templateUrl: './document-edit-dialog.component.html',
     styleUrl: './document-edit-dialog.component.scss',
-    providers: [DocumentIndexService],
 })
 export class DocumentEditDialogComponent implements OnInit {
     private dialogRef = inject(MatDialogRef<DocumentEditDialogComponent>);

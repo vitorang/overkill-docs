@@ -12,7 +12,7 @@ import {
 import { AlertService } from '@shared/services/alert.service';
 import { asyncScheduler, filter, forkJoin, Observable, throttleTime } from 'rxjs';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DocumentIndexService {
     private indexHub = inject(DocumentIndexHub);
     private http = inject(HttpClient);

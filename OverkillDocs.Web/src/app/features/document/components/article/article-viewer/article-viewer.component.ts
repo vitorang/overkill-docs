@@ -1,9 +1,21 @@
-import { Component, computed, DestroyRef, inject, signal, OnDestroy } from '@angular/core';
+import {
+    Component,
+    computed,
+    DestroyRef,
+    inject,
+    signal,
+    OnDestroy,
+    Injector,
+} from '@angular/core';
 import { SHARED } from '@shared/index';
 import { ArticleMarkdownFragmentComponent } from '../article-markdown-fragment/article-markdown-fragment.component';
 import { ArticleImageFragmentComponent } from '../article-image-fragment/article-image-fragment.component';
 import { ArticleEmbedFragmentComponent } from '../article-embed-fragment/article-embed-fragment.component';
-import { DocumentFragment, DocumentFragmentType } from '@features/document/models/document.models';
+import {
+    asSummary,
+    DocumentFragment,
+    DocumentFragmentType,
+} from '@features/document/models/document.models';
 import { DocumentViewerService } from '@features/document/services/document-viewer.service';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import {
@@ -28,6 +40,13 @@ import { DocumentViewerHub } from '@features/document/hubs/document-viewer.hub';
 import { AlertService } from '@shared/services/alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProblemDetails } from '@core/models/problem-details.model';
+import { MatDialog } from '@angular/material/dialog';
+import { DocumentEditDialogComponent } from '@features/document/components/dialogs/document-edit-dialog/document-edit-dialog.component';
+import {
+    ConfirmModalComponent,
+    IConfirmModal,
+} from '@shared/components/confirm-modal/confirm-modal.component';
+import { DocumentIndexService } from '@features/document/services/document-index.service';
 
 @Component({
     selector: 'okd-article-viewer',
@@ -45,8 +64,12 @@ import { ProblemDetails } from '@core/models/problem-details.model';
 export class ArticleViewerComponent implements OnDestroy {
     private viewerHub = inject(DocumentViewerHub);
     private viewerService = inject(DocumentViewerService);
+    private indexService = inject(DocumentIndexService);
     private destroyRef = inject(DestroyRef);
     private alertService = inject(AlertService);
+    private dialog = inject(MatDialog);
+    private injector = inject(Injector);
+
     private lockRenewer = {
         interval: null as Subscription | null,
         milliseconds: 45000,
@@ -108,6 +131,31 @@ export class ArticleViewerComponent implements OnDestroy {
         }
     }
 
+    protected deleteDocument(): void {
+        this.openConfirmModal('Deseja excluir o documento?').subscribe((value) => {
+            if (!value) {
+                return;
+            }
+
+            this.isLoading.set(true);
+            this.indexService
+                .delete(this.document().hashId)
+                .pipe(
+                    takeUntilDestroyed(this.destroyRef),
+                    finalize(() => this.isLoading.set(false)),
+                )
+                .subscribe();
+        });
+    }
+
+    protected renameDocument(): void {
+        this.dialog.open(DocumentEditDialogComponent, {
+            width: '500px',
+            data: asSummary(this.document()),
+            injector: this.injector,
+        });
+    }
+
     protected addFragment(type: DocumentFragmentType, after: DocumentFragment | null): void {
         if (this.isLoading() || this.isEditingFragment()) {
             return;
@@ -140,14 +188,20 @@ export class ArticleViewerComponent implements OnDestroy {
     }
 
     protected delete(fragment: DocumentFragment): void {
-        this.isLoading.set(true);
-        this.viewerService
-            .deleteFragment(fragment)
-            .pipe(
-                takeUntilDestroyed(this.destroyRef),
-                finalize(() => this.isLoading.set(false)),
-            )
-            .subscribe();
+        this.openConfirmModal('Deseja excluir o fragmento?').subscribe((value) => {
+            if (!value) {
+                return;
+            }
+
+            this.isLoading.set(true);
+            this.viewerService
+                .deleteFragment(fragment)
+                .pipe(
+                    takeUntilDestroyed(this.destroyRef),
+                    finalize(() => this.isLoading.set(false)),
+                )
+                .subscribe();
+        });
     }
 
     protected asMarkdown(fragment: DocumentFragment): ArticleMarkdownFragment {
@@ -225,5 +279,16 @@ export class ArticleViewerComponent implements OnDestroy {
     private stopLocksRefresher() {
         this.locksRefresher.interval?.unsubscribe();
         this.locksRefresher.interval = null;
+    }
+
+    private openConfirmModal(message: string) {
+        return this.dialog
+            .open<ConfirmModalComponent, IConfirmModal, boolean>(ConfirmModalComponent, {
+                width: '350px',
+                data: { message },
+                disableClose: false,
+                autoFocus: false,
+            })
+            .afterClosed();
     }
 }

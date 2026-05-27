@@ -16,7 +16,6 @@ import { skip } from 'rxjs';
     imports: [SHARED, InfoBoxComponent],
     templateUrl: './document-index.component.html',
     styleUrl: './document-index.component.scss',
-    providers: [DocumentIndexService],
 })
 export class DocumentIndexComponent {
     private dialog = inject(MatDialog);
