@@ -1,4 +1,5 @@
 export const SEGMENTS = {
+    HOME: 'documents',
     ACCOUNT: {
         ROOT: 'account',
         LOGIN: 'login',
