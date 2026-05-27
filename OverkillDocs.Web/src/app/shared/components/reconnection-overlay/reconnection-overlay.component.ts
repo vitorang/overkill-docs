@@ -13,19 +13,21 @@ import { SHARED } from '@shared/index';
     },
 })
 export class ReconnectionOverlayComponent {
-    private mainHub = inject(MainHub).mainHub;
+    private mainHub = inject(MainHub);
     private accountService = inject(AccountService);
     protected connected = this.mainHub.state.connected;
     protected connecting = this.mainHub.state.connecting;
 
     constructor() {
         effect(() => {
-            if (!this.connected()) (document.activeElement as HTMLElement)?.blur();
+            if (!this.connected()) {
+                (document.activeElement as HTMLElement)?.blur();
+            }
         });
     }
 
     protected reconnect(): void {
-        this.mainHub.forceConnect();
+        this.mainHub.connect();
     }
 
     protected logout(): void {

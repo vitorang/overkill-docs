@@ -55,3 +55,8 @@ export function typedFragment(
         ...fragment,
     };
 }
+
+export function asSummary(document: DocumentDetail): DocumentSummary {
+    const { hashId, title, type } = document;
+    return { hashId, title, type };
+}

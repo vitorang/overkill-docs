@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { MainHub, ResponseListener } from '@core/hubs/main.hub';
-import { distinctUntilChanged, Observable, Subject, switchMap } from 'rxjs';
+import { IHub, IHubState, MainHub, ResponseListener } from '@core/hubs/main.hub';
+import { Subject } from 'rxjs';
 
 const group = 'DocumentIndex';
 const Hub = {
@@ -10,21 +9,15 @@ const Hub = {
 } as const;
 
 @Injectable({ providedIn: 'root' })
-export class DocumentIndexHub {
+export class DocumentIndexHub implements IHub {
     private mainHub = inject(MainHub).mainHub;
     readonly onChanged = new Subject<void>();
 
     readonly join = (): Promise<void> => this.mainHub.send(Hub.join);
 
-    get responseListeners(): ResponseListener[] {
-        return [{ name: Hub.onChanged, listener: this.onChanged }];
-    }
+    responseListeners: ResponseListener[] = [{ name: Hub.onChanged, listener: this.onChanged }];
 
-    get connection(): Observable<boolean> {
-        return this.mainHub.connection.pipe(
-            takeUntilDestroyed(),
-            switchMap(() => toObservable(this.mainHub.state.connected)),
-            distinctUntilChanged(),
-        );
+    get state(): IHubState {
+        return this.mainHub.state;
     }
 }

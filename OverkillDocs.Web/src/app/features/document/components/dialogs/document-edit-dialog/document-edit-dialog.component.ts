@@ -23,6 +23,7 @@ type DocumentForm = FormGroup<{
     imports: [SHARED],
     templateUrl: './document-edit-dialog.component.html',
     styleUrl: './document-edit-dialog.component.scss',
+    providers: [DocumentIndexService],
 })
 export class DocumentEditDialogComponent implements OnInit {
     private dialogRef = inject(MatDialogRef<DocumentEditDialogComponent>);

@@ -1,12 +1,20 @@
-import { computed, inject, Injectable, Signal, signal } from '@angular/core';
-import * as signalR from '@microsoft/signalr';
-import { defer, filter, finalize, Observable, shareReplay, Subject } from 'rxjs';
+import {
+    computed,
+    inject,
+    Injectable,
+    Injector,
+    runInInjectionContext,
+    Signal,
+    signal,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { AuthService } from '@core/services/auth.service';
 import { API } from '@core/constants/api.constants';
+import { AuthService } from '@core/services/auth.service';
 import { ChatHub } from '@features/chat/hubs/chat.hub';
 import { DocumentIndexHub } from '@features/document/hubs/document-index.hub';
 import { DocumentViewerHub } from '@features/document/hubs/document-viewer.hub';
+import * as signalR from '@microsoft/signalr';
+import { filter, Subject } from 'rxjs';
 
 export interface ResponseListener {
     name: string;
@@ -29,27 +37,41 @@ export interface IHubState {
 export type HubState = 'DISCONNECTED' | 'CONNECTED' | 'CONNECTING';
 
 export interface IMainHub {
-    connection: Observable<unknown>;
     state: IHubState;
     onReceived: Subject<IRawMessage>;
     onSended: Subject<IRawMessage>;
     send<T>(method: string, data?: T): Promise<void>;
-    forceDisconnect(): void;
-    forceConnect(): void;
+}
+
+export interface IHub {
+    responseListeners: ResponseListener[];
+    state: IHubState;
 }
 
 @Injectable({ providedIn: 'root' })
 export class MainHub {
     private connectionState = signal<HubState>('DISCONNECTED');
-    private state = {
+    private injector = inject(Injector);
+
+    state = {
         connected: computed(() => this.connectionState() === 'CONNECTED'),
         connecting: computed(() => this.connectionState() === 'CONNECTING'),
         disconnected: computed(() => this.connectionState() === 'DISCONNECTED'),
         current: this.connectionState.asReadonly(),
     };
 
-    private onReceived = new Subject<IRawMessage>();
-    private onSended = new Subject<IRawMessage>();
+    public get hubs(): IHub[] {
+        let value: IHub[] = [];
+
+        runInInjectionContext(this.injector, () => {
+            value = [inject(ChatHub), inject(DocumentIndexHub), inject(DocumentViewerHub)];
+        });
+
+        return value;
+    }
+
+    onReceived = new Subject<IRawMessage>();
+    onSended = new Subject<IRawMessage>();
 
     private hubConnection: signalR.HubConnection | null = null;
     private listenerNames = new Set<string>();
@@ -68,25 +90,14 @@ export class MainHub {
 
     get mainHub(): IMainHub {
         return {
-            connection: this.connection,
             state: this.state,
             onReceived: this.onReceived,
             onSended: this.onSended,
             send: this.send,
-            forceConnect: this.connect,
-            forceDisconnect: this.disconnect,
         };
     }
 
-    private connection = defer(() => {
-        this.connect();
-        return new Observable((subscriber) => subscriber.next(this.hubConnection));
-    }).pipe(
-        shareReplay({ bufferSize: 1, refCount: true }),
-        finalize(() => this.disconnect()),
-    );
-
-    private connect = (): void => {
+    connect = (): void => {
         if (!this.state.disconnected()) {
             return;
         }
@@ -120,7 +131,7 @@ export class MainHub {
             });
     };
 
-    private disconnect = (): void => {
+    disconnect = (): void => {
         this.hubConnection?.stop()?.then();
     };
 
@@ -153,9 +164,9 @@ export class MainHub {
             });
         };
 
-        inject(ChatHub).responseListeners.forEach((listener) => addListener(listener));
-        inject(DocumentIndexHub).responseListeners.forEach((listener) => addListener(listener));
-        inject(DocumentViewerHub).responseListeners.forEach((listener) => addListener(listener));
+        this.hubs.forEach((hub) =>
+            hub.responseListeners.forEach((listener) => addListener(listener)),
+        );
     };
 
     private disposeConnection = () => {

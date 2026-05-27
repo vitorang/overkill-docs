@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { API } from '@core/constants/api.constants';
 import { faker } from '@faker-js/faker';
 import { DocumentIndexHub } from '@features/document/hubs/document-index.hub';
@@ -14,24 +14,21 @@ import { asyncScheduler, filter, forkJoin, Observable, throttleTime } from 'rxjs
 
 @Injectable()
 export class DocumentIndexService {
-    private documentIndexHub = inject(DocumentIndexHub);
+    private indexHub = inject(DocumentIndexHub);
     private http = inject(HttpClient);
     private alertService = inject(AlertService);
     private destroyRef = inject(DestroyRef);
     readonly documents = signal<DocumentSummary[]>([]);
 
     constructor() {
-        this.documentIndexHub.connection
-            .pipe(
-                takeUntilDestroyed(),
-                filter((connected) => connected),
-            )
+        toObservable(this.indexHub.state.connected)
+            .pipe(filter((connected) => connected))
             .subscribe(() => {
-                this.documentIndexHub.join();
+                this.indexHub.join();
                 this.load();
             });
 
-        this.documentIndexHub.onChanged
+        this.indexHub.onChanged
             .pipe(
                 throttleTime(250, asyncScheduler, { leading: false, trailing: true }),
                 takeUntilDestroyed(),

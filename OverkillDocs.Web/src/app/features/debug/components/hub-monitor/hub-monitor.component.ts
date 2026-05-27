@@ -1,7 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { HubState, IRawMessage } from '@core/hubs/main.hub';
-import { DebugHubService } from '@features/debug/services/debug-hub.service';
+import { HubState, IRawMessage, MainHub } from '@core/hubs/main.hub';
 import { SHARED } from '@shared/index';
 
 type Mode = 'received' | 'sended' | 'stateChanged';
@@ -20,12 +19,12 @@ interface ILog {
     styleUrl: './hub-monitor.component.scss',
 })
 export class HubMonitorComponent {
-    protected debugHub = inject(DebugHubService);
+    protected mainHub = inject(MainHub);
     protected logs = signal<ILog[]>([]);
     private static lastId = 0;
-    private connectionState = toObservable(this.debugHub.state.current);
+    private connectionState = toObservable(this.mainHub.state.current);
 
-    protected stateColor = computed(() => this.stateColors[this.debugHub.state.current()]);
+    protected stateColor = computed(() => this.stateColors[this.mainHub.state.current()]);
     private stateColors: Record<HubState, string> = {
         CONNECTED: 'green',
         CONNECTING: 'chocolate',
@@ -33,8 +32,8 @@ export class HubMonitorComponent {
     };
 
     constructor() {
-        this.debugHub.onReceived.pipe(takeUntilDestroyed()).subscribe(this.onReceived);
-        this.debugHub.onSended.pipe(takeUntilDestroyed()).subscribe(this.onSended);
+        this.mainHub.onReceived.pipe(takeUntilDestroyed()).subscribe(this.onReceived);
+        this.mainHub.onSended.pipe(takeUntilDestroyed()).subscribe(this.onSended);
         this.connectionState.pipe(takeUntilDestroyed()).subscribe(this.onStatusChanged);
     }
 
@@ -48,8 +47,11 @@ export class HubMonitorComponent {
     }
 
     protected toggleConnection(): void {
-        if (this.debugHub.state.connected()) this.debugHub.forceDisconnect();
-        else if (this.debugHub.state.disconnected()) this.debugHub.forceConnect();
+        if (this.mainHub.state.connected()) {
+            this.mainHub.disconnect();
+        } else if (this.mainHub.state.disconnected()) {
+            this.mainHub.connect();
+        }
     }
 
     private onReceived = (message: IRawMessage) => {
@@ -66,8 +68,11 @@ export class HubMonitorComponent {
 
     private addLog(message: IRawMessage, mode: Mode) {
         let data = '';
-        if (typeof message.data === 'string') data = message.data as string;
-        else data = JSON.stringify(message.data, null, 2);
+        if (typeof message.data === 'string') {
+            data = message.data as string;
+        } else {
+            data = JSON.stringify(message.data, null, 2);
+        }
 
         const log: ILog = {
             id: HubMonitorComponent.lastId++,

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { SHARED } from '@shared/index';
 import { ChatViewComponent } from '@features/chat/components/chat-view/chat-view.component';
 import { UserService } from '@core/services/user.service';
@@ -14,6 +14,7 @@ import { BreakpointQueries } from '@shared/constants/breakpoints.constant';
 import { map } from 'rxjs';
 import { AccountService } from '@features/account/services/account.service';
 import { ChatHub } from '@features/chat/hubs/chat.hub';
+import { MainHub } from '@core/hubs/main.hub';
 
 type SidePanel = 'documents' | 'chat' | 'debug';
 
@@ -32,10 +33,11 @@ type SidePanel = 'documents' | 'chat' | 'debug';
     styleUrl: './document-layout.component.scss',
     providers: [UserService],
 })
-export class DocumentLayoutComponent {
+export class DocumentLayoutComponent implements OnInit, OnDestroy {
     private breakpointObserver = inject(BreakpointObserver);
     private accountService = inject(AccountService);
     private chatHub = inject(ChatHub);
+    private mainHub = inject(MainHub);
 
     protected isMobile = toSignal(
         this.breakpointObserver
@@ -56,6 +58,14 @@ export class DocumentLayoutComponent {
                 this.hasUnreadMessage.set(true);
             }
         });
+    }
+
+    ngOnInit(): void {
+        this.mainHub.connect();
+    }
+
+    ngOnDestroy(): void {
+        this.mainHub.disconnect();
     }
 
     protected toggleActivePanel(panel: SidePanel): void {
