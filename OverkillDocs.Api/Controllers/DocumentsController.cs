@@ -49,7 +49,7 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
     }
 
     [HttpDelete("{hashId}")]
-    [ProducesStatusFor]
+    [ProducesStatusFor(typeof(ConflictException))]
     public async Task<NoContentResult> Delete(string hashId, CancellationToken ct)
     {
         await documentService.Delete(hashId, ct);

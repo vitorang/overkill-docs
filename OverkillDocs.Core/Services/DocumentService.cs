@@ -36,6 +36,11 @@ internal sealed class DocumentService(
     public async Task Delete(string hashId, CancellationToken ct)
     {
         var documentId = hashids.Decode(hashId).First();
+
+        var locks = await fragmentRepository.GetActiveLocksFromDocument(documentId, ct);
+        if (locks.Length != 0)
+            throw new ConflictException("Não pode excluir um documento com alguém editando");
+
         await documentRepository.ExecuteDelete(documentId, ct);
         await documentRepository.InvalidateCache(documentId);
     }
