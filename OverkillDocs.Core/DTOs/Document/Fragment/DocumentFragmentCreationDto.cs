@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OverkillDocs.Core.DTOs.Document.Fragment;
 
-public record DocumentFragmentCreationDto(
+public sealed record DocumentFragmentCreationDto(
     [Required]
     string DocumentHashId,
     DocumentFragmentType Type,

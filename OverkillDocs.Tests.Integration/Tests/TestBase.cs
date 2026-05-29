@@ -1,12 +1,9 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using OverkillDocs.Core.Entities.Identity;
+using OverkillDocs.Core.Entities.Document;
 using OverkillDocs.Infrastructure.Data;
-using OverkillDocs.Tests.Common.Fakers.Entities.Identity;
-using OverkillDocs.Tests.Integration.Fixtures;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using Xunit.Abstractions;
 
 namespace OverkillDocs.Tests.Integration.Tests;
 
@@ -54,14 +51,18 @@ public abstract class TestBase(TestFactory factory, ITestOutputHelper outputHelp
 
     protected void LogData(params object?[] items)
     {
-        int index = 0;
-        foreach (var item in items)
+        for (var index = 0; index < items.Length; index++)
         {
+            var item = items[index] switch
+            {
+                Document doc => doc.WithoutRelationships(),
+                DocumentFragment frag => frag.WithoutRelationships(),
+                _ => items[index]
+            };
+
             var typeName = item?.GetType().Name ?? "NULL";
             var json = JsonSerializer.Serialize(item, jsonOptions);
-
             outputHelper.WriteLine($"#{index}: {typeName}\n{json}\n");
-            index++;
         }
     }
 

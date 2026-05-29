@@ -1,13 +1,5 @@
-using FluentAssertions;
-using HashidsNet;
-using Microsoft.EntityFrameworkCore;
 using OverkillDocs.Infrastructure.Interfaces;
-using OverkillDocs.Tests.Common.Fakers.Entities.Identity;
 using OverkillDocs.Tests.Common.Fakers.Security;
-using OverkillDocs.Tests.Integration.Fixtures;
-using System.Net;
-using System.Net.Http.Json;
-using Xunit.Abstractions;
 using static OverkillDocs.Core.Security.UserContext;
 
 namespace OverkillDocs.Tests.Integration.Tests.AccountController;

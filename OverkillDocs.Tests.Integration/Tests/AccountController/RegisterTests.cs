@@ -1,13 +1,3 @@
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using OverkillDocs.Core.DTOs.Account;
-using OverkillDocs.Tests.Common.Fakers.DTOs.Account;
-using OverkillDocs.Tests.Common.Fakers.Entities.Identity;
-using OverkillDocs.Tests.Integration.Fixtures;
-using System.Net;
-using System.Net.Http.Json;
-using Xunit.Abstractions;
-
 namespace OverkillDocs.Tests.Integration.Tests.AccountController;
 
 public class RegisterTests

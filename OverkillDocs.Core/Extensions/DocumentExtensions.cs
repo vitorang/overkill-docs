@@ -25,4 +25,17 @@ public static class DocumentExtensions
             UpdatedAt: document.UpdatedAt
         );
     }
+
+    public static Document WithoutRelationships(this Document document)
+    {
+        return new Document
+        {
+            CreatedAt = document.CreatedAt,
+            Fragments = [],
+            Id = document.Id,
+            Title = document.Title,
+            Type = document.Type,
+            UpdatedAt = document.UpdatedAt,
+        };
+    }
 }

@@ -1,19 +1,10 @@
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using OverkillDocs.Core.Constants;
-using OverkillDocs.Core.Interfaces.Services;
-using OverkillDocs.Tests.Common.Fakers.DTOs.Account;
-using OverkillDocs.Tests.Common.Fakers.Entities.Identity;
-using OverkillDocs.Tests.Integration.Fixtures;
-using System.Net;
-using System.Net.Http.Json;
-using Xunit.Abstractions;
 
 namespace OverkillDocs.Tests.Integration.Tests.AccountController;
 
 public class DeleteAccountTests
 {
-    private static readonly string url = "/api/account/delete-account";
+    private static readonly string url = "/api/Account/DeleteAccount";
 
     public class Success(TestFactory factory, ITestOutputHelper outputHelper) : TestBase(factory, outputHelper)
     {

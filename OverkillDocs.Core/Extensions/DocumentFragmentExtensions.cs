@@ -12,8 +12,10 @@ public static class DocumentFragmentExtensions
 
     public static DocumentFragmentDto ToDto(this DocumentFragment fragment, IHashids hashids)
     {
-        var content = JsonSerializer.Deserialize<Dictionary<string, string>>(fragment.Content)!;
-
+        var content = JsonSerializer.Deserialize<Dictionary<string, string>>(fragment.Content)!.ToDictionary(
+            e => JsonNamingPolicy.CamelCase.ConvertName(e.Key),
+            e => e.Value
+        );
 
         if (fragment.Type == DocumentFragmentType.Markdown)
             return new ArticleMarkdownFragmentDto
@@ -108,5 +110,20 @@ public static class DocumentFragmentExtensions
             };
 
         throw new NotImplementedException($"Sem suporte para fragmento Type={dto.Type}");
+    }
+
+    public static DocumentFragment WithoutRelationships(this DocumentFragment fragment)
+    {
+        return new DocumentFragment
+        {
+            Content = fragment.Content,
+            CreatedAt = fragment.CreatedAt,
+            Document = null!,
+            DocumentId = fragment.DocumentId,
+            Id = fragment.Id,
+            Order = fragment.Order,
+            Type = fragment.Type,
+            UpdatedAt = fragment.UpdatedAt
+        };
     }
 }
