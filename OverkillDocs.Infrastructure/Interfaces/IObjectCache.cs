@@ -1,6 +1,6 @@
 namespace OverkillDocs.Infrastructure.Interfaces;
 
-public interface IObjectCache<T>
+internal interface IObjectCache<T>
 {
     public Task<T?> Get(int id, Func<Task<T?>>? onCacheMiss = null);
     public Task<T?> Get(string id, Func<Task<T?>>? onCacheMiss = null);

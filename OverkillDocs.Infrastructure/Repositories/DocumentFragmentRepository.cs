@@ -69,9 +69,11 @@ internal sealed class DocumentFragmentRepository(
     {
         async Task<DocumentFragmentIdsResult> onCacheMiss()
         {
+            var fragmentIds = await context.DocumentFragments.Select(e => e.Id).ToArrayAsync(ct);
+
             return new DocumentFragmentIdsResult(
                 DocumentId: documentId,
-                FragmentIds: await context.DocumentFragments.Select(e => e.Id).ToArrayAsync(ct)
+                FragmentIds: fragmentIds
             );
         }
 

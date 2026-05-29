@@ -21,7 +21,7 @@ internal sealed class DocumentRepository(
         context.Documents.Add(document);
     }
 
-    public async Task ExecuteDelete(int documentId, CancellationToken ct)
+    public async Task<int> ExecuteDelete(int documentId, CancellationToken ct)
     {
         var fragmentIds = await context.DocumentFragments
             .Where(e => e.DocumentId == documentId)
@@ -29,7 +29,7 @@ internal sealed class DocumentRepository(
             .ToArrayAsync(ct);
 
         await fragmentRepository.ExecuteDelete(fragmentIds, ct);
-        await context.Documents.Where(e => e.Id == documentId).ExecuteDeleteAsync(ct);
+        return await context.Documents.Where(e => e.Id == documentId).ExecuteDeleteAsync(ct);
     }
 
     public async Task<Document?> GetById(int documentId, CancellationToken ct)
@@ -55,7 +55,7 @@ internal sealed class DocumentRepository(
 
     public async Task InvalidateCache(int? documentId)
     {
-        await documentSummaryCache.RemoveById(string.Empty);
+        await documentSummaryCache.RemoveById(DocumentSummariesResult.DefaultId);
         if (documentId != null)
             await fragmentIdsCache.RemoveById((int)documentId);
     }

@@ -1,3 +1,4 @@
+using HashidsNet;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using OverkillDocs.Core.Entities.Document;
@@ -12,6 +13,10 @@ public abstract class TestBase(TestFactory factory, ITestOutputHelper outputHelp
     private static readonly JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
 
     protected readonly HttpClient httpClient = factory.CreateClient();
+    protected IHashids Hashids
+    {
+        get => Require<IHashids>();
+    }
 
     public virtual async Task InitializeAsync()
     {

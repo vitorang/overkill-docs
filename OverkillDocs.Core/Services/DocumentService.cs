@@ -41,7 +41,10 @@ internal sealed class DocumentService(
         if (locks.Length != 0)
             throw new ConflictException("Não pode excluir um documento com alguém editando");
 
-        await documentRepository.ExecuteDelete(documentId, ct);
+        var rowsAffected = await documentRepository.ExecuteDelete(documentId, ct);
+        if (rowsAffected == 0)
+            throw new NotFoundException("Documento não encontrado");
+
         await documentRepository.InvalidateCache(documentId);
     }
 

@@ -1,13 +1,15 @@
 global using FluentAssertions;
-global using HashidsNet;
 global using Microsoft.EntityFrameworkCore;
 global using OverkillDocs.Core.DTOs.Account;
 global using OverkillDocs.Core.DTOs.Document;
 global using OverkillDocs.Core.DTOs.Document.Fragment;
 global using OverkillDocs.Core.DTOs.User;
+global using OverkillDocs.Core.Entities.Document;
 global using OverkillDocs.Core.Entities.Identity;
 global using OverkillDocs.Core.Extensions;
 global using OverkillDocs.Core.Interfaces.Services;
+global using OverkillDocs.Infrastructure.CachedResults;
+global using OverkillDocs.Infrastructure.Interfaces;
 global using OverkillDocs.Tests.Common.Fakers.DTOs.Account;
 global using OverkillDocs.Tests.Common.Fakers.DTOs.Document;
 global using OverkillDocs.Tests.Common.Fakers.Entities.Document;

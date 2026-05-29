@@ -9,11 +9,9 @@ public class CurrentTests
         [Fact]
         public async Task ReturnsOwnUserData()
         {
-            var hashIds = Require<IHashids>();
-
             var user = new UserFaker().Generate();
             await LoginAs(user);
-            var userHashId = hashIds.Encode(user.Id);
+            var userHashId = Hashids.Encode(user.Id);
             LogData(user);
 
             var response = await httpClient.GetAsync(url);
