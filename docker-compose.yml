@@ -1,6 +1,6 @@
 services:
   proxy:
-    image: caddy:latest
+    image: caddy:2.11-alpine
     ports:
       - "80:80"
       - "443:443"
@@ -13,6 +13,7 @@ services:
 
   api:
     image: overkilldocsapi
+    pull_policy: never
     build:
       context: .
       dockerfile: OverkillDocs.Api/Dockerfile
@@ -60,7 +61,7 @@ services:
 
 
   postgres:
-    image: postgres:alpine
+    image: postgres:18.4-alpine3.23
     profiles:
       - postgres
     environment:
@@ -100,7 +101,7 @@ services:
 
 
   redis:
-    image: redis:alpine
+    image: redis:8.8-alpine
     profiles:
       - redis
     networks:
