@@ -50,7 +50,7 @@ internal sealed class DocumentRepository(
             ))
             .ToArrayAsync(ct));
 
-        return (await documentSummaryCache.Get(string.Empty, fetchFromDb!))!.Documents;
+        return (await documentSummaryCache.Get(DocumentSummariesResult.DefaultId, fetchFromDb!))!.Documents;
     }
 
     public async Task InvalidateCache(int? documentId)
