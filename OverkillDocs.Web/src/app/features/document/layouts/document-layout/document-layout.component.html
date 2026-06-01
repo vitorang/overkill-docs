@@ -1,12 +1,13 @@
 <okd-reconnection-overlay>
     <div class="main-wrapper">
-        <nav class="icon-rail">
+        <nav class="icon-rail" data-testid="sidebar-rail">
             <okd-brand [compact]="true" />
             <button
                 mat-icon-button
                 title="Documentos"
                 (click)="toggleActivePanel('documents')"
                 [class.active]="activeButton() === 'documents'"
+                data-testid="documents-button"
             >
                 <mat-icon>notes</mat-icon>
             </button>
@@ -18,6 +19,7 @@
                 matBadge="&ZeroWidthSpace;"
                 matBadgeSize="small"
                 [matBadgeHidden]="!hasUnreadMessage()"
+                data-testid="chat-button"
             >
                 <mat-icon>chat_bubble</mat-icon>
             </button>
@@ -26,6 +28,7 @@
                 title="Debug"
                 (click)="toggleActivePanel('debug')"
                 [class.active]="activeButton() === 'debug'"
+                data-testid="debug-button"
             >
                 <mat-icon>bug_report</mat-icon>
             </button>
