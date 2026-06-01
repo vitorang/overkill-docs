@@ -6,7 +6,7 @@ namespace OverkillDocs.Tests.E2E.Tests.Chat;
 public class ChatTests(PlaywrightFixture fixture, ITestOutputHelper outputHelper) : TestBase(fixture, outputHelper)
 {
     [Fact]
-    public async Task ChatMessagesShouldBeSync()
+    public async Task ChatMessagesShouldSync()
     {
         var (_, desktopPage) = await NewBrowserSession();
         var (_, mobilePage) = await NewBrowserSession(mobile: true);

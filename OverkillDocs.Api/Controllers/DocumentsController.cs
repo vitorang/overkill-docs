@@ -53,17 +53,17 @@ public class DocumentsController(IDocumentService documentService, IHubContext<M
     public async Task<NoContentResult> Delete(string hashId, CancellationToken ct)
     {
         await documentService.Delete(hashId, ct);
-        await NotifyDocumentChanged(hashId, ct);
+        await NotifyDocumentChanged(hashId, ct, deleted: true);
         return NoContent();
     }
 
-    private async Task NotifyDocumentChanged(string hashId, CancellationToken ct)
+    private async Task NotifyDocumentChanged(string hashId, CancellationToken ct, bool deleted = false)
     {
         await hubContext.Clients.Group(MainHub.documentIndexGroup)
             .SendAsync(HubEvents.DocumentIndex.Changed, hashId, ct);
 
         var groupName = MainHub.DocumentViewerGetGroupName(hashId);
-        await hubContext.Clients.Group(groupName)
-            .SendAsync(HubEvents.DocumentViewer.DocumentChanged, ct);
+        var viewerEvent = deleted ? HubEvents.DocumentViewer.DocumentDeleted : HubEvents.DocumentViewer.DocumentChanged;
+        await hubContext.Clients.Group(groupName).SendAsync(viewerEvent, ct);
     }
 }

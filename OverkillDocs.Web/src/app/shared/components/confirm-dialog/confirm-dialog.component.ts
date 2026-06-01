@@ -2,18 +2,18 @@ import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SHARED } from '@shared/index';
 
-export interface IConfirmModal {
+export interface IConfirmDialog {
     message: string;
 }
 
 @Component({
-    selector: 'okd-confirm-modal',
+    selector: 'okd-confirm-dialog',
     imports: [SHARED],
-    templateUrl: './confirm-modal.component.html',
+    templateUrl: './confirm-dialog.component.html',
 })
-export class ConfirmModalComponent {
-    private dialogRef = inject(MatDialogRef<ConfirmModalComponent>);
-    protected data = inject<IConfirmModal>(MAT_DIALOG_DATA);
+export class ConfirmDialogComponent {
+    private dialogRef = inject(MatDialogRef<ConfirmDialogComponent>);
+    protected data = inject<IConfirmDialog>(MAT_DIALOG_DATA);
 
     protected close(result: boolean): void {
         this.dialogRef.close(result);

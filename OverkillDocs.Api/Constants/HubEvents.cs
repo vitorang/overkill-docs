@@ -19,6 +19,7 @@ public static class HubEvents
     {
         public const string ActiveLocksChanged = $"{MainHub.documentViewerGroup}:OnActiveLocksChanged";
         public const string DocumentChanged = $"{MainHub.documentViewerGroup}:OnDocumentChanged";
+        public const string DocumentDeleted = $"{MainHub.documentViewerGroup}:OnDocumentDeleted";
         public const string FragmentChanged = $"{MainHub.documentViewerGroup}:OnFragmentChanged";
     }
 }

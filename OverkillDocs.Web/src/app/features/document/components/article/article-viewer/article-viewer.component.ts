@@ -43,9 +43,9 @@ import { ProblemDetails } from '@core/models/problem-details.model';
 import { MatDialog } from '@angular/material/dialog';
 import { DocumentEditDialogComponent } from '@features/document/components/dialogs/document-edit-dialog/document-edit-dialog.component';
 import {
-    ConfirmModalComponent,
-    IConfirmModal,
-} from '@shared/components/confirm-modal/confirm-modal.component';
+    ConfirmDialogComponent,
+    IConfirmDialog,
+} from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { DocumentIndexService } from '@features/document/services/document-index.service';
 
 @Component({
@@ -283,7 +283,7 @@ export class ArticleViewerComponent implements OnDestroy {
 
     private openConfirmModal(message: string) {
         return this.dialog
-            .open<ConfirmModalComponent, IConfirmModal, boolean>(ConfirmModalComponent, {
+            .open<ConfirmDialogComponent, IConfirmDialog, boolean>(ConfirmDialogComponent, {
                 width: '350px',
                 data: { message },
                 disableClose: false,

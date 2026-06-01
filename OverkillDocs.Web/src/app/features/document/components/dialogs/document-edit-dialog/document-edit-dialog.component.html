@@ -1,8 +1,14 @@
-<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()" data-testid="document-edit-form">
     <mat-dialog-content>
         <mat-form-field appearance="outline">
             <mat-label>Nome</mat-label>
-            <input matInput formControlName="title" data-testid="title-input" cdkFocusInitial />
+            <input
+                matInput
+                formControlName="title"
+                data-testid="title-input"
+                cdkFocusInitial
+                data-testid="name-input"
+            />
 
             @if (titleError) {
                 <mat-error>{{ titleError }}</mat-error>

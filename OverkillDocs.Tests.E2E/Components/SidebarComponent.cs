@@ -10,15 +10,14 @@ internal sealed class SidebarComponent(IPage page)
     private ILocator DebugButton => Rail.GetByTestId("debug-button");
     private ILocator[] RailButtons => [ChatButton, DocumentsButton, DebugButton];
 
-    public FileIndexComponent FileIndex { get; } = new(page);
+    public DocumentIndexComponent DocumentIndex { get; } = new(page);
     public ChatComponent Chat { get; } = new(page);
 
 
     public async Task Close()
     {
         var openedClass = "mat-drawer-opened";
-        var animatingClass = "mat-drawer-animating";
-        await Expect(Sidenav).Not.ToHaveClassAsync(animatingClass);
+        await ExpectToNotAnimating();
 
         var isOpened = (await Sidenav.GetAttributeAsync("class") ?? "").Split(" ").Contains(openedClass);
         if (!isOpened)
@@ -36,22 +35,28 @@ internal sealed class SidebarComponent(IPage page)
 
         Assert.NotNull(activeButton);
         await activeButton.ClickAsync();
-        await Expect(Sidenav).Not.ToHaveClassAsync(animatingClass);
+        await ExpectToNotAnimating();
         await Expect(Sidenav).Not.ToHaveClassAsync(openedClass);
     }
 
-    public async Task ShowFileIndex()
+    public async Task ShowDocumentIndex()
     {
-        if (!await FileIndex.IsVisible())
+        if (!await DocumentIndex.IsVisible())
+        {
             await DocumentsButton.ClickAsync();
+            await ExpectToNotAnimating();
+        }
 
-        await FileIndex.ExpectToBeVisible();
+        await DocumentIndex.ExpectToBeVisible();
     }
 
     public async Task ShowChat()
     {
         if (!await Chat.IsVisible())
+        {
             await ChatButton.ClickAsync();
+            await ExpectToNotAnimating();
+        }
 
         await Chat.ExpectToBeVisible();
     }
@@ -60,4 +65,11 @@ internal sealed class SidebarComponent(IPage page)
     {
         return (await button.GetAttributeAsync("class") ?? "").Split(" ").Contains("active");
     }
+
+    private async Task ExpectToNotAnimating()
+    {
+        var animatingClass = "mat-drawer-animating";
+        await Expect(Sidenav).Not.ToHaveClassAsync(animatingClass);
+    }
+
 }

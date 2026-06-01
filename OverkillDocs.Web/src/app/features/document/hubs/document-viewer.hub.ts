@@ -11,6 +11,7 @@ const Hub = {
 
     onActiveLocksChanged: `${group}:OnActiveLocksChanged`,
     onDocumentChanged: `${group}:OnDocumentChanged`,
+    onDocumentDeleted: `${group}:OnDocumentDeleted`,
     onFragmentChanged: `${group}:OnFragmentChanged`,
 } as const;
 
@@ -19,6 +20,7 @@ export class DocumentViewerHub {
     private mainHub = inject(MainHub).mainHub;
     readonly onActiveLocksChanged = new Subject<DocumentFragmentLock[]>();
     readonly onDocumentChanged = new Subject<string>();
+    readonly onDocumentDeleted = new Subject<string>();
     readonly onFragmentChanged = new Subject<DocumentFragment>();
     readonly onJoinRequested = new Subject<string>();
     readonly onLeaveRequested = new Subject<string>();

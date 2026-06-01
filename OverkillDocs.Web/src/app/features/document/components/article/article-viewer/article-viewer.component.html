@@ -1,7 +1,7 @@
 <mat-toolbar>
     <div class="toolbar-content max-width">
         @if (toolbar()?.showTitle !== false) {
-            <div class="title">{{ document().title }}</div>
+            <div class="title" data-testid="title">{{ document().title }}</div>
         }
 
         @if (isEditingFragment()) {
@@ -11,7 +11,12 @@
                 <mat-icon>edit_off</mat-icon>
             </button>
         } @else {
-            <button mat-icon-button [matMenuTriggerFor]="menu" title="Ações">
+            <button
+                mat-icon-button
+                [matMenuTriggerFor]="menu"
+                title="Ações"
+                data-testid="actions-button"
+            >
                 <mat-icon>more_vert</mat-icon>
             </button>
         }
@@ -19,17 +24,17 @@
 </mat-toolbar>
 
 <mat-menu #menu="matMenu" xPosition="before">
-    <button mat-menu-item (click)="editModeEnabled.set(true)">
+    <button mat-menu-item (click)="editModeEnabled.set(true)" data-testid="edit-button">
         <mat-icon>edit</mat-icon>
         <span>Editar</span>
     </button>
 
-    <button mat-menu-item (click)="renameDocument()">
+    <button mat-menu-item (click)="renameDocument()" data-testid="rename-button">
         <mat-icon>title</mat-icon>
         <span>Renomear</span>
     </button>
 
-    <button mat-menu-item (click)="deleteDocument()">
+    <button mat-menu-item (click)="deleteDocument()" data-testid="delete-button">
         <mat-icon>delete_forever</mat-icon>
         <span>Excluir</span>
     </button>

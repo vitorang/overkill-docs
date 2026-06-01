@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { DestroyRef, inject, Injectable, signal, TemplateRef } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { API } from '@core/constants/api.constants';
+import { PATHS } from '@core/constants/routes.constant';
 import { apiHandler } from '@core/utils/api-handler.utils';
 import { DocumentViewerHub } from '@features/document/hubs/document-viewer.hub';
 import {
@@ -18,6 +20,7 @@ import { filter, merge, Observable } from 'rxjs';
 export class DocumentViewerService {
     private viewerHub = inject(DocumentViewerHub);
     private http = inject(HttpClient);
+    private router = inject(Router);
     private documentHashId = '';
     private connected = toObservable(this.viewerHub.state.connected);
     private initialized = false;
@@ -37,6 +40,10 @@ export class DocumentViewerService {
         merge(this.viewerHub.onJoinRequested, this.viewerHub.onDocumentChanged)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(() => this.load());
+
+        this.viewerHub.onDocumentDeleted.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+            this.router.navigate([PATHS.DOCUMENT.INDEX]);
+        });
 
         this.viewerHub.onFragmentChanged
             .pipe(takeUntilDestroyed(this.destroyRef))

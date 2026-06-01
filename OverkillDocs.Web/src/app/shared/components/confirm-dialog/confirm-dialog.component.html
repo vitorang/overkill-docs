@@ -2,7 +2,7 @@
     <p>{{ data.message }}</p>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
+<mat-dialog-actions align="end" data-testid="confirm-modal-actions">
     <button mat-button (click)="close(false)">Cancelar</button>
-    <button mat-flat-button (click)="close(true)">OK</button>
+    <button mat-flat-button (click)="close(true)" data-testid="confirm-button">OK</button>
 </mat-dialog-actions>
