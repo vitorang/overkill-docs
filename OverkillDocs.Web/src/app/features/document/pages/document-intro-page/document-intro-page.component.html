@@ -1,1 +1,23 @@
-<p>document-intro-page works!</p>
+<div class="content">
+    <okd-brand />
+    <div class="joke">
+        > Por quê tudo isso?<br />
+        <span class="alt-color">> Sim.</span>
+    </div>
+
+    <div class="buttons-wrapper">
+        <button mat-button (click)="openGithub()">
+            <div class="button-content">
+                <img class="logo" src="/assets/images/github.svg" alt="GitHub" />
+                <span class="text">GitHub</span>
+            </div>
+        </button>
+
+        <button mat-button (click)="openSwagger()">
+            <div class="button-content">
+                <img class="logo" src="/assets/images/swagger.svg" alt="Swagger" />
+                <span class="text">Swagger</span>
+            </div>
+        </button>
+    </div>
+</div>

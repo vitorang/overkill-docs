@@ -12,6 +12,6 @@ import { Component, computed, input } from '@angular/core';
 export class BrandComponent {
     compact = input(false);
 
-    protected name1 = computed(() => (this.compact() ? 'OK' : 'OverKill'));
+    protected name1 = computed(() => (this.compact() ? 'OK' : 'Overkill'));
     protected name2 = computed(() => (this.compact() ? 'D' : 'Docs'));
 }
