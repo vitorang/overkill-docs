@@ -1,0 +1,15 @@
+<mat-action-list>
+    <button mat-list-item (click)="toggleDebugMode()">
+        <span matListItemTitle>Modo debug</span>
+        @if (debugModeEnabled()) {
+            <mat-icon matListItemIcon>check_box</mat-icon>
+        } @else {
+            <mat-icon matListItemIcon>check_box_outline_blank</mat-icon>
+        }
+    </button>
+</mat-action-list>
+
+@if (debugModeEnabled()) {
+    <mat-divider />
+    <okd-hub-monitor class="monitor" />
+}

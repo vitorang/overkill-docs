@@ -1,43 +1,48 @@
 @use 'mixins/breakpoints' as *;
+@use 'mixins/navigation' as nav;
 
 :host {
-    .layout {
-        width: 100vw;
+    .main-wrapper {
+        display: flex;
         height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+    }
+
+    .icon-rail {
+        @include nav.background;
+        @include nav.border-right;
+
         display: flex;
         flex-direction: column;
-    }
+        gap: 0.8rem;
 
-    .main-content {
-        display: flex;
-        flex-direction: row;
-        flex: 1;
-        min-height: 0;
-        max-height: 100%;
-    }
+        flex-direction: column;
+        align-items: center;
 
-    @include breakpoint('small-medium') {
-        .main-content {
-            section {
-                &.hidden-mobile {
-                    display: none;
-                }
+        padding: 0.5rem;
+        padding-top: 1rem;
 
-                &:not(.hidden-mobile) {
-                    flex: 1;
-                }
-            }
+        .spacer {
+            flex: 1;
+        }
+
+        [mat-icon-button].active {
+            background-color: var(--mat-sys-secondary-container);
+            color: var(--mat-sys-on-secondary-container);
         }
     }
 
-    @include breakpoint('large') {
-        .main-content {
-            section.editor {
-                flex: 1;
-            }
+    mat-sidenav-container {
+        flex: 1;
 
-            section.chat {
-                width: 400px;
+        mat-sidenav {
+            @include nav.background;
+            width: 300px;
+
+            @include breakpoint('large') {
+                border-radius: 0;
+                @include nav.border-right;
             }
         }
     }

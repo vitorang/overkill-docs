@@ -9,7 +9,8 @@
                 "@schematics/angular:component": {
                     "standalone": true,
                     "style": "scss",
-                    "type": "component"
+                    "type": "component",
+                    "skipTests": true
                 },
                 "@schematics/angular:directive": {
                     "standalone": true,
@@ -37,13 +38,17 @@
                             }
                         ],
                         "styles": [
-                            "src/styles/styles.scss"
+                            "src/styles/styles.scss",
+                            "node_modules/easymde/dist/easymde.min.css"
                         ],
                         "stylePreprocessorOptions": {
                             "includePaths": [
                                 "src/styles"
                             ]
-                        }
+                        },
+                        "allowedCommonJsDependencies": [
+                            "easymde"
+                        ]
                     },
                     "configurations": {
                         "production": {

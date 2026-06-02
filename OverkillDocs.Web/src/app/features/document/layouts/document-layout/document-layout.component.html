@@ -1,35 +1,60 @@
 <okd-reconnection-overlay>
-    <div class="layout">
-        <okd-main-header>
-            @if (isMobile()) {
-                <button
-                    mat-icon-button
-                    (click)="toggleSection()"
-                    matBadge="&ZeroWidthSpace;"
-                    [matBadgeHidden]="!hasUnreadMessage()"
-                    data-testid="toggle-chat-button"
-                    [attr.data-value]="activeSection()"
-                >
-                    <mat-icon>{{
-                        activeSection() === 'editor' ? 'chat_bubble_outline' : 'edit_note'
-                    }}</mat-icon>
-                </button>
-            }
-        </okd-main-header>
-
-        <div class="main-content">
-            <section
-                class="editor"
-                [class.hidden-mobile]="isMobile() && activeSection() !== 'editor'"
+    <div class="main-wrapper">
+        <nav class="icon-rail" data-testid="sidebar-rail">
+            <okd-brand [compact]="true" />
+            <button
+                mat-icon-button
+                title="Documentos"
+                (click)="toggleActivePanel('documents')"
+                [class.active]="activeButton() === 'documents'"
+                data-testid="documents-button"
             >
-                <okd-hub-monitor />
-                <!-- <router-outlet /> -->
-            </section>
+                <mat-icon>notes</mat-icon>
+            </button>
+            <button
+                mat-icon-button
+                title="Chat"
+                (click)="toggleActivePanel('chat')"
+                [class.active]="activeButton() === 'chat'"
+                matBadge="&ZeroWidthSpace;"
+                matBadgeSize="small"
+                [matBadgeHidden]="!hasUnreadMessage()"
+                data-testid="chat-button"
+            >
+                <mat-icon>chat_bubble</mat-icon>
+            </button>
+            <button
+                mat-icon-button
+                title="Debug"
+                (click)="toggleActivePanel('debug')"
+                [class.active]="activeButton() === 'debug'"
+                data-testid="debug-button"
+            >
+                <mat-icon>bug_report</mat-icon>
+            </button>
+            <div class="spacer"></div>
+            <a mat-icon-button [routerLink]="accountSettingsPath" title="Configurar perfil">
+                <mat-icon>person_edit</mat-icon>
+            </a>
+            <button mat-icon-button (click)="logout()" title="Sair">
+                <mat-icon>logout</mat-icon>
+            </button>
+        </nav>
 
-            <section class="chat" [class.hidden-mobile]="isMobile() && activeSection() !== 'chat'">
-                <okd-chat-view />
-            </section>
-        </div>
-        <div></div>
+        <mat-sidenav-container>
+            <mat-sidenav
+                [mode]="isMobile() ? 'over' : 'side'"
+                [opened]="activePanel()"
+                (closedStart)="sidenavClosing.set(true)"
+                (closed)="onSidenavClosed()"
+            >
+                <okd-document-index [hidden]="activePanel() !== 'documents'" />
+                <okd-chat-view [hidden]="activePanel() !== 'chat'" />
+                <okd-debug-viewer [hidden]="activePanel() !== 'debug'" />
+            </mat-sidenav>
+            <mat-sidenav-content>
+                <router-outlet />
+            </mat-sidenav-content>
+        </mat-sidenav-container>
     </div>
 </okd-reconnection-overlay>

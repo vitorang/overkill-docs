@@ -33,22 +33,17 @@ namespace OverkillDocs.Migrator.Postgres.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
 
                     b.ToTable("Documents");
                 });
@@ -71,9 +66,6 @@ namespace OverkillDocs.Migrator.Postgres.Migrations
                     b.Property<int>("DocumentId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("EditedById")
-                        .HasColumnType("integer");
-
                     b.Property<double>("Order")
                         .HasColumnType("double precision");
 
@@ -86,8 +78,6 @@ namespace OverkillDocs.Migrator.Postgres.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DocumentId");
-
-                    b.HasIndex("EditedById");
 
                     b.ToTable("DocumentFragments");
                 });
@@ -136,7 +126,7 @@ namespace OverkillDocs.Migrator.Postgres.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.Security.UserSession", b =>
+            modelBuilder.Entity("OverkillDocs.Core.Entities.Identity.UserSession", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -174,17 +164,6 @@ namespace OverkillDocs.Migrator.Postgres.Migrations
                     b.ToTable("UserSessions");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.Document.Document", b =>
-                {
-                    b.HasOne("OverkillDocs.Core.Entities.Identity.User", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-                });
-
             modelBuilder.Entity("OverkillDocs.Core.Entities.Document.DocumentFragment", b =>
                 {
                     b.HasOne("OverkillDocs.Core.Entities.Document.Document", "Document")
@@ -193,18 +172,10 @@ namespace OverkillDocs.Migrator.Postgres.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OverkillDocs.Core.Entities.Identity.User", "EditedBy")
-                        .WithMany()
-                        .HasForeignKey("EditedById")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Document");
-
-                    b.Navigation("EditedBy");
                 });
 
-            modelBuilder.Entity("OverkillDocs.Core.Entities.Security.UserSession", b =>
+            modelBuilder.Entity("OverkillDocs.Core.Entities.Identity.UserSession", b =>
                 {
                     b.HasOne("OverkillDocs.Core.Entities.Identity.User", "User")
                         .WithMany()

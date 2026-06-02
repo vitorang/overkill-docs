@@ -1,0 +1,13 @@
+:host {
+    display: block;
+
+    img {
+        display: block;
+        margin: 0 auto;
+        max-width: 600px;
+    }
+
+    mat-form-field {
+        width: 100%;
+    }
+}

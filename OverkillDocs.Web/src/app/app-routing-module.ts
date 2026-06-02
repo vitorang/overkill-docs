@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SEGMENTS } from '@core/constants/routes.constant';
 import { authGuard } from '@core/guards/auth.guard';
-import { NotFoundPageComponent } from '@features/error/pages/not-found-page/not-found-page.component';
 
 const S = SEGMENTS;
 const routes: Routes = [
@@ -18,7 +17,7 @@ const routes: Routes = [
             import('./features/document/document.routes').then((r) => r.DOCUMENT_ROUTES),
         canActivate: [authGuard],
     },
-    { path: '**', component: NotFoundPageComponent },
+    { path: '**', redirectTo: S.HOME, pathMatch: 'full' },
 ];
 
 @NgModule({

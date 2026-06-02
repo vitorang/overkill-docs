@@ -13,12 +13,6 @@ internal sealed class ChatComponent(IPage page)
         await Expect(SendButton).ToBeEnabledAsync();
     }
 
-    public async Task ExpectMessagingIsDisabled()
-    {
-        await Expect(MessageInput).ToBeDisabledAsync();
-        await Expect(SendButton).ToBeDisabledAsync();
-    }
-
     public async Task SendMessage(string message)
     {
         await MessageInput.FillAsync(message);
@@ -45,5 +39,10 @@ internal sealed class ChatComponent(IPage page)
     public async Task ExpectToBeVisible()
     {
         await Expect(Component).ToBeVisibleAsync();
+    }
+
+    public async Task<bool> IsVisible()
+    {
+        return await Component.IsVisibleAsync();
     }
 }

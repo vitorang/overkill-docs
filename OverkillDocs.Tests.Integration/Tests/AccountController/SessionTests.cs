@@ -1,14 +1,4 @@
-using FluentAssertions;
-using HashidsNet;
-using Microsoft.EntityFrameworkCore;
-using OverkillDocs.Core.DTOs.Account;
-using OverkillDocs.Core.Entities.Identity;
-using OverkillDocs.Tests.Common.Fakers.Entities.Identity;
-using OverkillDocs.Tests.Integration.Fixtures;
 using System.Collections.Immutable;
-using System.Net;
-using System.Net.Http.Json;
-using Xunit.Abstractions;
 
 namespace OverkillDocs.Tests.Integration.Tests.AccountController;
 
@@ -21,8 +11,6 @@ public class SessionTests
         [Fact]
         public async Task WhenMultipleUsersLogin_ReturnsCurrentUserSessions()
         {
-            var hashIds = Require<IHashids>();
-
             var otherUser = new UserFaker().Generate();
             var otherSessions = await LoginMultiple(otherUser, 1);
             LogData(otherUser, otherSessions);
@@ -42,11 +30,11 @@ public class SessionTests
                 dbSessions.Should().HaveCount(sessions.Length);
             });
 
-            var sessionHashes = sessions.Select(e => hashIds.Encode(e.Id)).ToArray();
+            var sessionHashes = sessions.Select(e => Hashids.Encode(e.Id)).ToArray();
             var sessionDtoHashes = sessionDtos.Select(e => e.HashId).ToArray();
             sessionHashes.Should().BeEquivalentTo(sessionDtoHashes);
 
-            var sessionHashId = hashIds.Encode(session.Id);
+            var sessionHashId = Hashids.Encode(session.Id);
             sessionDtos.Single(e => e.IsCurrent).HashId.Should().Be(sessionHashId);
         }
 

@@ -46,16 +46,9 @@ using IHost host = builder.Build();
 using (var scope = host.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try
-    {
-        var db = services.GetRequiredService<AppDbContext>();
-        await db.Database.MigrateAsync();
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Erro na migração: {ex.Message}");
-        Environment.Exit(1);
-    }
+
+    var db = services.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
 }
 
 Console.WriteLine("OverkillDocs.Migrator Finalizado");

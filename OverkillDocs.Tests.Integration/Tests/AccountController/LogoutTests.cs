@@ -1,13 +1,4 @@
-using FluentAssertions;
-using HashidsNet;
-using Microsoft.EntityFrameworkCore;
-using OverkillDocs.Infrastructure.Interfaces;
-using OverkillDocs.Tests.Common.Fakers.Entities.Identity;
 using OverkillDocs.Tests.Common.Fakers.Security;
-using OverkillDocs.Tests.Integration.Fixtures;
-using System.Net;
-using System.Net.Http.Json;
-using Xunit.Abstractions;
 using static OverkillDocs.Core.Security.UserContext;
 
 namespace OverkillDocs.Tests.Integration.Tests.AccountController;
@@ -74,11 +65,10 @@ public class LogoutTests
             var user = new UserFaker().Generate();
             var oldSession = await LoginAs(user);
             var newSession = await LoginAs(user);
-            var hashIds = Require<IHashids>();
             LogData(user, oldSession, newSession);
 
             var response = await httpClient.PostAsJsonAsync(
-                SessionUrl(hashIds.Encode(oldSession.Id)), new { });
+                SessionUrl(Hashids.Encode(oldSession.Id)), new { });
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
             await Execute(async db =>
@@ -114,7 +104,7 @@ public class LogoutTests
             await Require<IObjectCache<UserIdentity>>().Set(identity);
 
             otherSessionId = session.Id;
-            otherSessionHashId = Require<IHashids>().Encode(otherSessionId);
+            otherSessionHashId = Hashids.Encode(otherSessionId);
             otherIdentityId = cache.IdFrom(identity);
             LogData(user, session, identity, otherSessionHashId);
         }
@@ -148,7 +138,7 @@ public class LogoutTests
             var session = await LoginAs(user);
             LogData(user, session);
 
-            var hashId = Require<IHashids>().Encode(0);
+            var hashId = Hashids.Encode(0);
             var response = await httpClient.PostAsJsonAsync(SessionUrl(hashId), new { });
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 

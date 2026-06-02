@@ -1,0 +1,28 @@
+<div class="center">
+    <button
+        mat-icon-button
+        [matMenuTriggerFor]="insertFragment"
+        title="Adicionar"
+        [disabled]="disabled()"
+        data-testid="add-fragment-button"
+    >
+        <mat-icon>add</mat-icon>
+    </button>
+</div>
+
+<mat-menu #insertFragment="matMenu">
+    <button mat-menu-item (click)="create.emit(Type.Markdown)">
+        <mat-icon>notes</mat-icon>
+        <span>Texto</span>
+    </button>
+
+    <button mat-menu-item (click)="create.emit(Type.Image)" data-testid="add-image-button">
+        <mat-icon>image</mat-icon>
+        <span>Imagem</span>
+    </button>
+
+    <button mat-menu-item (click)="create.emit(Type.Embed)">
+        <mat-icon>play_circle</mat-icon>
+        <span>Vídeo</span>
+    </button>
+</mat-menu>

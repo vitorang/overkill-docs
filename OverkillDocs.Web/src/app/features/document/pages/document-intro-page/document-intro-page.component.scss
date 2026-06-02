@@ -1,0 +1,49 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    user-select: none;
+
+    background-image: url('/assets/images/intro-background.svg');
+    background-size: 100% 100%;
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        gap: 12px;
+        transform: scale(125%);
+    }
+
+    .joke {
+        font-family: monospace;
+        text-transform: uppercase;
+
+        .alt-color {
+            color: firebrick;
+            font-weight: bold;
+        }
+    }
+
+    .buttons-wrapper {
+        .button-content {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: anchor-center;
+
+            .logo {
+                height: 24px;
+                aspect-ratio: 1;
+            }
+
+            .text {
+                margin-left: 0.5rem;
+                font-size: 125%;
+            }
+        }
+    }
+}

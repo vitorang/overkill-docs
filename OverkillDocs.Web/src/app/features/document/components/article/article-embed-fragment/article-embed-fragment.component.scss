@@ -1,0 +1,40 @@
+:host {
+    display: block;
+
+    iframe {
+        display: block;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    mat-form-field {
+        width: 100%;
+    }
+
+    iframe {
+        max-height: 90vh;
+
+        &.vertical {
+            aspect-ratio: 9/16;
+        }
+
+        &:not(.vertical) {
+            aspect-ratio: 16/9;
+        }
+    }
+
+    .toolbar-content {
+        display: flex;
+        flex-direction: row;
+
+        .title {
+            align-self: center;
+            flex: 1;
+            min-width: 0;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            text-align: center;
+        }
+    }
+}

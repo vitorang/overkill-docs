@@ -1,4 +1,4 @@
-import { catchError, finalize, map, Observable, of, shareReplay, tap } from 'rxjs';
+import { catchError, finalize, Observable, of, shareReplay, tap } from 'rxjs';
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SimpleUser } from '@core/models/user.model';
@@ -12,17 +12,24 @@ export class UserService {
     private requests: Record<string, Observable<SimpleUser | null>> = {};
     private http = inject(HttpClient);
 
-    public loadCurrentUser(reload?: boolean): Observable<boolean> {
-        if (this.currentUser() && !reload) return of(true);
+    defaultUser: SimpleUser = {
+        avatar: '',
+        hashId: '',
+        name: '...',
+    } as const;
 
-        return this.loadUser(API.USER.CURRENT).pipe(
-            tap((user) => this.currentUser.set(user)),
-            map((user) => !!user),
-        );
+    loadCurrentUser(reload?: boolean): Observable<SimpleUser | null> {
+        if (this.currentUser() && !reload) {
+            return of(this.currentUser());
+        }
+
+        return this.loadUser(API.USER.CURRENT).pipe(tap((user) => this.currentUser.set(user)));
     }
 
-    public getUser(hashId: string): Observable<SimpleUser | null> {
-        if (this.cache[hashId]) return of(this.cache[hashId]);
+    getUser(hashId: string): Observable<SimpleUser | null> {
+        if (this.cache[hashId]) {
+            return of(this.cache[hashId]);
+        }
 
         return this.loadUser(API.USER.BY_ID(hashId));
     }
@@ -31,7 +38,9 @@ export class UserService {
         if (!this.requests[url]) {
             this.requests[url] = this.http.get<SimpleUser>(url).pipe(
                 tap((user) => {
-                    if (user) this.cache[user.hashId] = user;
+                    if (user) {
+                        this.cache[user.hashId] = user;
+                    }
                 }),
                 shareReplay(1),
                 finalize(() => delete this.requests[url]),

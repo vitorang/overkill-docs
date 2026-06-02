@@ -16,11 +16,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<Document>(entity =>
         {
             entity.HasKey(e => e.Id);
-
-            entity.HasOne(e => e.CreatedBy)
-                  .WithMany()
-                  .HasForeignKey(e => e.CreatedById)
-                  .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<DocumentFragment>(entity =>
@@ -31,11 +26,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
                   .WithMany(e => e.Fragments)
                   .HasForeignKey(e => e.DocumentId)
                   .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne(e => e.EditedBy)
-                  .WithMany()
-                  .HasForeignKey(e => e.EditedById)
-                  .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<User>(entity =>

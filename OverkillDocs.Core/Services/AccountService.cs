@@ -41,8 +41,8 @@ internal sealed class AccountService(
         var user = await CurrentAuthenticatedUser(passwordChange.CurrentPassword, ct);
         user.PasswordHash = passwordService.CalculeHash(passwordChange.NewPassword);
 
-        await userRepository.InvalidateCache(user);
         await unitOfWork.CommitAsync(ct);
+        await userRepository.InvalidateCache(user);
     }
 
     public async Task<ImmutableArray<UserSessionDto>> ListSessions(CancellationToken ct)
@@ -67,7 +67,7 @@ internal sealed class AccountService(
             UserAgent = request.UserAgent
         };
 
-        await userSessionRepository.Add(session, ct: ct);
+        userSessionRepository.Add(session);
         await unitOfWork.CommitAsync(ct);
 
         return session.ToAuthResponse();
@@ -110,7 +110,7 @@ internal sealed class AccountService(
             PasswordHash = passwordService.CalculeHash(request.Password)
         };
 
-        await userRepository.Add(user, ct: ct);
+        userRepository.Add(user);
 
         var session = new UserSession
         {
@@ -118,7 +118,7 @@ internal sealed class AccountService(
             UserAgent = request.UserAgent
         };
 
-        await userSessionRepository.Add(session, ct: ct);
+        userSessionRepository.Add(session);
         await unitOfWork.CommitAsync(ct);
 
         return session.ToAuthResponse();

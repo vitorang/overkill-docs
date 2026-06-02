@@ -17,7 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.OperationFilter<StatusResponseFilter>();
+});
 
 
 #region Banco de dados
@@ -132,7 +135,7 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 app.MapHealthChecks("/health");
 
-app.Map("/api/{*path}", (string path) => Results.NotFound());
+app.Map("/api/{*path:regex(^(?!swagger).*$)}", (string path) => Results.NotFound());
 app.MapFallbackToFile("index.html");
 #endregion
 

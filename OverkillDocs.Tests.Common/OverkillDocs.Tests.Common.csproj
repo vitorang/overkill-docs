@@ -14,4 +14,8 @@
     <ProjectReference Include="..\OverkillDocs.Core\OverkillDocs.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Fakers\DTOs\Document\Fragment\" />
+  </ItemGroup>
+
 </Project>

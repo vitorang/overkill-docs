@@ -1,7 +1,19 @@
-<okd-main-header></okd-main-header>
+<mat-toolbar>
+    <div class="toolbar-content max-width">
+        <a mat-icon-button title="Voltar" [routerLink]="[homeUrl]">
+            <mat-icon>chevron_left</mat-icon>
+        </a>
+        <div class="toolbar-center">
+            <okd-brand />
+        </div>
+        <button mat-icon-button title="Sair" (click)="logout()">
+            <mat-icon>logout</mat-icon>
+        </button>
+    </div>
+</mat-toolbar>
 
 <div class="scroll">
-    <div class="page-content">
+    <div class="page-content max-width">
         <div class="group">
             <okd-request-overlay [requestHandler]="profileHandler" (retry)="loadProfile()">
                 <mat-card>
@@ -38,7 +50,7 @@
                                             <button
                                                 mat-button
                                                 [disabled]="logoutHandler.loading()"
-                                                (click)="logout(session)"
+                                                (click)="logoutSession(session)"
                                             >
                                                 Sair
                                             </button>

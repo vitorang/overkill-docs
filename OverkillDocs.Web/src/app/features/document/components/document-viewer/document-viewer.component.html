@@ -1,0 +1,13 @@
+<okd-request-overlay
+    [requestHandler]="documentHandler"
+    [expandHeight]="true"
+    [hideLoadingOverlay]="true"
+>
+    <div class="document-wrapper">
+        @switch (document().type) {
+            @case (DocumentType.Article) {
+                <okd-article-viewer />
+            }
+        }
+    </div>
+</okd-request-overlay>

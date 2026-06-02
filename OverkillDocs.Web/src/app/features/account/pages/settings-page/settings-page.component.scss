@@ -1,9 +1,39 @@
 @use 'mixins/breakpoints' as *;
+@use 'mixins/navigation' as nav;
 
 :host {
     display: flex;
     flex-direction: column;
     height: 100vh;
+
+    mat-toolbar {
+        @include nav.background;
+        @include nav.border-bottom;
+    }
+
+    .toolbar-content {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+
+        .toolbar-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .max-width {
+        margin: 0 auto;
+        @include breakpoint('large') {
+            max-width: 1200px;
+        }
+
+        @include breakpoint('small-medium') {
+            max-width: 690px;
+        }
+    }
 
     .scroll {
         flex: 1;
@@ -19,13 +49,11 @@
         display: grid;
 
         @include breakpoint('large') {
-            max-width: 1200px;
             grid-template-columns: 3fr 2fr;
             grid-template-rows: auto auto;
         }
 
         @include breakpoint('small-medium') {
-            max-width: 690px;
             grid-template-columns: 1fr;
             grid-template-rows: auto;
         }

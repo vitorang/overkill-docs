@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChatMessageComponent } from '@features/chat/components/chat-message/chat-message.component';
-import { ChatHubService } from '@features/chat/services/chat-hub.service';
+import { ChatHub } from '@features/chat/hubs/chat.hub';
 import { BrowserService } from '@shared/services/browser.service';
 import { ChatMessage } from '@features/chat/chat.models';
 
@@ -26,7 +26,7 @@ export class ChatViewportComponent implements AfterViewInit, OnDestroy {
     private injector = inject(Injector);
 
     private maxMessages = 100;
-    private chatHub = inject(ChatHubService);
+    private chatHub = inject(ChatHub);
     private browserService = inject(BrowserService);
 
     protected messages = signal<ChatMessage[]>([]);

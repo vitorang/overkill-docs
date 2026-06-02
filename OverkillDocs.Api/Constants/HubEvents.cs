@@ -1,17 +1,25 @@
+using OverkillDocs.Api.Hubs;
+
 namespace OverkillDocs.Api.Constants;
 
 public static class HubEvents
 {
     public static class Chat
     {
-        public const string MessageReceived = "Chat:OnMessageReceived";
-        public const string RecentMessagesReceived = "Chat:OnRecentMessagesReceived";
+        public const string MessageReceived = $"{MainHub.chatGroup}:OnMessageReceived";
+        public const string RecentMessagesReceived = $"{MainHub.chatGroup}:OnRecentMessagesReceived";
     }
 
-    public static class Document
+    public static class DocumentIndex
     {
-        public const string DocumentStructureChanged = "OnDocumentStructureChanged";
-        public const string FragmentContentChanged = "OnFragmentContentChanged";
-        public const string FragmentLockChanged = "OnFragmentLockChanged";
+        public const string Changed = $"{MainHub.documentIndexGroup}:OnChanged";
+    }
+
+    public static class DocumentViewer
+    {
+        public const string ActiveLocksChanged = $"{MainHub.documentViewerGroup}:OnActiveLocksChanged";
+        public const string DocumentChanged = $"{MainHub.documentViewerGroup}:OnDocumentChanged";
+        public const string DocumentDeleted = $"{MainHub.documentViewerGroup}:OnDocumentDeleted";
+        public const string FragmentChanged = $"{MainHub.documentViewerGroup}:OnFragmentChanged";
     }
 }

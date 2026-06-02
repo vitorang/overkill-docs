@@ -1,12 +1,3 @@
-using FluentAssertions;
-using HashidsNet;
-using OverkillDocs.Core.DTOs.User;
-using OverkillDocs.Tests.Common.Fakers.Entities.Identity;
-using OverkillDocs.Tests.Integration.Fixtures;
-using System.Net;
-using System.Net.Http.Json;
-using Xunit.Abstractions;
-
 namespace OverkillDocs.Tests.Integration.Tests.UserController;
 
 public class CurrentTests
@@ -18,11 +9,9 @@ public class CurrentTests
         [Fact]
         public async Task ReturnsOwnUserData()
         {
-            var hashIds = Require<IHashids>();
-
             var user = new UserFaker().Generate();
             await LoginAs(user);
-            var userHashId = hashIds.Encode(user.Id);
+            var userHashId = Hashids.Encode(user.Id);
             LogData(user);
 
             var response = await httpClient.GetAsync(url);

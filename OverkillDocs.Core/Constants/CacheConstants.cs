@@ -8,4 +8,6 @@ public static class CacheConstants
 
     public static readonly TimeSpan ChatExpiration = TimeSpan.FromMinutes(30);
     public static readonly int ChatSize = 20;
+
+    public static readonly TimeSpan DocumentFragmentLockExpiration = TimeSpan.FromMinutes(2);
 }

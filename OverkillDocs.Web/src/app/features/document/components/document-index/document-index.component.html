@@ -1,0 +1,37 @@
+<mat-action-list>
+    <button mat-list-item (click)="openCreationDialog()" data-testid="add-document-button">
+        <span matListItemTitle>Novo documento</span>
+        <mat-icon matListItemIcon>add</mat-icon>
+    </button>
+
+    @if (debugModeEnabled()) {
+        <button mat-list-item (click)="generateMany()">
+            <span matListItemTitle>Gerar vários</span>
+            <mat-icon matListItemIcon>filter_5</mat-icon>
+        </button>
+        <button mat-list-item (click)="deleteAll()">
+            <span matListItemTitle>Excluir todos</span>
+            <mat-icon matListItemIcon>delete_forever</mat-icon>
+        </button>
+    }
+</mat-action-list>
+<mat-divider />
+
+@if (documents().length === 0) {
+    <okd-info-box icon="sentiment_frustrated">Sem documentos</okd-info-box>
+} @else {
+    <div class="list">
+        <mat-action-list>
+            @for (doc of documents(); track doc.hashId) {
+                <a
+                    mat-list-item
+                    [routerLink]="[rootUrl, doc.hashId]"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                >
+                    <span matListItemTitle>{{ doc.title }}</span>
+                </a>
+            }
+        </mat-action-list>
+    </div>
+}

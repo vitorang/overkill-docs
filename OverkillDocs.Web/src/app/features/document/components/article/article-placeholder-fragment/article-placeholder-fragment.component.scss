@@ -1,0 +1,27 @@
+:host {
+    .text {
+        opacity: 0.5;
+        line-height: 1.25;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    .element {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+
+        aspect-ratio: 16/9;
+        max-width: 400px;
+
+        background-color: color-mix(in srgb, currentColor 5%, transparent);
+        .icon {
+            opacity: 0.5;
+            font-size: 48px;
+            width: 48px;
+            height: 48px;
+        }
+    }
+}

@@ -10,4 +10,5 @@ const S = SEGMENTS.ACCOUNT;
 export const ACCOUNT_ROUTES: Routes = [
     { path: S.LOGIN, component: LoginPageComponent, canActivate: [guestGuard] },
     { path: S.SETTINGS, component: SettingsPageComponent, canActivate: [authGuard] },
+    { path: '**', redirectTo: SEGMENTS.HOME, pathMatch: 'full' },
 ];

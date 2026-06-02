@@ -1,60 +1,87 @@
-import { Component, inject, signal } from '@angular/core';
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { filter } from 'rxjs';
+import { Component, computed, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { SHARED } from '@shared/index';
 import { ChatViewComponent } from '@features/chat/components/chat-view/chat-view.component';
-import { ChatHubService } from '@features/chat/services/chat-hub.service';
-import { BreakpointQueries } from '@shared/constants/breakpoints.constant';
-import { HubMonitorComponent } from '@features/debug/components/hub-monitor/hub-monitor.component';
-import { MainHeaderComponent } from '@shared/components/main-header/main-header.component';
 import { UserService } from '@core/services/user.service';
 import { ReconnectionOverlayComponent } from '@shared/components/reconnection-overlay/reconnection-overlay.component';
+import { RouterOutlet } from '@angular/router';
+import { DocumentIndexComponent } from '@features/document/components/document-index/document-index.component';
+import { PATHS } from '@core/constants/routes.constant';
+import { DebugViewerComponent } from '@features/debug/components/debug-viewer/debug-viewer.component';
+import { BrandComponent } from '@shared/components/brand/brand.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { BreakpointQueries } from '@shared/constants/breakpoints.constant';
+import { map } from 'rxjs';
+import { AccountService } from '@features/account/services/account.service';
+import { ChatHub } from '@features/chat/hubs/chat.hub';
+import { MainHub } from '@core/hubs/main.hub';
 
-type TabSection = 'editor' | 'chat';
+type SidePanel = 'documents' | 'chat' | 'debug';
 
 @Component({
     selector: 'okd-document-layout',
     imports: [
         SHARED,
         ChatViewComponent,
-        HubMonitorComponent,
-        MainHeaderComponent,
         ReconnectionOverlayComponent,
+        RouterOutlet,
+        DocumentIndexComponent,
+        DebugViewerComponent,
+        BrandComponent,
     ],
     templateUrl: './document-layout.component.html',
     styleUrl: './document-layout.component.scss',
     providers: [UserService],
 })
-export class DocumentLayoutComponent {
+export class DocumentLayoutComponent implements OnInit, OnDestroy {
     private breakpointObserver = inject(BreakpointObserver);
-    private chatHub = inject(ChatHubService);
+    private accountService = inject(AccountService);
+    private chatHub = inject(ChatHub);
+    private mainHub = inject(MainHub);
 
-    protected activeSection = signal<TabSection>('editor');
-    protected isMobile = signal(false);
+    protected isMobile = toSignal(
+        this.breakpointObserver
+            .observe([BreakpointQueries.smallMedium])
+            .pipe(map((result) => result.matches)),
+        { initialValue: false },
+    );
+
+    protected activePanel = signal<SidePanel | null>('documents');
     protected hasUnreadMessage = signal(false);
+    protected accountSettingsPath = PATHS.ACCOUNT.SETTINGS;
+    protected sidenavClosing = signal(false);
+    protected activeButton = computed(() => !this.sidenavClosing() && this.activePanel());
 
     constructor() {
-        this.breakpointObserver.observe([BreakpointQueries.smallMedium]).subscribe((result) => {
-            const isMobile = result.matches;
-
-            this.isMobile.set(isMobile);
-            if (!isMobile) this.hasUnreadMessage.set(false);
-        });
-
         this.chatHub.onMessageReceived.pipe(takeUntilDestroyed()).subscribe(() => {
-            this.hasUnreadMessage.set(this.isMobile() && this.activeSection() !== 'chat');
+            if (this.activePanel() !== 'chat') {
+                this.hasUnreadMessage.set(true);
+            }
         });
-
-        toObservable(this.activeSection)
-            .pipe(
-                takeUntilDestroyed(),
-                filter((session) => session === 'chat'),
-            )
-            .subscribe(() => this.hasUnreadMessage.set(false));
     }
 
-    protected toggleSection(): void {
-        this.activeSection.set(this.activeSection() === 'editor' ? 'chat' : 'editor');
+    ngOnInit(): void {
+        this.mainHub.connect();
+    }
+
+    ngOnDestroy(): void {
+        this.mainHub.disconnect();
+    }
+
+    protected toggleActivePanel(panel: SidePanel): void {
+        if (panel === 'chat') {
+            this.hasUnreadMessage.set(false);
+        }
+
+        this.activePanel.set(panel !== this.activePanel() ? panel : null);
+    }
+
+    protected logout(): void {
+        this.accountService.logout();
+    }
+
+    protected onSidenavClosed(): void {
+        this.activePanel.set(null);
+        this.sidenavClosing.set(false);
     }
 }

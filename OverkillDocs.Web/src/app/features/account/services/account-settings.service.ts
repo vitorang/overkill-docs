@@ -31,6 +31,6 @@ export class AccountSettingsService {
     };
 
     updateProfile = (profile: Profile): Observable<Profile> => {
-        return this.http.post<Profile>(API.ACCOUNT.PROFILE, profile);
+        return this.http.put<Profile>(API.ACCOUNT.PROFILE, profile);
     };
 }

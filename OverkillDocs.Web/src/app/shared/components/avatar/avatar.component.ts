@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, inject, input, signal, OnInit, effect } from '@angular/core';
+import { Component, inject, input, signal, OnInit, effect, computed } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AvatarService } from '@core/services/avatar.service';
 
@@ -10,6 +10,11 @@ type sizeUnit = 'px' | 'em' | 'rem' | '%';
     imports: [CommonModule],
     templateUrl: './avatar.component.html',
     styleUrl: './avatar.component.scss',
+    host: {
+        '[style.width]': 'avatarSize()',
+        '[style.height]': 'avatarSize()',
+        '[style.opacity]': 'opacity()',
+    },
 })
 export class AvatarComponent implements OnInit {
     private avatarService = inject(AvatarService);
@@ -42,8 +47,7 @@ export class AvatarComponent implements OnInit {
         this.svgAvatar.set(this.domSanitizer.bypassSecurityTrustHtml(svg));
     }
 
-    @HostBinding('style.--avatar-size')
-    protected get avatarSize(): string {
-        return `${this.size()}${this.sizeUnit()}`;
-    }
+    protected avatarSize = computed(() => `${this.size()}${this.sizeUnit()}`);
+
+    protected opacity = computed(() => (this.avatarCode() || this.seed() ? 1 : 0.05));
 }

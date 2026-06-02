@@ -12,13 +12,10 @@ public class ExceptionHandler : IExceptionHandler
         Exception exception,
         CancellationToken cancellationToken)
     {
+        var statusCode = GetStatusCode(exception.GetType());
 
-        var statusCode = exception switch
-        {
-            CoreException e => e.StatusCode,
-            NotImplementedException => (int)HttpStatusCode.NotImplemented,
-            Exception => (int)HttpStatusCode.InternalServerError
-        };
+        if (exception is CoreException coreException)
+            statusCode = coreException.StatusCode;
 
         var problemDetails = new ProblemDetails
         {
@@ -29,13 +26,25 @@ public class ExceptionHandler : IExceptionHandler
         };
 
         httpContext.Response.StatusCode = statusCode;
-
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
-
         return true;
     }
 
-    private static string GetTitle(int statusCode) => statusCode switch
+    public static int GetStatusCode(Type exceptionType)
+    {
+        if (typeof(CoreException).IsAssignableFrom(exceptionType))
+        {
+            var coreException = (CoreException)Activator.CreateInstance(exceptionType, string.Empty)!;
+            return coreException.StatusCode;
+        }
+
+        if (exceptionType == typeof(NotImplementedException))
+            return (int)HttpStatusCode.NotImplemented;
+
+        return (int)HttpStatusCode.InternalServerError;
+    }
+
+    public static string GetTitle(int statusCode) => statusCode switch
     {
         400 => "Requisição inválida",
         401 => "Não autorizado",

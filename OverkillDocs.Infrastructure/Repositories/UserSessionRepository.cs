@@ -10,9 +10,9 @@ namespace OverkillDocs.Infrastructure.Repositories;
 
 internal sealed class UserSessionRepository(AppDbContext context, IObjectCache<UserIdentity> userIdentityCache) : IUserSessionRepository
 {
-    public async Task Add(UserSession userSession, CancellationToken ct)
+    public void Add(UserSession userSession)
     {
-        await context.UserSessions.AddAsync(userSession, ct);
+        context.UserSessions.Add(userSession);
     }
 
     public async Task ExecuteDeleteAllSessions(int userId, CancellationToken ct)

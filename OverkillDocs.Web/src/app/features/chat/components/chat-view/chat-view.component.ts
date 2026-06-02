@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ChatViewportComponent } from '@features/chat/components/chat-viewport/chat-viewport.component';
-import { ChatHubService } from '@features/chat/services/chat-hub.service';
+import { ChatHub } from '@features/chat/hubs/chat.hub';
 import { SHARED } from '@shared/index';
 
 import { filter } from 'rxjs';
@@ -15,15 +15,12 @@ import { filter } from 'rxjs';
 export class ChatViewComponent {
     protected maxLength = 250;
     protected message = signal('');
-    private chatHub = inject(ChatHubService);
+    private chatHub = inject(ChatHub);
     protected connected = this.chatHub.state.connected;
 
     constructor() {
-        this.chatHub.connection
-            .pipe(
-                takeUntilDestroyed(),
-                filter((connected) => connected),
-            )
+        toObservable(this.chatHub.state.connected)
+            .pipe(filter((connected) => connected))
             .subscribe(() => {
                 this.chatHub.join();
                 this.chatHub.requestRecentMessages();
@@ -32,7 +29,9 @@ export class ChatViewComponent {
 
     protected onPressEnter(event: Event): void {
         const keyboardEvent = event as KeyboardEvent;
-        if (keyboardEvent.shiftKey) return;
+        if (keyboardEvent.shiftKey) {
+            return;
+        }
 
         event.preventDefault();
         this.sendMessage();

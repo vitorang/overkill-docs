@@ -8,9 +8,9 @@ namespace OverkillDocs.Infrastructure.Repositories;
 
 internal sealed class UserRepository(AppDbContext context, IObjectCache<User> userCache) : IUserRepository
 {
-    public async Task Add(User user, CancellationToken ct)
+    public void Add(User user)
     {
-        await context.Users.AddAsync(user, ct);
+        context.Users.Add(user);
     }
 
     public async Task<User?> FindById(int id, bool useCache, CancellationToken ct)

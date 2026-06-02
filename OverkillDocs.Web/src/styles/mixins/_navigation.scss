@@ -1,0 +1,12 @@
+@mixin background {
+    background-color: var(--mat-sys-surface-container) !important;
+    box-shadow: var(--mat-sys-elevation-level1);
+}
+
+@mixin border-bottom {
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+@mixin border-right {
+    border-right: 1px solid var(--mat-sys-outline-variant);
+}

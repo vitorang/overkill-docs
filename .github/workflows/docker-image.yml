@@ -25,7 +25,8 @@ jobs:
       - name: Install Playwright Browsers
         run: |
           dotnet build OverkillDocs.sln --configuration Release
-          npx playwright install --with-deps
+          dotnet tool install --global Microsoft.Playwright.CLI
+          playwright install chromium --with-deps
 
       - name: Run Integration Tests
         run: dotnet test OverkillDocs.Tests.Integration/OverkillDocs.Tests.Integration.csproj --configuration Release --no-build --verbosity normal
