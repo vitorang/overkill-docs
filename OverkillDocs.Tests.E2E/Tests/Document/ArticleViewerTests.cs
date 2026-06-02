@@ -24,6 +24,28 @@ public class ArticleViewerTests(PlaywrightFixture fixture, ITestOutputHelper out
         await DeleteDocumentAndRedirect(modifiedTitle, desktopPage, mobilePage);
     }
 
+    [Fact]
+    public async Task FragmentCRUDShouldSync()
+    {
+        var (_, desktopPage) = await NewBrowserSession();
+        var (_, mobilePage) = await NewBrowserSession(mobile: true);
+
+        var documentTitle = Ulid.NewUlid().ToString();
+        var imageAlt = Ulid.NewUlid().ToString();
+
+        LogData(documentTitle, imageAlt);
+
+        await desktopPage.GotoAsync(Routes.Documents);
+        await mobilePage.GotoAsync(Routes.Documents);
+
+        await CreateDocumentAndRedirect(documentTitle, desktopPage, mobilePage);
+        await new SidebarComponent(desktopPage).Close();
+        await new SidebarComponent(mobilePage).Close();
+
+        await CreateImageFragment(imageAlt, desktopPage, mobilePage);
+        await DeleteFragment(imageAlt, desktopPage, mobilePage);
+    }
+
     private static async Task CreateDocumentAndRedirect(string title, IPage desktopPage, IPage mobilePage)
     {
         var desktopSidebar = new SidebarComponent(desktopPage);
@@ -108,5 +130,37 @@ public class ArticleViewerTests(PlaywrightFixture fixture, ITestOutputHelper out
 
         await desktop.Intro.ExpectToBeVisible();
         await mobile.Intro.ExpectToBeVisible();
+    }
+
+    private static async Task CreateImageFragment(string imageAlt, IPage desktopPage, IPage mobilePage)
+    {
+        var desktopArticle = new ArticleViewerPage(desktopPage);
+        var mobileArticle = new ArticleViewerPage(mobilePage);
+
+        await desktopArticle.EnableEditMode();
+        await mobileArticle.EnableEditMode();
+
+        await desktopArticle.CreateImageFragment(url: "/assets/favicon.ico", alt: imageAlt);
+        await mobileArticle.ExpectFragmentLock(isLocked: true);
+
+        await desktopArticle.FinishEdit();
+        await mobileArticle.ExpectFragmentLock(isLocked: false);
+
+        await desktopArticle.ExpectElementWithAlt(imageAlt);
+        await mobileArticle.ExpectElementWithAlt(imageAlt);
+    }
+
+    private static async Task DeleteFragment(string text, IPage desktopPage, IPage mobilePage)
+    {
+        var desktopArticle = new ArticleViewerPage(desktopPage);
+        var mobileArticle = new ArticleViewerPage(mobilePage);
+
+        await desktopArticle.EnableEditMode();
+        await mobileArticle.EnableEditMode();
+
+        await mobileArticle.DeleteFragment();
+
+        await desktopArticle.ExpectNoElementWithAlt(text);
+        await mobileArticle.ExpectNoElementWithAlt(text);
     }
 }

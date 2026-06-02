@@ -72,12 +72,14 @@ export class ArticleImageFragmentComponent {
     }
 
     protected saveAndFinishEdit(): void {
-        const modelChanged = this.urlModel() !== this.fragment().url;
+        const modelChanged =
+            this.urlModel() !== this.fragment().url || this.altModel() !== this.fragment().alt;
 
         if (modelChanged) {
             this.finishEdit.emit({
                 ...this.fragment(),
                 url: this.urlModel(),
+                alt: this.altModel(),
             });
         } else {
             this.finishEdit.emit(null);

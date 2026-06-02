@@ -6,6 +6,7 @@
             [size]="24"
             sizeUnit="px"
             [title]="user().name"
+            data-testid="fragment-avatar"
         />
     }
 
@@ -15,6 +16,7 @@
             [matMenuTriggerFor]="editFragment"
             title="Modificar"
             [disabled]="disabled()"
+            data-testid="fragment-actions-button"
         >
             <mat-icon>more_vert</mat-icon>
         </button>
@@ -22,12 +24,12 @@
 </div>
 
 <mat-menu #editFragment="matMenu">
-    <button mat-menu-item (click)="edit.emit()">
+    <button mat-menu-item (click)="edit.emit()" data-testid="fragment-edit-button">
         <mat-icon>edit_note</mat-icon>
         <span>Editar</span>
     </button>
 
-    <button mat-menu-item (click)="delete.emit()">
+    <button mat-menu-item (click)="delete.emit()" data-testid="fragment-delete-button">
         <mat-icon>remove</mat-icon>
         <span>Remover</span>
     </button>

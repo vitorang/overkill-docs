@@ -4,6 +4,7 @@
         [matMenuTriggerFor]="insertFragment"
         title="Adicionar"
         [disabled]="disabled()"
+        data-testid="add-fragment-button"
     >
         <mat-icon>add</mat-icon>
     </button>
@@ -15,7 +16,7 @@
         <span>Texto</span>
     </button>
 
-    <button mat-menu-item (click)="create.emit(Type.Image)">
+    <button mat-menu-item (click)="create.emit(Type.Image)" data-testid="add-image-button">
         <mat-icon>image</mat-icon>
         <span>Imagem</span>
     </button>

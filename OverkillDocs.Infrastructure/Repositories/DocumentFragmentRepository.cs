@@ -81,4 +81,9 @@ internal sealed class DocumentFragmentRepository(
         var hashIds = fragmentResult!.FragmentIds.Select(e => hashids.Encode(e)).ToArray();
         return await lockCache.GetAll(hashIds);
     }
+
+    public async Task InvalidateCacheByDocumentId(int documentId)
+    {
+        await fragmentIdsCache.RemoveById(documentId);
+    }
 }

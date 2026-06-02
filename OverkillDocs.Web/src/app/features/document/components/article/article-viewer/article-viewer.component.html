@@ -7,7 +7,12 @@
         @if (isEditingFragment()) {
             <ng-container *ngTemplateOutlet="toolbar()?.template"></ng-container>
         } @else if (editModeEnabled()) {
-            <button mat-icon-button (click)="editModeEnabled.set(false)" title="Finalizar edição">
+            <button
+                mat-icon-button
+                (click)="editModeEnabled.set(false)"
+                title="Finalizar edição"
+                data-testid="disable-edit-button"
+            >
                 <mat-icon>edit_off</mat-icon>
             </button>
         } @else {

@@ -114,6 +114,8 @@ internal sealed class DocumentService(
 
         fragmentRepository.Add(fragment);
         await unitOfWork.CommitAsync(ct);
+        await fragmentRepository.InvalidateCacheByDocumentId(fragment.DocumentId);
+
         return fragment.ToDto(hashids);
     }
 
