@@ -13,19 +13,25 @@ internal sealed class UserRepository(AppDbContext context, IObjectCache<User> us
         context.Users.Add(user);
     }
 
-    public async Task<User?> FindById(int id, bool useCache, CancellationToken ct)
-    {
-        Task<User?> fetchFromDb() => context.Users.FirstOrDefaultAsync(e => e.Id == id && e.IsActive, ct);
-        return await (useCache ? userCache.Get(id, fetchFromDb) : fetchFromDb());
-    }
-
     public async Task<User?> FindByUsername(string username, CancellationToken ct)
     {
         return await context.Users.FirstOrDefaultAsync(e => e.Username == username && e.IsActive, ct);
     }
 
-    public async Task InvalidateCache(User user)
+    public async Task<User?> GetByIdForUpdate(int id, CancellationToken ct)
     {
-        await userCache.Remove(user);
+        var user = await context.Users.FirstOrDefaultAsync(e => e.Id == id && e.IsActive, ct);
+        if (user != null)
+            userCache.MarkAsInvalid(user);
+
+        return user;
+    }
+
+    public async Task<User?> GetByIdReadOnly(int id, CancellationToken ct)
+    {
+        Task<User?> fetchFromDb() => context.Users.AsNoTracking()
+            .FirstOrDefaultAsync(e => e.Id == id && e.IsActive, ct);
+
+        return await userCache.Get(id, fetchFromDb);
     }
 }

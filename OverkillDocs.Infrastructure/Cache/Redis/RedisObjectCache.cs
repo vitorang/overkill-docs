@@ -3,7 +3,8 @@ using StackExchange.Redis;
 
 namespace OverkillDocs.Infrastructure.Cache.Redis;
 
-internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : ObjectCache<T>, IObjectCache<T>
+internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis, ICacheInvalidator cacheInvalidator)
+    : ObjectCache<T>(cacheInvalidator), IObjectCache<T>
 {
     private readonly IDatabase database = redis.GetDatabase();
     private readonly SemaphoreSlim semaphore = new(1, 1);
@@ -58,29 +59,27 @@ internal sealed class RedisObjectCache<T>(IConnectionMultiplexer redis) : Object
             .Select(e => JsonToEntity(e))!];
     }
 
-    public async Task Remove(T value, bool ifEquals)
+    public async Task Remove(T value)
     {
         var key = KeyOf(value);
+        await database.KeyDeleteAsync(key);
+    }
 
-        if (ifEquals)
-        {
-            string luaScript = @"
+    public async Task RemoveIfEquals(T value)
+    {
+        var key = KeyOf(value);
+        string luaScript = @"
                 if redis.call('get', KEYS[1]) == ARGV[1] then
                     return redis.call('del', KEYS[1])
                 else
                     return 0
                 end";
 
-            await database.ScriptEvaluateAsync(
-                luaScript,
-                keys: [(RedisKey)key],
-                values: [(RedisValue)EntityToJson(value)]
-            );
-        }
-        else
-        {
-            await database.KeyDeleteAsync(key);
-        }
+        await database.ScriptEvaluateAsync(
+            luaScript,
+            keys: [(RedisKey)key],
+            values: [(RedisValue)EntityToJson(value)]
+        );
     }
 
     public Task RemoveById(int id) => RemoveById(id.ToString());

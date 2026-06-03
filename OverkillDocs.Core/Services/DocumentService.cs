@@ -28,8 +28,6 @@ internal sealed class DocumentService(
 
         documentRepository.Add(document);
         await unitOfWork.CommitAsync(ct);
-        await documentRepository.InvalidateCache();
-
         return document.ToSummaryDto(hashids);
     }
 
@@ -44,14 +42,12 @@ internal sealed class DocumentService(
         var rowsAffected = await documentRepository.ExecuteDelete(documentId, ct);
         if (rowsAffected == 0)
             throw new NotFoundException("Documento não encontrado");
-
-        await documentRepository.InvalidateCache(documentId);
     }
 
     public async Task<DocumentDetailDto> Get(string hashId, CancellationToken ct)
     {
         var documentId = hashids.Decode(hashId).First();
-        var document = await documentRepository.GetById(documentId, ct);
+        var document = await documentRepository.GetByIdReadOnly(documentId, ct);
         if (document == null)
             throw new NotFoundException($"Documento não encontrado");
 
@@ -66,7 +62,7 @@ internal sealed class DocumentService(
     public async Task<DocumentSummaryDto> Update(DocumentSummaryDto documentDto, CancellationToken ct)
     {
         var documentId = hashids.Decode(documentDto.HashId).First();
-        var document = await documentRepository.GetById(documentId, ct);
+        var document = await documentRepository.GetByIdForUpdate(documentId, ct);
 
         if (document == null)
             throw new NotFoundException("Documento não encontrado");
@@ -75,14 +71,13 @@ internal sealed class DocumentService(
         document.UpdatedAt = DateTime.UtcNow;
 
         await unitOfWork.CommitAsync(ct);
-        await documentRepository.InvalidateCache(document.Id);
         return document.ToSummaryDto(hashids);
     }
 
     public async Task<DocumentFragmentDto> CreateFragment(DocumentFragmentCreationDto creationDto, CancellationToken ct)
     {
         int documentId = hashids.Decode(creationDto.DocumentHashId).First();
-        var document = await documentRepository.GetById(documentId, ct);
+        var document = await documentRepository.GetByIdForUpdate(documentId, ct);
         if (document == null)
             throw new NotFoundException("Documento não encontrado");
 
@@ -114,8 +109,6 @@ internal sealed class DocumentService(
 
         fragmentRepository.Add(fragment);
         await unitOfWork.CommitAsync(ct);
-        await fragmentRepository.InvalidateCacheByDocumentId(fragment.DocumentId);
-
         return fragment.ToDto(hashids);
     }
 

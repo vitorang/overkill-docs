@@ -30,6 +30,7 @@ public static class DependencyInjection
         {
             services.AddSingleton(typeof(IObjectCache<>), typeof(RedisObjectCache<>));
             services.AddSingleton(typeof(IListCache<>), typeof(RedisListCache<>));
+            services.AddSingleton(typeof(ICacheInvalidator), typeof(RedisCacheInvalidator));
 
             services.AddSingleton<IConnectionMultiplexer>(sp =>
                 ConnectionMultiplexer.Connect(redisConnection));
@@ -38,6 +39,7 @@ public static class DependencyInjection
         {
             services.AddSingleton(typeof(IObjectCache<>), typeof(MemoryObjectCache<>));
             services.AddSingleton(typeof(IListCache<>), typeof(MemoryListCache<>));
+            services.AddSingleton(typeof(ICacheInvalidator), typeof(MemoryCacheInvalidator));
 
             services.AddMemoryCache();
         }

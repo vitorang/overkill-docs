@@ -19,18 +19,13 @@ internal sealed class DocumentFragmentRepository(
     public void Add(DocumentFragment fragment)
     {
         context.DocumentFragments.Add(fragment);
+        fragmentIdsCache.MarkAsInvalid(fragment.DocumentId);
     }
 
     public void Remove(DocumentFragment fragment)
     {
         context.DocumentFragments.Remove(fragment);
-    }
-
-    public async Task ExecuteDelete(int[] fragmentIds, CancellationToken ct)
-    {
-        await context.DocumentFragments
-            .Where(e => fragmentIds.Contains(e.Id))
-            .ExecuteDeleteAsync(ct);
+        fragmentIdsCache.MarkAsInvalid(fragment.DocumentId);
     }
 
     public async Task<int> ExecuteUpdateContent(int fragmentId, string content, DateTime updatedAt, CancellationToken ct)
@@ -62,7 +57,7 @@ internal sealed class DocumentFragmentRepository(
 
     public async Task Unlock(DocumentFragmentLockDto fragmentLock)
     {
-        await lockCache.Remove(fragmentLock, ifEquals: true);
+        await lockCache.RemoveIfEquals(fragmentLock);
     }
 
     public async Task<DocumentFragmentLockDto[]> GetActiveLocksFromDocument(int documentId, CancellationToken ct)
@@ -80,10 +75,5 @@ internal sealed class DocumentFragmentRepository(
         var fragmentResult = await fragmentIdsCache.Get(documentId, onCacheMiss!);
         var hashIds = fragmentResult!.FragmentIds.Select(e => hashids.Encode(e)).ToArray();
         return await lockCache.GetAll(hashIds);
-    }
-
-    public async Task InvalidateCacheByDocumentId(int documentId)
-    {
-        await fragmentIdsCache.RemoveById(documentId);
     }
 }
