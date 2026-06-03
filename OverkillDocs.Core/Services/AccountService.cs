@@ -26,14 +26,12 @@ internal sealed class AccountService(
 
         await userSessionRepository.ExecuteDeleteAllSessions(user.Id, ct: ct);
 
-        var oldUser = user.Clone();
         user.Name = user.Username = $"{AccountConstants.AnonymizedPrefix}{user.Id}";
         user.Avatar = string.Empty;
         user.PasswordHash = string.Empty;
         user.IsActive = false;
 
         await unitOfWork.CommitAsync(ct);
-        await userRepository.InvalidateCache(oldUser);
     }
 
     public async Task ChangePassword(PasswordChangeDto passwordChange, CancellationToken ct)
@@ -42,7 +40,6 @@ internal sealed class AccountService(
         user.PasswordHash = passwordService.CalculeHash(passwordChange.NewPassword);
 
         await unitOfWork.CommitAsync(ct);
-        await userRepository.InvalidateCache(user);
     }
 
     public async Task<ImmutableArray<UserSessionDto>> ListSessions(CancellationToken ct)
@@ -126,7 +123,7 @@ internal sealed class AccountService(
 
     private async Task<User> CurrentAuthenticatedUser(string password, CancellationToken ct)
     {
-        var user = (await userRepository.FindById(userContext.UserId, useCache: false, ct: ct));
+        var user = (await userRepository.GetByIdForUpdate(userContext.UserId, ct));
 
         if (user == null || !passwordService.VerifyPassword(password, user.PasswordHash))
             throw new ForbiddenException("Senha incorreta");

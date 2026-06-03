@@ -2,15 +2,19 @@ namespace OverkillDocs.Infrastructure.Interfaces;
 
 internal interface IObjectCache<T>
 {
-    public Task<T?> Get(int id, Func<Task<T?>>? onCacheMiss = null);
-    public Task<T?> Get(string id, Func<Task<T?>>? onCacheMiss = null);
-    public Task<T[]> GetAll(int[] ids);
-    public Task<T[]> GetAll(string[] ids);
-    public Task<bool> CreateOrRenew(T value);
-    public Task Set(T value);
-    public Task Remove(T value, bool ifEquals = false);
-    public Task RemoveAll(IEnumerable<T> values);
-    public Task RemoveById(int id);
-    public Task RemoveById(string id);
-    public string IdFrom(T value);
+    Task<T?> Get(int id, Func<Task<T?>>? onCacheMiss = null);
+    Task<T?> Get(string id, Func<Task<T?>>? onCacheMiss = null);
+    Task<T[]> GetAll(int[] ids);
+    Task<T[]> GetAll(string[] ids);
+    Task<bool> CreateOrRenew(T value);
+    Task Set(T value);
+    Task Remove(T value);
+    Task RemoveIfEquals(T value);
+    Task RemoveAll(IEnumerable<T> values);
+    Task RemoveById(int id);
+    Task RemoveById(string id);
+    string IdFrom(T value);
+    void MarkAsInvalid(int id);
+    void MarkAsInvalid(string id);
+    void MarkAsInvalid(T value);
 }

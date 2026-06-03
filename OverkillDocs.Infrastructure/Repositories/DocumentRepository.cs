@@ -13,12 +13,12 @@ internal sealed class DocumentRepository(
     AppDbContext context,
     IObjectCache<DocumentSummariesResult> documentSummaryCache,
     IObjectCache<DocumentFragmentHashIdsResult> fragmentIdsCache,
-    IDocumentFragmentRepository fragmentRepository,
     IHashids hashids) : IDocumentRepository
 {
     public void Add(Document document)
     {
         context.Documents.Add(document);
+        CacheMarkAsInvalid();
     }
 
     public async Task<int> ExecuteDelete(int documentId, CancellationToken ct)
@@ -28,15 +28,34 @@ internal sealed class DocumentRepository(
             .Select(e => e.Id)
             .ToArrayAsync(ct);
 
-        await fragmentRepository.ExecuteDelete(fragmentIds, ct);
-        return await context.Documents.Where(e => e.Id == documentId).ExecuteDeleteAsync(ct);
+        var rowsAffected = await context.Documents
+            .Where(e => e.Id == documentId)
+            .ExecuteDeleteAsync(ct);
+
+        if (rowsAffected > 0)
+            await InvalidateCache(documentId);
+
+        return rowsAffected;
     }
 
-    public async Task<Document?> GetById(int documentId, CancellationToken ct)
+    public async Task<Document?> GetByIdReadOnly(int documentId, CancellationToken ct)
     {
         return await context.Documents
             .Include(d => d.Fragments)
+            .AsNoTracking()
             .FirstOrDefaultAsync(e => e.Id == documentId, ct);
+    }
+
+    public async Task<Document?> GetByIdForUpdate(int documentId, CancellationToken ct)
+    {
+        var document = await context.Documents
+            .Include(d => d.Fragments)
+            .FirstOrDefaultAsync(e => e.Id == documentId, ct);
+
+        if (document != null)
+            CacheMarkAsInvalid(document.Id);
+
+        return document;
     }
 
     public async Task<DocumentSummaryDto[]> List(CancellationToken ct)
@@ -53,7 +72,14 @@ internal sealed class DocumentRepository(
         return (await documentSummaryCache.Get(DocumentSummariesResult.DefaultId, fetchFromDb!))!.Documents;
     }
 
-    public async Task InvalidateCache(int? documentId)
+    public void CacheMarkAsInvalid(int? documentId = null)
+    {
+        documentSummaryCache.MarkAsInvalid(DocumentSummariesResult.DefaultId);
+        if (documentId != null)
+            fragmentIdsCache.MarkAsInvalid((int)documentId);
+    }
+
+    public async Task InvalidateCache(int? documentId = null)
     {
         await documentSummaryCache.RemoveById(DocumentSummariesResult.DefaultId);
         if (documentId != null)

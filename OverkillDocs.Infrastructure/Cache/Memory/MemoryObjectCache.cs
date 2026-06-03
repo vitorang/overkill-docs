@@ -3,7 +3,8 @@ using OverkillDocs.Infrastructure.Interfaces;
 
 namespace OverkillDocs.Infrastructure.Cache.Memory;
 
-internal sealed class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>, IObjectCache<T>
+internal sealed class MemoryObjectCache<T>(IMemoryCache cache, ICacheInvalidator cacheInvalidator)
+    : ObjectCache<T>(cacheInvalidator), IObjectCache<T>
 {
     private readonly MemoryCacheEntryOptions options = new() { SlidingExpiration = expirationTime, };
 
@@ -46,11 +47,19 @@ internal sealed class MemoryObjectCache<T>(IMemoryCache cache) : ObjectCache<T>,
         return Task.CompletedTask;
     }
 
-    public Task Remove(T value, bool ifEquals)
+    public Task Remove(T value)
+    {
+        var key = KeyOf(value);
+        cache.Remove(key);
+
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveIfEquals(T value)
     {
         var key = KeyOf(value);
 
-        if (!ifEquals || EntityToJson(value) == cache.Get<string?>(key))
+        if (EntityToJson(value) == cache.Get<string?>(key))
             cache.Remove(key);
 
         return Task.CompletedTask;

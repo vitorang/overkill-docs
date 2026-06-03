@@ -24,7 +24,7 @@ internal sealed class UserService(
             throw new NotFoundException($"HashId '{hashId}' inválido.");
         var id = ids[0];
 
-        var user = await userRepository.FindById(id, useCache: true, ct: ct);
+        var user = await userRepository.GetByIdReadOnly(id, ct: ct);
         if (user == null)
             throw new NotFoundException($"Usuário id={id} não encontrado.");
 
@@ -33,19 +33,19 @@ internal sealed class UserService(
 
     public async Task<SimpleUserDto> GetCurrent(CancellationToken ct)
     {
-        var user = await GetCurrentUser(useCache: true, ct: ct);
+        var user = await GetCurrentUserReadOnly(ct);
         return user.ToSimpleDto(hashids);
     }
 
     public async Task<ProfileDto> GetProfile(CancellationToken ct)
     {
-        var user = await GetCurrentUser(useCache: true, ct: ct);
+        var user = await GetCurrentUserReadOnly(ct);
         return user.ToProfileDto(hashids);
     }
 
     public async Task<ProfileDto> UpdateProfile(ProfileDto profileDto, CancellationToken ct)
     {
-        var user = await GetCurrentUser(useCache: false, ct: ct);
+        var user = await GetCurrentUserForUpdate(ct);
         if (user.Username != profileDto.Username)
             throw new ForbiddenException($"Alteração de perfil de {user.Username} por {profileDto.Username} não permitida.");
 
@@ -53,14 +53,21 @@ internal sealed class UserService(
         user.Avatar = profileDto.Avatar;
 
         await unitOfWork.CommitAsync(ct);
-        await userRepository.InvalidateCache(user);
-
         return user.ToProfileDto(hashids);
     }
 
-    private async Task<User> GetCurrentUser(bool useCache, CancellationToken ct)
+    private async Task<User> GetCurrentUserReadOnly(CancellationToken ct)
     {
-        var user = await userRepository.FindById(userContext.UserId, useCache: useCache, ct: ct);
+        var user = await userRepository.GetByIdReadOnly(userContext.UserId, ct);
+        if (user == null)
+            throw new NotFoundException($"Usuário id={userContext.UserId} não encontrado.");
+
+        return user;
+    }
+
+    private async Task<User> GetCurrentUserForUpdate(CancellationToken ct)
+    {
+        var user = await userRepository.GetByIdForUpdate(userContext.UserId, ct);
         if (user == null)
             throw new NotFoundException($"Usuário id={userContext.UserId} não encontrado.");
 

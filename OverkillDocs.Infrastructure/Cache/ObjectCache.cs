@@ -2,12 +2,13 @@ using OverkillDocs.Core.Constants;
 using OverkillDocs.Core.DTOs.Document;
 using OverkillDocs.Core.Entities.Identity;
 using OverkillDocs.Infrastructure.CachedResults;
+using OverkillDocs.Infrastructure.Interfaces;
 using System.Text.Json;
 using static OverkillDocs.Core.Security.UserContext;
 
 namespace OverkillDocs.Infrastructure.Cache;
 
-internal abstract class ObjectCache<T>
+internal abstract class ObjectCache<T>(ICacheInvalidator cacheInvalidator)
 {
     private static readonly JsonSerializerOptions jsonOptions = new()
     {
@@ -55,5 +56,19 @@ internal abstract class ObjectCache<T>
         if (string.IsNullOrEmpty(json))
             return default;
         return JsonSerializer.Deserialize<T>(json, jsonOptions);
+    }
+
+    public void MarkAsInvalid(int id) => MarkAsInvalid(id.ToString());
+
+    public void MarkAsInvalid(string id)
+    {
+        var key = KeyFrom(id);
+        cacheInvalidator.MarkAsInvalid(key);
+    }
+
+    public void MarkAsInvalid(T value)
+    {
+        var key = KeyOf(value);
+        cacheInvalidator.MarkAsInvalid(key);
     }
 }

@@ -12,9 +12,6 @@ public interface IDocumentFragmentRepository
     Task<DocumentFragment?> GetById(int fragmentId, CancellationToken ct, bool includeDocument = false);
     void Add(DocumentFragment fragment);
     void Remove(DocumentFragment fragment);
-    Task ExecuteDelete(int[] fragmentIds, CancellationToken ct);
     Task<int> ExecuteUpdateContent(int fragmentId, string content, DateTime updatedAt, CancellationToken ct);
     Task<DocumentFragmentLockDto[]> GetActiveLocksFromDocument(int documentId, CancellationToken ct);
-
-    Task InvalidateCacheByDocumentId(int documentId);
 }
