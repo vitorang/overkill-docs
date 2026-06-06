@@ -1,4 +1,5 @@
 using HashidsNet;
+using Microsoft.Extensions.Logging;
 using OverkillDocs.Core.DTOs.Account;
 using OverkillDocs.Core.DTOs.User;
 using OverkillDocs.Core.Entities.Identity;
@@ -15,6 +16,7 @@ internal sealed class UserService(
     IUserRepository userRepository,
     UserContext userContext,
     IHashids hashids,
+    ILogger<UserService> logger,
     IUnitOfWork unitOfWork) : IUserService
 {
     public async Task<SimpleUserDto> GetByHashId(string hashId, CancellationToken ct)
@@ -53,6 +55,7 @@ internal sealed class UserService(
         user.Avatar = profileDto.Avatar;
 
         await unitOfWork.CommitAsync(ct);
+        logger.LogInformation("Usuário {UserId} atualizou o perfil", user.Id);
         return user.ToProfileDto(hashids);
     }
 

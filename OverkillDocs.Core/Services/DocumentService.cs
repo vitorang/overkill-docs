@@ -1,4 +1,5 @@
 using HashidsNet;
+using Microsoft.Extensions.Logging;
 using OverkillDocs.Core.DTOs.Document;
 using OverkillDocs.Core.DTOs.Document.Fragment;
 using OverkillDocs.Core.Entities.Document;
@@ -16,6 +17,7 @@ internal sealed class DocumentService(
     IDocumentFragmentRepository fragmentRepository,
     IUnitOfWork unitOfWork,
     IHashids hashids,
+    ILogger<DocumentService> logger,
     UserContext userContext) : IDocumentService
 {
     public async Task<DocumentSummaryDto> Create(DocumentCreationDto documentDto, CancellationToken ct)
@@ -42,6 +44,8 @@ internal sealed class DocumentService(
         var rowsAffected = await documentRepository.ExecuteDelete(documentId, ct);
         if (rowsAffected == 0)
             throw new NotFoundException("Documento não encontrado");
+
+        logger.LogInformation("Documento {DocumentId} foi excluído por usuário {UserId}", documentId, userContext.UserId);
     }
 
     public async Task<DocumentDetailDto> Get(string hashId, CancellationToken ct)
@@ -71,6 +75,7 @@ internal sealed class DocumentService(
         document.UpdatedAt = DateTime.UtcNow;
 
         await unitOfWork.CommitAsync(ct);
+        logger.LogInformation("Documento {DocumentId} foi alterado por usuário {UserId}", documentId, userContext.UserId);
         return document.ToSummaryDto(hashids);
     }
 
@@ -109,6 +114,7 @@ internal sealed class DocumentService(
 
         fragmentRepository.Add(fragment);
         await unitOfWork.CommitAsync(ct);
+        logger.LogInformation("Fragmento {FragmentId} foi criado por usuário {UserId}", fragment.Id, userContext.UserId);
         return fragment.ToDto(hashids);
     }
 
@@ -125,6 +131,8 @@ internal sealed class DocumentService(
         int rowsAffected = await fragmentRepository.ExecuteUpdateContent(fragmentId, fragmentDto.GetContent(), fragmentDto.UpdatedAt, ct);
         if (rowsAffected == 0)
             throw new NotFoundException("Fragmento não encontrado");
+
+        logger.LogInformation("Fragmento {FragmentId} foi alterado por usuário {UserId}", fragmentId, userContext.UserId);
     }
 
     public async Task DeleteFragment(string fragmentHashId, CancellationToken ct)
@@ -140,6 +148,7 @@ internal sealed class DocumentService(
         fragment.Document.UpdatedAt = DateTime.UtcNow;
         fragmentRepository.Remove(fragment);
         await unitOfWork.CommitAsync(ct);
+        logger.LogInformation("Fragmento {FragmentId} foi excluído por usuário {UserId}", fragment.Id, userContext.UserId);
     }
 
     public async Task<string> GetDocumentHashIdByFragmentHashId(string fragmentHashId, CancellationToken ct)

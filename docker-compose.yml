@@ -31,6 +31,9 @@ services:
       redis:
         condition: service_healthy
         required: false
+      seq:
+        condition: service_healthy
+        required: false
 
 
   web:
@@ -108,6 +111,23 @@ services:
       - overkill-network
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  seq:
+    image: datalust/seq:2025.2.16202
+    profiles:
+      - seq
+    networks:
+      - overkill-network
+    ports:
+      - "5341:80"
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
       interval: 5s
       timeout: 3s
       retries: 5
