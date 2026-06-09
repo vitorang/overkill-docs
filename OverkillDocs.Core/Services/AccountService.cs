@@ -1,4 +1,5 @@
 using HashidsNet;
+using Microsoft.Extensions.Logging;
 using OverkillDocs.Core.Constants;
 using OverkillDocs.Core.DTOs.Account;
 using OverkillDocs.Core.Entities.Identity;
@@ -18,6 +19,7 @@ internal sealed class AccountService(
     IPasswordService passwordService,
     IUnitOfWork unitOfWork,
     IHashids hashids,
+    ILogger<DocumentService> logger,
     UserContext userContext) : IAccountService
 {
     public async Task AnonymizeAccount(AccountDeletionDto accountDeletionDto, CancellationToken ct)
@@ -32,6 +34,7 @@ internal sealed class AccountService(
         user.IsActive = false;
 
         await unitOfWork.CommitAsync(ct);
+        logger.LogInformation("Usuário {UserId} anonimizou a conta", user.Id);
     }
 
     public async Task ChangePassword(PasswordChangeDto passwordChange, CancellationToken ct)
@@ -40,6 +43,7 @@ internal sealed class AccountService(
         user.PasswordHash = passwordService.CalculeHash(passwordChange.NewPassword);
 
         await unitOfWork.CommitAsync(ct);
+        logger.LogInformation("Usuário {UserId} alterou a senha", user.Id);
     }
 
     public async Task<ImmutableArray<UserSessionDto>> ListSessions(CancellationToken ct)
@@ -67,6 +71,7 @@ internal sealed class AccountService(
         userSessionRepository.Add(session);
         await unitOfWork.CommitAsync(ct);
 
+        logger.LogInformation("Usuário {UserId} fez login", user.Id);
         return session.ToAuthResponse();
     }
 
@@ -117,6 +122,7 @@ internal sealed class AccountService(
 
         userSessionRepository.Add(session);
         await unitOfWork.CommitAsync(ct);
+        logger.LogInformation("Usuário {UserId} criou a conta", user.Id);
 
         return session.ToAuthResponse();
     }

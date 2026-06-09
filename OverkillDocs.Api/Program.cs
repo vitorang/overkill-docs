@@ -9,6 +9,7 @@ using OverkillDocs.Api.Middlewares;
 using OverkillDocs.Core;
 using OverkillDocs.Infrastructure;
 using OverkillDocs.Infrastructure.Data;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,6 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.OperationFilter<StatusResponseFilter>();
 });
-
 
 #region Banco de dados
 string entityProviderConfig = builder.Configuration.GetValue<string>("FeatureFlags:Database")
@@ -100,7 +100,6 @@ string redisConnection = builder.Configuration.GetConnectionString("Redis")!;
 builder.Services.AddOkdCache(useRedis, redisConnection);
 #endregion
 
-
 #region SignalR
 var signalRBuilder = builder.Services.AddSignalR(options =>
 {
@@ -110,6 +109,22 @@ var signalRBuilder = builder.Services.AddSignalR(options =>
 
 if (useRedis)
     signalRBuilder.AddStackExchangeRedis(redisConnection);
+#endregion
+
+#region Log
+var loggerConfig = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .WriteTo.Console();
+
+bool useSeq = builder.Configuration.GetValue<bool>("FeatureFlags:UseSeq");
+if (useSeq)
+{
+    string seqConnection = builder.Configuration.GetConnectionString("Seq")!;
+    loggerConfig = loggerConfig.WriteTo.Seq(seqConnection);
+}
+
+Log.Logger = loggerConfig.CreateLogger();
+builder.Host.UseSerilog();
 #endregion
 
 
