@@ -2,13 +2,13 @@
 
 Editor colaborativo de documentos feito para fins de aprendizado e portfólio, construído com arquitetura limpa e princípios SOLID. O projeto foi projetado para operar em cenários de concorrência de recursos (edição colaborativa e alteração em tempo real), escalabilidade (execução em múltiplas instâncias) e baixo consumo de recursos para rodar em planos gratuitos em nuvem sem perda de funcionalidades.
 
-O OverkillDocs tem recursos de criação de conta (dados pessoais e e-mail não são necessários, pois não é a finalidade do projeto), chat em tempo real e edição de documentos usando editor Markdown, inserção de imagens externas e vídeos do YouTube. A edição simultânea de documentos envolve _concorrência pessimista_, onde um fragmento do documento é bloqueado para edição exclusiva de um usuário.
+O OverkillDocs tem recursos de criação de conta (dados pessoais e e-mail não são necessários, pois não é a finalidade do projeto), chat em tempo real e edição de documentos usando editor Markdown, inserção de imagens externas e vídeos do YouTube. A edição simultânea utiliza uma estratégia de bloqueio de fragmentos (locking) para garantir exclusividade durante a edição.
 
 ## Tecnologias usadas
 
 - Front-end: Angular 20 utilizando RxJS + Signals, Angular Material para construção de telas.
 - Back-end: ASP.NET com .NET 8, utilizando SignalR para a comunicação em tempo real via WebSocket.
-- ORM: Entity Framework com suporte a três bancos de dados: SQL Server, PostgreSQL e SQLite.
+- ORM: Entity Framework com suporte aos bancos SQL Server, PostgreSQL e SQLite.
 - Cache: Redis para cache distribuído.
 - Containers e Infraestrutura: Docker Compose para gerenciar os serviços, utilizando profiles para ativar e desativar recursos dinamicamente.
 - Testes: Testes de integração usando xUnit e testes E2E (End-to-End) utilizando Playwright.
@@ -18,23 +18,23 @@ O OverkillDocs tem recursos de criação de conta (dados pessoais e e-mail não 
 
 ### Overkilldocs.Web
 
-É o front-end da aplicação feito com Angular Material. O site é responsivo e se adapta a telas mobile ou desktop sem que haja perda de recursos. Foi construído para ser reativo a alterações do usuário e a mudanças em tempo real via WebSocket. O site usa token com dois tipos de autenticação: compartilhada no navegador ou individual por aba. Assim, é possível ter múltiplas contas abertas sem precisar de navegação privada.
+É o front-end da aplicação feito com Angular Material. O site é responsivo e se adapta a telas mobile ou desktop sem que haja perda de recursos. Foi construído para ser reativo a alterações do usuário e a mudanças em tempo real via WebSocket. O sistema permite o gerenciamento de sessão de duas formas: compartilhada entre todas as abas (utilizando localStorage) ou isolada por aba (utilizando sessionStorage). Isso permite ao usuário manter múltiplas contas no mesmo navegador sem a necessidade de navegação privada.
 
 Na implementação, a detecção automática de alterações (Zone.js) foi desativada e substituída por Signals para obter maior performance e previsibilidade. Para a edição de documentos, o navegador envia o fragmento após alguns segundos sem digitação do usuário, reduzindo o consumo de recursos em nuvem e o custo de operação do sistema.
 
-A responsividade com SCSS foi implementada utilizando estilos isolados por faixas de breakpoints (mídias exclusivas). Em vez da abordagem tradicional mobile-first (onde propriedades de telas menores são herdadas e sobrescritas no desktop), optei por isolar as regras de cada tamanho de tela. Isso elimina o acoplamento de CSS e evita efeitos colaterais em manutenções futuras.
+A responsividade com SCSS foi implementada utilizando estilos isolados por faixas de breakpoints (mídias exclusivas). Em vez da abordagem tradicional mobile-first (onde propriedades de telas menores são herdadas e sobrescritas no desktop), optei por isolar as regras de cada tamanho de tela, o que impede a propagação indesejada de estilos entre dispositivos e facilita a manutenção, já que alterações em uma faixa específica não geram efeitos colaterais em outras.
 
 ### Overkilldocs.Api
 
 Gerencia a comunicação HTTP e SignalR (WebSocket). Em vez de realizar um controle manual de status para cada requisição, optei por criar um _handler_ global que mapeia as exceções lançadas pelo código para seus respectivos status HTTP. As mensagens de erro são entregues seguindo o padrão **RFC 7807 (Problem Details)**.
 
-Para o SignalR, existem dois recursos: chat e documentos. Optei por deixar ambos compartilhando a mesma conexão para minimizar uso de recursos e facilitar a implementação. Em uma aplicação em produção, a abertura de múltiplos canais poderia causar o esgotamento de portas no servidor e alocação desnecessária de memória para cada conexão, o que neste projeto é indesejável.
+Para o SignalR, existem dois recursos: chat e documentos. Optei por deixar ambos compartilhando a mesma conexão (HubConnection) para simplificar a implementação, reduzir latência de conexão e reduzir consumo de memória e processamento do servidor.
 
-Na autenticação, em vez de utilizar JWT, preferi criar uma implementação própria de token baseada no padrão ULID. Essa abordagem traz dois grandes ganhos: permite realizar a revogação de sessões de forma simplificada (o que no JWT exigiria uma estrutura de blacklist) e evita a fragmentação de páginas de índices no banco de dados, já que o ULID possui uma ordenação cronológica em sua composição, ao contrário de hashes puramente aleatórios como o GUID.
+Na autenticação, em vez de utilizar JWT, preferi criar uma implementação própria de token baseada em identificadores únicos no padrão ULID. Essa abordagem traz dois grandes ganhos: permite realizar a revogação de sessões de forma simplificada (o que no JWT exigiria uma estrutura de blacklist) e evita a fragmentação de páginas de índices no banco de dados, já que o ULID possui uma ordenação cronológica em sua composição, ao contrário de hashes puramente aleatórios como o GUID.
 
 ### Overkilldocs.Core
 
-É o coração do sistema, contendo as interfaces, os serviços e suas regras de negócio. Todas as camadas da aplicação se comunicam apenas com esta, e ela não depende de nenhuma outra. Por conta do escopo do projeto, optei por não dividir o projeto em camadas distintas de "Aplicação" e "Domínio"; as regras de negócio são diretas e parte delas é validada automaticamente na camada de API via DTOs, não justificando a complexidade de um projeto adicional.
+É o coração do sistema. Todas as camadas se comunicam apenas com esta, e ela não depende de nenhuma outra. Optei por não dividir o projeto em camadas distintas de "Aplicação" e "Domínio" porque as regras de negócio são diretas e, para o escopo deste projeto, essa separação adicionaria uma complexidade desnecessária.
 
 A estratégia de implementação dos serviços foi _fail-fast_: caso algum dado conflite com alguma regra, o serviço lançará uma exceção que será tratada pela API. Assim, a implementação dos métodos fica mais simples por não ter que lidar com fluxos internos de erro. Como o projeto usa Entity Framework, os serviços retornam apenas dados primitivos ou DTOs, e nunca as entidades do banco, evitando que alterações indesejadas reflitam no banco ou gerem efeitos colaterais.
 
@@ -107,5 +107,4 @@ Ao acessar o site, o link para a documentação do Swagger estará disponível n
 
 ## Planos futuros
 
-- Desconexão de usuários que permanecem inativos por vários minutos.
 - Implementação de documentos do tipo tabela com suporte a fórmulas.
