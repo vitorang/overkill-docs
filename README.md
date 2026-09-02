@@ -104,7 +104,3 @@ Caso deseje ver os testes sendo executados, há duas formas:
 ## Documentação e logs
 
 Ao acessar o site, o link para a documentação do Swagger estará disponível na tela após o login. Os logs utilizam o servidor Seq (habilitado por variável de ambiente) e são estruturados com Serilog. Apesar de o Seq possuir padrões próprios, preferi usar o Serilog para que o formato do registro se mantenha idêntico caso outro provedor de logs seja usado no lugar dele. Ao executar o docker-compose, o Seq pode ser acessado localmente em http://localhost:5341/.
-
-## Planos futuros
-
-- Implementação de documentos do tipo tabela com suporte a fórmulas.
